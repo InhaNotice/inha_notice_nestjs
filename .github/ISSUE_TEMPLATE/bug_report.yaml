@@ -1,0 +1,53 @@
+name: "🐞 Bug Report"
+description: "애플리케이션에서 발생한 버그를 보고합니다."
+labels: ["bug"]
+assignees:
+  - ""
+
+body:
+  - type: textarea
+    attributes:
+      label: ❗ 버그 설명
+      description: |
+        - 발생한 버그에 대한 설명을 적어주세요.
+        - 오류 메시지가 있다면 포함해주세요.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🛠️ 재현 방법 (Steps to Reproduce)
+      description: |
+        1. 어떤 작업을 했는지 단계별로 적어주세요.
+        2. 예상했던 동작과 실제 동작을 비교해주세요.
+        3. 버그를 쉽게 재현할 수 있도록 설명해주세요.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 📸 스크린샷 (선택)
+      description: |
+        - 버그를 더 잘 이해할 수 있도록 스크린샷이나 로그를 첨부해주세요.
+
+  - type: textarea
+    attributes:
+      label: 🖥️ 환경 (System Info)
+      description: |
+        - OS: (예: macOS 14, Windows 11)
+        - 브라우저 또는 실행 환경: (예: Chrome 120, Node.js 20)
+        - 앱 버전: (예: v1.2.3)
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🔗 관련 로그 (선택)
+      description: |
+        - 관련된 콘솔 로그나 에러 메시지가 있다면 추가해주세요.
+
+  - type: textarea
+    attributes:
+      label: 📌 추가 정보
+      description: |
+        - 추가적으로 공유할 정보가 있다면 여기에 적어주세요.

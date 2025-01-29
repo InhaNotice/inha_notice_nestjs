@@ -1,8 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as admin from 'firebase-admin';
+import { FirebaseModule } from './firebase.module';
 
 @Injectable()
-export class FirebaseService {
+export class FirebaseService implements OnModuleInit {
+  onModuleInit() {
+    FirebaseModule.initialize(); // ✅ 여기에 넣으면 안전함
+    console.log('🔥 Firebase 모듈이 초기화되었습니다.');
+  }
+
   async sendNotification(
     token: string,
     title: string,

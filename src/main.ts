@@ -1,23 +1,24 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import * as dotenv from 'dotenv';
-import * as path from 'path';
+import { AppModule } from './app/app.module';
 import * as morgan from 'morgan';
-
-dotenv.config({
-  path: path.resolve(
-    (process.env.NODE_ENV == 'production') ? '.production.env'
-      : (process.env.NODE_ENV == 'stage') ? '.stage.env' : '.development.env'
-  )
-});
+import { ConfigService } from '@nestjs/config';
+import { MajorNoticeScraperService } from './notices/major-notice_scraper.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   if (process.env.NODE_ENV == 'production') {
     app.use(morgan('combined'));  // Production logging
   } else {
     app.use(morgan('dev'));  // Development logging
   }
-  await app.listen(process.env.PORT ?? 3000);
+
+  // NestFactory에서 app.get을 통하여 AppConfigService 주입받아 사용함
+  const configService: ConfigService = app.get(ConfigService);
+
+  await app.listen(configService.get('server.port') ?? '4000', () => {
+    console.log(`${configService.get('server.port')}번 포트에서 NestJS 서버 실행중!`);
+  });
 }
 bootstrap();
+
