@@ -1,11 +1,11 @@
-import { Module, OnModuleInit } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { FirebaseModule } from '../firebase/firebase.module';
-import { FirebaseService } from '../firebase/firebase.service';
-import { FirebaseController } from '../firebase/firebase.controller';
-import { NoticeModule } from '../notices/notice.module';
-import configuration from '../config/configuration';
+import { Module } from '@nestjs/common';
+import { AppController } from 'src/app/app.controller';
+import { AppService } from 'src/app/app.service';
+import { FirebaseModule } from 'src/firebase/firebase.module';
+import { FirebaseService } from 'src/firebase/firebase.service';
+import { FirebaseController } from 'src/firebase/firebase.controller';
+import { NoticeModule } from 'src/notices/notice.module';
+import configuration from 'src/config/configuration';
 import { ConfigModule } from '@nestjs/config';
 import { MajorNoticeScraperService } from 'src/notices/major-notice_scraper.service';
 

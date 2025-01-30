@@ -1,8 +1,7 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module';
+import { AppModule } from 'src/app/app.module';
 import * as morgan from 'morgan';
 import { ConfigService } from '@nestjs/config';
-import { MajorNoticeScraperService } from './notices/major-notice_scraper.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
