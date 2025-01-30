@@ -1,5 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { FirebaseService } from 'src/firebase/firebase.service';
+import { FirebaseService } from './firebase.service';
 
 @Controller('notifications')
 export class FirebaseController {

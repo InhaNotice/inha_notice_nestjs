@@ -8,7 +8,6 @@ export class FirebaseService implements OnModuleInit {
     FirebaseModule.initialize(); // ✅ 여기에 넣으면 안전함
     console.log('🔥 Firebase 모듈이 초기화되었습니다.');
   }
-
   async sendNotification(
     token: string,
     title: string,
@@ -45,7 +44,7 @@ export class FirebaseService implements OnModuleInit {
           body,
         },
         data: data || {}, // 선택적 데이터
-        topic: 'all', // 모든 사용자에게 보낼 토픽
+        topic: 'all-users', // 모든 사용자에게 보낼 토픽
       };
 
       const response = await admin.messaging().send(message);
