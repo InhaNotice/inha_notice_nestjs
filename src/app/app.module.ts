@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AppController } from 'src/app/app.controller';
 import { AppService } from 'src/app/app.service';
 import { FirebaseModule } from 'src/firebase/firebase.module';
@@ -7,19 +7,20 @@ import { FirebaseController } from 'src/firebase/firebase.controller';
 import { NoticeModule } from 'src/notices/notice.module';
 import configuration from 'src/config/configuration';
 import { ConfigModule } from '@nestjs/config';
-import { MajorNoticeScraperService } from 'src/notices/major-notice_scraper.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
-    NoticeModule,
     ConfigModule.forRoot({
       envFilePath: (process.env.NODE_ENV === 'production') ? './env/.production.env' : './env/.development.env',
       load: [configuration],
       isGlobal: true,
     }),
-    FirebaseModule
+    FirebaseModule,
+    NoticeModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController, FirebaseController],
-  providers: [AppService, FirebaseService, MajorNoticeScraperService],
+  providers: [AppService, FirebaseService],
 })
 export class AppModule { }
