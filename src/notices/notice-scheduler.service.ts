@@ -11,7 +11,8 @@ import * as fs from 'fs';
 @Injectable({ scope: Scope.DEFAULT })
 export class NoticeSchedulerService {
     private readonly logger = new Logger(NoticeSchedulerService.name);
-    private readonly dbPath = path.join(process.cwd(), 'database', 'notices.db'); // ✅ 프로젝트 루트를 기준으로 설정
+    private static readonly databaseDir = path.join(process.cwd(), 'database');
+    private static readonly dbPath = path.join(NoticeSchedulerService.databaseDir, 'notices.db');
     private db: sqlite3.Database;
     private cachedNoticeIds: Set<string> = new Set(); // ✅ 공지사항 ID 캐싱
 
@@ -19,20 +20,30 @@ export class NoticeSchedulerService {
         private readonly noticeScraperService: MajorNoticeScraperService,
         private readonly firebaseService: FirebaseService,
     ) {
-        const databaseDir = path.join(process.cwd(), 'database'); // ✅ `src/database/` 디렉터리 설정
-        if (!fs.existsSync(databaseDir)) {
-            fs.mkdirSync(databaseDir, { recursive: true }); // ✅ 디렉터리 자동 생성
-        }
+        NoticeSchedulerService.initializeDatabaseDirectory(); // ✅ DB 폴더가 없으면 미리 생성
 
-        this.db = new sqlite3.Database(this.dbPath, (err) => {
+        this.db = new sqlite3.Database(NoticeSchedulerService.dbPath, (err) => {
             if (err) {
                 this.logger.error('🚨 SQLite 데이터베이스 연결 실패:', err.message);
             } else {
-                this.logger.log(`✅ SQLite 데이터베이스 연결 성공: ${this.dbPath}`);
+                this.logger.log(`✅ SQLite 데이터베이스 연결 성공: ${NoticeSchedulerService.dbPath}`);
                 this.initializeDatabase();
                 this.loadCache(); // ✅ 서버 시작 시 캐싱 데이터 로드
             }
         });
+    }
+
+    // ✅ 데이터베이스 폴더가 없으면 생성하는 정적 메서드
+    private static initializeDatabaseDirectory(): void {
+        if (!fs.existsSync(this.databaseDir)) {
+            try {
+                fs.mkdirSync(this.databaseDir, { recursive: true });
+                console.log(`✅ 데이터베이스 디렉터리 생성 완료: ${this.databaseDir}`);
+            } catch (err) {
+                console.error(`🚨 데이터베이스 디렉터리 생성 실패: ${err.message}`);
+                process.exit(1); // 🚨 치명적인 오류로 인해 프로세스 종료
+            }
+        }
     }
 
     // ✅ SQLite 테이블 생성 (없다면 자동 생성)
@@ -54,15 +65,28 @@ export class NoticeSchedulerService {
         );
     }
 
-    // ✅ 서버 시작 시 기존 데이터 로드 & 캐싱
+    // ✅ 서버 시작 시 기존 데이터 로드 & 캐싱 (테이블이 존재할 때만 실행)
     private loadCache(): void {
-        this.db.all("SELECT id FROM notices", [], (err, rows) => {
+        this.db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='notices'", (err, row) => {
             if (err) {
-                this.logger.error('🚨 SQLite 캐시 로드 중 오류 발생:', err.message);
-            } else {
-                this.cachedNoticeIds = new Set(rows.map(row => (row as { id: string }).id));
-                this.logger.log(`✅ 캐싱된 공지사항 ID 로드 완료 (${this.cachedNoticeIds.size}개)`);
+                this.logger.error('🚨 SQLite 테이블 확인 중 오류 발생:', err.message);
+                return;
             }
+
+            if (!row) {
+                this.logger.warn('⚠️ notices 테이블이 존재하지 않아 캐시를 로드하지 않습니다.');
+                return;
+            }
+
+            // ✅ notices 테이블이 존재하면 캐시 로드 실행
+            this.db.all("SELECT id FROM notices", [], (err, rows) => {
+                if (err) {
+                    this.logger.error('🚨 SQLite 캐시 로드 중 오류 발생:', err.message);
+                } else {
+                    this.cachedNoticeIds = new Set(rows.map(row => (row as { id: string }).id));
+                    this.logger.log(`✅ 캐싱된 공지사항 ID 로드 완료 (${this.cachedNoticeIds.size}개)`);
+                }
+            });
         });
     }
 
