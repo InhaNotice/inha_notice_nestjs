@@ -1,6 +1,6 @@
 import { Injectable, Logger, Scope } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { MajorNoticeScraperService } from 'src/notices/notice-scraper.service';
+import { MajorNoticeScraperService } from 'src/notices/major-notice-scraper.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as sqlite3 from 'sqlite3';

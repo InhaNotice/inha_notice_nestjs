@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MajorNoticeScraperService } from 'src/notices/notice-scraper.service';
+import { MajorNoticeScraperService } from 'src/notices/major-notice-scraper.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 
 @Injectable()

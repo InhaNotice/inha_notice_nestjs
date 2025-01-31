@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MajorNoticeScraperService } from 'src/notices/notice-scraper.service';
+import { MajorNoticeScraperService } from 'src/notices/major-notice-scraper.service';
 import { NoticeSchedulerService } from 'src/notices/notice-scheduler.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
 
