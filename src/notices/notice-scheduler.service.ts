@@ -132,7 +132,7 @@ export class NoticeSchedulerService {
         } catch (error) {
             this.logger.error('🚨 크롤링 중 오류 발생:', error);
         } finally {
-            this.logger.log('📌 정기 크롤링 끝!');
+            this.logger.log('🏁 정기 크롤링 끝!');
         }
     }
 
@@ -140,7 +140,7 @@ export class NoticeSchedulerService {
     private async filterNewNotices(major: string, notices: Notice[]): Promise<Notice[]> {
         // ✅ 오늘 날짜의 공지만 필터링하여 반환
         const todayDate: string = dayjs().format('YYYY.MM.DD');
-        const todayNotices: Notice[] = notices.filter((notice) => notice.date === '2025.01.31');
+        const todayNotices: Notice[] = notices.filter((notice) => notice.date === todayDate);
 
         // 🔹 캐싱된 공지사항 ID를 활용하여 필터링
         const newNotices: Notice[] = todayNotices.filter(notice => !this.cachedNoticeIds[major].has(notice.id));
