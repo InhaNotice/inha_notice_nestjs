@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosResponse } from 'axios';
 import * as cheerio from 'cheerio';
@@ -13,6 +13,7 @@ export class MajorNoticeScraperService {
     private readonly majors: string[];
     private readonly majorUrls: Record<string, string>;
     private readonly majorQueryUrls: Record<string, string>;
+    private readonly logger = new Logger(MajorNoticeScraperService.name);
 
     constructor(private readonly configService: ConfigService) {
         this.majors = this.loadMajors();
@@ -48,7 +49,7 @@ export class MajorNoticeScraperService {
                 const notices: { general: Notice[] } = await this.fetchNotices(major, 1);
                 results[major] = notices.general;
             } catch (error) {
-                console.error(`❌ ${major} 공지사항 크롤링 실패:`, error.message);
+                this.logger.error(`❌ ${major} 공지사항 크롤링 실패:`, error.message);
             }
         }
 

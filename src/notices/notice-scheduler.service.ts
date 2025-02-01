@@ -31,7 +31,7 @@ export class NoticeSchedulerService {
                 this.logger.log(`✅ 데이터베이스 디렉터리 생성 완료: ${this.databaseDir}`);
             } catch (err) {
                 this.logger.error(`🚨 데이터베이스 디렉터리 생성 실패: ${err.message}`);
-                process.exit(1); // 🚨 치명적인 오류로 인해 프로세스 종료
+                this.logger.warn(`⚠️ 데이터베이스 디렉터리를 생성하지 못했습니다. 일부 기능이 제한될 수 있습니다.`);
             }
         }
     }
@@ -130,7 +130,7 @@ export class NoticeSchedulerService {
                 }
             }
         } catch (error) {
-            this.logger.error('🚨 크롤링 중 오류 발생:', error);
+            this.logger.error('🚨 크롤링 중 오류 발생:', error.message);
         } finally {
             this.logger.log('🏁 정기 크롤링 끝!');
         }
