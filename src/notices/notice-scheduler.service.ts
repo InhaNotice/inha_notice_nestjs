@@ -99,7 +99,7 @@ export class NoticeSchedulerService {
         });
     }
 
-    @Cron('0 */10 9-16 * * *', { timeZone: 'Asia/Seoul' })
+    @Cron('0 */10 9-16 * * 1-5', { timeZone: 'Asia/Seoul' })
     async handleCron() {
         this.logger.log('📌 정기 크롤링 실행 중...');
 
