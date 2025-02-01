@@ -10,8 +10,8 @@ import * as fs from 'fs';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class NoticeSchedulerService {
-    private readonly logger = new Logger(NoticeSchedulerService.name);
-    private readonly databaseDir = path.join(process.cwd(), 'database');
+    private readonly logger: Logger = new Logger(NoticeSchedulerService.name);
+    private readonly databaseDir: string = path.join(process.cwd(), 'database');
     private databases: Record<string, sqlite3.Database> = {};
     private cachedNoticeIds: Record<string, Set<string>> = {}; // ✅ 학과별 공지사항 ID 캐싱
 
@@ -38,9 +38,9 @@ export class NoticeSchedulerService {
 
     // ✅ 학과별 SQLite 데이터베이스 초기화
     private initializeDatabases(): void {
-        const majors = this.noticeScraperService.getAllMajors(); // 🔹 학과 목록 가져오기
+        const majors: string[] = this.noticeScraperService.getAllMajors(); // 🔹 학과 목록 가져오기
         for (const major of majors) {
-            const dbPath = path.join(this.databaseDir, `${major}.db`);
+            const dbPath: string = path.join(this.databaseDir, `${major}.db`);
             this.databases[major] = new sqlite3.Database(dbPath, (err) => {
                 if (err) {
                     this.logger.error(`🚨 ${major} 데이터베이스 연결 실패: ${err.message}`);
@@ -107,7 +107,7 @@ export class NoticeSchedulerService {
             const allNotices: Record<string, Notice[]> = await this.noticeScraperService.fetchNoticesForAllMajors();
 
             for (const major of Object.keys(allNotices)) {
-                const newNotices = await this.filterNewNotices(major, allNotices[major]);
+                const newNotices: Notice[] = await this.filterNewNotices(major, allNotices[major]);
 
                 if (newNotices.length === 0) {
                     this.logger.log(`✅ ${major}학과의 새로운 공지가 없으므로 알림을 보내지 않습니다.`);

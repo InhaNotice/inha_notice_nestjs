@@ -45,7 +45,7 @@ export class MajorNoticeScraperService {
 
         for (const major of this.majors) {
             try {
-                const notices = await this.fetchNotices(major, 1);
+                const notices: { general: Notice[] } = await this.fetchNotices(major, 1);
                 results[major] = notices.general;
             } catch (error) {
                 console.error(`❌ ${major} 공지사항 크롤링 실패:`, error.message);
@@ -56,8 +56,8 @@ export class MajorNoticeScraperService {
     }
 
     async fetchNotices(major: string, page: number): Promise<{ general: Notice[] }> {
-        const baseUrl = this.majorUrls[major];
-        const queryUrl = this.majorQueryUrls[major];
+        const baseUrl: string = this.majorUrls[major];
+        const queryUrl: string = this.majorQueryUrls[major];
 
         if (!baseUrl || !queryUrl) {
             throw new Error(`학과 정보 없음: ${major}`);
@@ -85,11 +85,11 @@ export class MajorNoticeScraperService {
         const results: Notice[] = [];
 
         headlines.each((_, element) => {
-            const titleLinkTag = $(element).find(GeneralTagSelectors.NOTICE_TITLE_LINK);
-            const titleStrongTag = $(element).find(GeneralTagSelectors.NOTICE_TITLE_STRONG);
-            const dateTag = $(element).find(GeneralTagSelectors.NOTICE_DATE);
-            const writerTag = $(element).find(GeneralTagSelectors.NOTICE_WRITER);
-            const accessTag = $(element).find(GeneralTagSelectors.NOTICE_ACCESS);
+            const titleLinkTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_TITLE_LINK);
+            const titleStrongTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_TITLE_STRONG);
+            const dateTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_DATE);
+            const writerTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_WRITER);
+            const accessTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_ACCESS);
 
             if (!titleLinkTag.length || !titleStrongTag.length || !dateTag.length || !writerTag.length || !accessTag.length) {
                 return;
