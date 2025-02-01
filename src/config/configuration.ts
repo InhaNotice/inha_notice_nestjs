@@ -1,10 +1,21 @@
-export default () => ({
-    server: {
-        port: process.env.PORT,
-    },
-    major: {
-        name: process.env.MAJOR,
-        url: process.env.MAJOR_URL,
-        query_url: process.env.MAJOR_QUERY_URL,
-    }
-});
+export default () => {
+    const majors: Record<string, { url: string; queryUrl: string }> = {};
+
+    // 환경 변수에서 자동으로 학과 정보를 가져오기
+    Object.keys(process.env).forEach((key) => {
+        if (key.endsWith('_URL')) {
+            const majorName = key.replace('_URL', '').toLowerCase(); // 학과명을 소문자로 변환
+            majors[majorName] = {
+                url: process.env[key] || '',
+                queryUrl: process.env[`${majorName.toUpperCase()}_QUERY_URL`] || '',
+            };
+        }
+    });
+
+    return {
+        server: {
+            port: process.env.PORT,
+        },
+        majors,
+    };
+};
