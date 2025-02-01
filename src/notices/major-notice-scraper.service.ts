@@ -122,7 +122,7 @@ export class MajorNoticeScraperService {
         const postId: string = postUrlList[4];
         return `${provider}-${postId}`;
     }
-    public getAllMajors(): string[] {
+    getAllMajors(): string[] {
         return this.majors;
     }
 }
