@@ -118,11 +118,11 @@ export class NoticeSchedulerService {
                     this.logger.log(`🚀 ${major} 새로운 공지 발견: ${notice.title}`);
 
                     // ✅ 학과별 FCM 푸시 알림 전송
-                    // await this.firebaseService.sendNotificationToAll(
-                    //     `[${major.toUpperCase()}] 새로운 공지사항이 있습니다!`,
-                    //     notice.title,
-                    //     { url: notice.link }
-                    // );
+                    await this.firebaseService.sendMajorNotification(
+                        notice.title,
+                        major,
+                        { url: notice.link }
+                    )
 
                     // ✅ 새로운 공지사항 ID를 데이터베이스 및 캐싱에 추가
                     await this.saveLastNoticeId(major, notice);

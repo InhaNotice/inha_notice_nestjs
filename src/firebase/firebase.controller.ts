@@ -5,19 +5,21 @@ import { FirebaseService } from './firebase.service';
 export class FirebaseController {
   constructor(private readonly firebaseService: FirebaseService) { }
 
-  @Post('send')
+  // 특정 디바이스로 알림
+  @Post('send-to-device')
   async sendNotification(@Body() body: any): Promise<void> {
-    const { token, title, message, data } = body;
+    const { token, noticeTitle, data } = body;
 
     // Firebase 푸시 알림 발송
-    await this.firebaseService.sendNotification(token, title, message, data);
+    await this.firebaseService.sendNotificationToDevice(token, noticeTitle, data);
   }
 
+  // 학사 새로운 공지사항 알림
   @Post('send-to-all')
   async sendNotificationToAll(@Body() body: any): Promise<void> {
-    const { title, message, data } = body;
+    const { noticeTitle, data } = body;
 
     // Firebase 푸시 알림 발송 (전체 사용자)
-    await this.firebaseService.sendNotificationToAll(title, message, data);
+    await this.firebaseService.sendNotificationToAll(noticeTitle, data);
   }
 }
