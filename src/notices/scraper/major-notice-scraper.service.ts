@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import axios, { AxiosResponse } from 'axios';
 import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
-import { GeneralTagSelectors } from 'src/notices/selectors/notice-tag-selectors';
+import { GeneralTagSelectors } from 'src/notices/selectors/major-notice-tag-selectors';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import { IdentifierConstants } from 'src/constants/identifiers';
 import { StatusCodeSettings } from 'src/constants/http-status';
@@ -13,7 +13,7 @@ export class MajorNoticeScraperService {
     private readonly majors: string[];
     private readonly majorUrls: Record<string, string>;
     private readonly majorQueryUrls: Record<string, string>;
-    private readonly logger = new Logger(MajorNoticeScraperService.name);
+    private readonly logger: Logger = new Logger(MajorNoticeScraperService.name);
 
     constructor(private readonly configService: ConfigService) {
         this.majors = this.loadMajors();
@@ -23,7 +23,7 @@ export class MajorNoticeScraperService {
 
     private loadMajors(): string[] {
         return Object.keys(process.env)
-            .filter(key => key.endsWith('_QUERY_URL'))
+            .filter(key => (key.endsWith('_QUERY_URL') && !key.startsWith('WHOLE')))
             .map(key => key.replace('_QUERY_URL', ''));
     }
 
@@ -61,7 +61,8 @@ export class MajorNoticeScraperService {
         const queryUrl: string = this.majorQueryUrls[major];
 
         if (!baseUrl || !queryUrl) {
-            throw new Error(`학과 정보 없음: ${major}`);
+            this.logger.error(`학과 정보 없음: ${major}`);
+            return { general: [] };
         }
 
         try {
@@ -97,6 +98,7 @@ export class MajorNoticeScraperService {
             }
 
             const postUrl: string = titleLinkTag.attr('href') || '';
+
             const id: string = this.makeUniqueNoticeId(postUrl);
             const title: string = titleStrongTag.text().trim();
             const link: string = baseUrl + postUrl;
@@ -123,6 +125,7 @@ export class MajorNoticeScraperService {
         const postId: string = postUrlList[4];
         return `${provider}-${postId}`;
     }
+
     getAllMajors(): string[] {
         return this.majors;
     }
