@@ -51,10 +51,14 @@ export class WholeNoticeScraperService {
             const postUrl: string = titleTag.attr('href') || '';
 
             const id: string = this.makeUniqueNoticeId(postUrl);
+
+            if (titleTag.find('span.newArtcl').length > 0) {
+                titleTag.find('span.newArtcl').remove();
+            }
             const title: string = titleTag.text().trim();
+
             const link: string = baseUrl + postUrl;
             const date: string = dateTag.text().trim().replace(/\.$/, '');
-            console.log(date);
             const writer: string = writerTag.text().trim();
             const access: string = accessTag.text().trim();
             results.push({ id, title, link, date, writer, access });
