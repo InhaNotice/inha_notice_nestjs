@@ -20,6 +20,6 @@ export class FirebaseController {
     const { noticeTitle, data } = body;
 
     // Firebase 푸시 알림 발송 (전체 사용자)
-    await this.firebaseService.sendNotificationToAll(noticeTitle, data);
+    await this.firebaseService.sendWholeNotification(noticeTitle, data);
   }
 }
