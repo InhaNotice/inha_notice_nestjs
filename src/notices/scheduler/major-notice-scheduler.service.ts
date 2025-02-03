@@ -1,6 +1,6 @@
 import { Injectable, Logger, Scope } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { MajorNoticeScraperService } from 'src/notices/major-notice-scraper.service';
+import { MajorNoticeScraperService } from 'src/notices/scraper/major-notice-scraper.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as sqlite3 from 'sqlite3';
@@ -9,14 +9,14 @@ import * as dayjs from 'dayjs';
 import * as fs from 'fs';
 
 @Injectable({ scope: Scope.DEFAULT })
-export class NoticeSchedulerService {
-    private readonly logger: Logger = new Logger(NoticeSchedulerService.name);
-    private readonly databaseDir: string = path.join(process.cwd(), 'database');
+export class MajorNoticeSchedulerService {
+    private readonly logger: Logger = new Logger(MajorNoticeSchedulerService.name);
+    private readonly databaseDir: string = path.join(process.cwd(), 'database', 'majors');
     private databases: Record<string, sqlite3.Database> = {};
     private cachedNoticeIds: Record<string, Set<string>> = {}; // ✅ 학과별 공지사항 ID 캐싱
 
     constructor(
-        private readonly noticeScraperService: MajorNoticeScraperService,
+        private readonly majorNoticeScraperService: MajorNoticeScraperService,
         private readonly firebaseService: FirebaseService,
     ) {
         this.initializeDatabaseDirectory(); // ✅ DB 폴더가 없으면 미리 생성
@@ -28,7 +28,6 @@ export class NoticeSchedulerService {
         if (!fs.existsSync(this.databaseDir)) {
             try {
                 fs.mkdirSync(this.databaseDir, { recursive: true });
-                this.logger.log(`✅ 데이터베이스 디렉터리 생성 완료: ${this.databaseDir}`);
             } catch (err) {
                 this.logger.error(`🚨 데이터베이스 디렉터리 생성 실패: ${err.message}`);
                 this.logger.warn(`⚠️ 데이터베이스 디렉터리를 생성하지 못했습니다. 일부 기능이 제한될 수 있습니다.`);
@@ -38,14 +37,13 @@ export class NoticeSchedulerService {
 
     // ✅ 학과별 SQLite 데이터베이스 초기화
     private initializeDatabases(): void {
-        const majors: string[] = this.noticeScraperService.getAllMajors(); // 🔹 학과 목록 가져오기
+        const majors: string[] = this.majorNoticeScraperService.getAllMajors(); // 🔹 학과 목록 가져오기
         for (const major of majors) {
             const dbPath: string = path.join(this.databaseDir, `${major}.db`);
             this.databases[major] = new sqlite3.Database(dbPath, (err) => {
                 if (err) {
                     this.logger.error(`🚨 ${major} 데이터베이스 연결 실패: ${err.message}`);
                 } else {
-                    this.logger.log(`✅ ${major} 데이터베이스 연결 성공: ${dbPath}`);
                     this.initializeTable(major);
                 }
             });
@@ -65,7 +63,6 @@ export class NoticeSchedulerService {
                 if (err) {
                     this.logger.error(`🚨 ${major} 테이블 생성 실패: ${err.message}`);
                 } else {
-                    this.logger.log(`✅ ${major} notices 테이블 생성 완료`);
                     this.loadCache(major); // ✅ 테이블 생성 후 캐시 로드
                 }
             }
@@ -101,10 +98,10 @@ export class NoticeSchedulerService {
 
     @Cron('0 */10 9-16 * * 1-5', { timeZone: 'Asia/Seoul' })
     async handleCron() {
-        this.logger.log('📌 정기 크롤링 실행 중...');
+        this.logger.log('📌 학과 정기 크롤링 실행 중...');
 
         try {
-            const allNotices: Record<string, Notice[]> = await this.noticeScraperService.fetchNoticesForAllMajors();
+            const allNotices: Record<string, Notice[]> = await this.majorNoticeScraperService.fetchNoticesForAllMajors();
 
             for (const major of Object.keys(allNotices)) {
                 const newNotices: Notice[] = await this.filterNewNotices(major, allNotices[major]);
@@ -118,11 +115,11 @@ export class NoticeSchedulerService {
                     this.logger.log(`🚀 ${major} 새로운 공지 발견: ${notice.title}`);
 
                     // ✅ 학과별 FCM 푸시 알림 전송
-                    await this.firebaseService.sendMajorNotification(
-                        notice.title,
-                        major,
-                        { url: notice.link }
-                    )
+                    // await this.firebaseService.sendMajorNotification(
+                    //     notice.title,
+                    //     major,
+                    //     { url: notice.link }
+                    // )
 
                     // ✅ 새로운 공지사항 ID를 데이터베이스 및 캐싱에 추가
                     await this.saveLastNoticeId(major, notice);
@@ -132,7 +129,7 @@ export class NoticeSchedulerService {
         } catch (error) {
             this.logger.error('🚨 크롤링 중 오류 발생:', error.message);
         } finally {
-            this.logger.log('🏁 정기 크롤링 끝!');
+            this.logger.log('🏁 학과 정기 크롤링 끝!');
         }
     }
 

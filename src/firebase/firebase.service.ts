@@ -32,7 +32,7 @@ export class FirebaseService {
   }
 
   // 학사 새로운 공지사항 알림
-  async sendNotificationToAll(
+  async sendWholeNotification(
     noticeTitle: string,
     data?: Record<string, string> // { url: notice.link }
   ): Promise<void> {
