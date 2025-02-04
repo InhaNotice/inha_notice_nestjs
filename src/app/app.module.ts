@@ -12,7 +12,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: (process.env.NODE_ENV === 'production') ? './env/.production.env' : './env/.development.env',
+      envFilePath: '.env',
       load: [configuration],
       isGlobal: true,
     }),
