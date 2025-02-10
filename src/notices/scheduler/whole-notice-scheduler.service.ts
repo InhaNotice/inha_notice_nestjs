@@ -106,7 +106,7 @@ export class WholeNoticeSchedulerService {
                 // ✅ 학과별 FCM 푸시 알림 전송
                 await this.firebaseService.sendWholeNotification(
                     notice.title,
-                    { url: notice.link }
+                    { link: notice.link }
                 )
 
                 // ✅ 새로운 공지사항 ID를 데이터베이스 및 캐싱에 추가
