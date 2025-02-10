@@ -118,7 +118,7 @@ export class MajorNoticeSchedulerService {
                     await this.firebaseService.sendMajorNotification(
                         notice.title,
                         major,
-                        { url: notice.link }
+                        { link: notice.link }
                     )
 
                     // ✅ 새로운 공지사항 ID를 데이터베이스 및 캐싱에 추가
