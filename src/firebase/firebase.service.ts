@@ -1,10 +1,11 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import * as admin from 'firebase-admin';
+import { majorMappings } from 'src/firebase/major-mappings';
 
 @Injectable()
 export class FirebaseService {
   private static readonly logger: Logger = new Logger(FirebaseService.name);
-  constructor(@Inject('FIREBASE_ADMIN') private readonly firebaseAdmin: typeof admin) { } // ✅ Firebase Admin SDK 주입
+  constructor(@Inject('FIREBASE_ADMIN') private readonly firebaseAdmin: typeof admin) { }
 
   // 특정 디바이스로 알림
   async sendNotificationToDevice(
@@ -34,7 +35,7 @@ export class FirebaseService {
   // 학사 새로운 공지사항 알림
   async sendWholeNotification(
     noticeTitle: string,
-    data?: Record<string, string> // { url: notice.link }
+    data?: Record<string, string>
   ): Promise<void> {
     try {
       const notificationTitle: string = "[학사] 새로운 공지사항이 있습니다!";
@@ -64,7 +65,7 @@ export class FirebaseService {
     data?: Record<string, string> // { url: notice.link }
   ): Promise<void> {
     try {
-      const notificationTitle: string = "[학과] 새로운 공지사항이 있습니다!";
+      const notificationTitle: string = majorMappings[topic] ?? "[학과] 새로운 공지사항이 있습니다!";
       const notificationBody: string = noticeTitle;
 
       const message: admin.messaging.Message = {
