@@ -11,16 +11,16 @@ import * as fs from 'fs';
 @Injectable({ scope: Scope.DEFAULT })
 export class MajorStyleNoticeSchedulerService {
     private readonly logger: Logger = new Logger(MajorStyleNoticeSchedulerService.name);
-    private readonly databaseDir: string = path.join(process.cwd(), 'database', 'notice_types');
+    private readonly databaseDir: string = path.join(process.cwd(), 'database', 'major_styles');
     private databases: Record<string, sqlite3.Database> = {};
-    private cachedNoticeIds: Record<string, Set<string>> = {}; // ✅ noticeType별 공지사항 ID 캐싱
+    private cachedNoticeIds: Record<string, Set<string>> = {}; // ✅ 학과 스타일 공지별 공지사항 ID 캐싱
 
     constructor(
         private readonly majorStyleNoticeScraperService: MajorStyleNoticeScraperService,
         private readonly firebaseService: FirebaseService,
     ) {
         this.initializeDatabaseDirectory(); // ✅ DB 폴더가 없으면 미리 생성
-        this.initializeDatabases(); // ✅ noticeType별 데이터베이스 생성
+        this.initializeDatabases(); // ✅ 학과 스타일 공지별 데이터베이스 생성
     }
 
     // ✅ 데이터베이스 폴더가 없으면 생성하는 메서드
@@ -35,9 +35,9 @@ export class MajorStyleNoticeSchedulerService {
         }
     }
 
-    // ✅ noticeType별 SQLite 데이터베이스 초기화
+    // ✅ 학과 스타일 공지별 SQLite 데이터베이스 초기화
     private initializeDatabases(): void {
-        const noticeTypes: string[] = this.majorStyleNoticeScraperService.getAllNoticeTypes(); // 🔹 학과 목록 가져오기
+        const noticeTypes: string[] = this.majorStyleNoticeScraperService.getAllNoticeTypes();
         for (const noticeType of noticeTypes) {
             const dbPath: string = path.join(this.databaseDir, `${noticeType}.db`);
             this.databases[noticeType] = new sqlite3.Database(dbPath, (err) => {
@@ -50,7 +50,7 @@ export class MajorStyleNoticeSchedulerService {
         }
     }
 
-    // ✅ noticeType별 SQLite 테이블 생성 (없다면 자동 생성)
+    // ✅ 학과 스타일 공지별 SQLite 테이블 생성 (없다면 자동 생성)
     private initializeTable(noticeType: string): void {
         this.databases[noticeType].run(
             `CREATE TABLE IF NOT EXISTS notices (
@@ -69,7 +69,7 @@ export class MajorStyleNoticeSchedulerService {
         );
     }
 
-    // ✅ noticeType별 기존 데이터 로드 & 캐싱 (테이블이 존재할 때만 실행)
+    // ✅ 학과 스타일 공지별 기존 데이터 로드 & 캐싱 (테이블이 존재할 때만 실행)
     private loadCache(noticeType: string): void {
         this.cachedNoticeIds[noticeType] = new Set();
 
@@ -98,7 +98,7 @@ export class MajorStyleNoticeSchedulerService {
 
     @Cron('0 */10 9-16 * * 1-5', { timeZone: 'Asia/Seoul' })
     async handleCron() {
-        this.logger.log('📌 학과 정기 크롤링 실행 중...');
+        this.logger.log('📌 학과 스타일(국제처, SW) 정기 크롤링 실행 중...');
 
         try {
             const allNotices: Record<string, Notice[]> = await this.majorStyleNoticeScraperService.fetchNoticesForAllNoticeTypes();
@@ -114,7 +114,7 @@ export class MajorStyleNoticeSchedulerService {
                 for (const notice of newNotices) {
                     this.logger.log(`🚀 ${noticeType} 새로운 공지 발견: ${notice.title}`);
 
-                    // ✅ noticeType별 FCM 푸시 알림 전송
+                    // ✅ 학과 스타일 공지별 FCM 푸시 알림 전송
                     await this.firebaseService.sendMajorStyleNotification(
                         notice.title,
                         noticeType,
@@ -132,11 +132,11 @@ export class MajorStyleNoticeSchedulerService {
         } catch (error) {
             this.logger.error('🚨 크롤링 중 오류 발생:', error.message);
         } finally {
-            this.logger.log('🏁 noticeType 정기 크롤링 끝!');
+            this.logger.log('🏁 학과 스타일(국제처, SW) 정기 크롤링 끝!');
         }
     }
 
-    // ✅ noticeType별 새로운 공지 필터링
+    // ✅ 학과 스타일 공지별 새로운 공지 필터링
     private async filterNewNotices(noticeType: string, notices: Notice[]): Promise<Notice[]> {
         // ✅ 오늘 날짜의 공지만 필터링하여 반환
         const todayDate: string = dayjs().format('YYYY.MM.DD');
@@ -148,7 +148,7 @@ export class MajorStyleNoticeSchedulerService {
         return newNotices;
     }
 
-    // ✅ noticeType별 새로운 공지사항 ID를 데이터베이스에 저장
+    // ✅ 학과 스타일 공지별 새로운 공지사항 ID를 데이터베이스에 저장
     private saveLastNoticeId(noticeType: string, notice: Notice): Promise<void> {
         return new Promise((resolve, reject) => {
             this.databases[noticeType].run(
