@@ -16,24 +16,24 @@ export class MajorStyleNoticeScraperService {
     private readonly logger: Logger = new Logger(MajorStyleNoticeScraperService.name);
 
     constructor(private readonly configService: ConfigService) {
-        this.noticeTypes = ["INTERNATIONAL", "SWUNIV"];
-        this.noticeTypeUrls = this.loadNoticeTypeUrls();
-        this.noticeTypeQueryUrls = this.loadNoticeTypeQueryUrls();
+        this.noticeTypes = ['INTERNATIONAL', 'SWUNIV'];
+        const majorStyles = this.configService.get<Record<string, { url: string; queryUrl: string }>>('major_styles', {});
+
+        // ✅ 한 번만 `configService.get()`을 호출하여 효율적으로 처리
+        this.noticeTypeUrls = this.loadNoticeTypes(majorStyles, 'url');
+        this.noticeTypeQueryUrls = this.loadNoticeTypes(majorStyles, 'queryUrl');
     }
 
-    private loadNoticeTypeUrls(): Record<string, string> {
+    private loadNoticeTypes(
+        majorStyles: Record<string, { url: string; queryUrl: string }>,
+        key: 'url' | 'queryUrl'
+    ): Record<string, string> {
         return this.noticeTypes.reduce((acc, noticeType) => {
-            acc[noticeType] = this.configService.get<string>(`major_styles.${noticeType}.url`, '');
+            acc[noticeType] = majorStyles?.[noticeType]?.[key] || '';
             return acc;
         }, {} as Record<string, string>);
     }
 
-    private loadNoticeTypeQueryUrls(): Record<string, string> {
-        return this.noticeTypes.reduce((acc, noticeType) => {
-            acc[noticeType] = this.configService.get<string>(`major_styles.${noticeType}.queryUrl`, '');
-            return acc;
-        }, {} as Record<string, string>);
-    }
     async fetchNoticesForAllNoticeTypes(): Promise<Record<string, Notice[]>> {
         const results: Record<string, Notice[]> = {};
 
