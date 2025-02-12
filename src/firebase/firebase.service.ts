@@ -1,6 +1,7 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import { majorMappings } from 'src/firebase/major-mappings';
+import { majorMappings } from 'src/firebase/mappings/major-mappings';
+import { noticeTypeMappings } from './mappings/notice-type-mappings';
 
 @Injectable()
 export class FirebaseService {
@@ -62,10 +63,37 @@ export class FirebaseService {
   async sendMajorNotification(
     noticeTitle: string,
     topic: string,
-    data?: Record<string, string> // { url: notice.link }
+    data?: Record<string, string>
   ): Promise<void> {
     try {
-      const notificationTitle: string = majorMappings[topic] ?? "[학과] 새로운 공지사항이 있습니다!";
+      const notificationTitle: string = majorMappings[topic] ?? "학과";
+      const notificationBody: string = noticeTitle;
+
+      const message: admin.messaging.Message = {
+        notification: {
+          title: notificationTitle,
+          body: notificationBody
+        },
+        data: data || {},
+        topic: topic
+      };
+
+      const response = await this.firebaseAdmin.messaging().send(message);
+      FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${response}`);
+    } catch (error) {
+      FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
+    }
+  }
+
+  // 학과 스타일 공지사항 알림
+  // 지원 대상: 국제처, SW중심대학사업단
+  async sendMajorStyleNotification(
+    noticeTitle: string,
+    topic: string,
+    data?: Record<string, string>
+  ): Promise<void> {
+    try {
+      const notificationTitle: string = noticeTypeMappings[topic] ?? "새로운 공지사항이 있습니다!";
       const notificationBody: string = noticeTitle;
 
       const message: admin.messaging.Message = {
