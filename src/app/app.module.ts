@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from 'src/app/app.controller';
 import { AppService } from 'src/app/app.service';
 import { FirebaseModule } from 'src/firebase/firebase.module';

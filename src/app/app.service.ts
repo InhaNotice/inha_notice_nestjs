@@ -1,13 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { MajorNoticeScraperService } from 'src/notices/scraper/major-notice-scraper.service';
-import { Notice } from 'src/notices/interfaces/notice.interface';
+import { HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly majorNoticeScraperService: MajorNoticeScraperService) { }
+  constructor() { }
 
-  async getMajorNotices(): Promise<{ general: Notice[] }> {
-    const result = await this.majorNoticeScraperService.fetchNotices('CSE', 1);
-    return result;
+  getHome(): string {
+    return "Hello World!";
+  }
+
+
+  healthCheck(): { status: number; message: string } {
+    return {
+      status: HttpStatus.OK,
+      message: 'health check에 성공하였습니다.'
+    };
   }
 }
