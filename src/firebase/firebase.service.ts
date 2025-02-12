@@ -38,7 +38,7 @@ export class FirebaseService {
     data?: Record<string, string>
   ): Promise<void> {
     try {
-      const notificationTitle: string = "[학사] 새로운 공지사항이 있습니다!";
+      const notificationTitle: string = "학사";
       const notificationBody: string = noticeTitle;
       const topic: string = 'all-notices';
 
