@@ -3,7 +3,7 @@ export default () => {
 
     // 환경 변수에서 자동으로 학과 정보를 가져오기
     Object.keys(process.env).forEach((key) => {
-        if (key.endsWith('_URL') && !key.startsWith('WHOLE')) {
+        if (key.endsWith('_URL') && !['WHOLE', 'SWUNIV', 'INTERNATIONAL'].some(prefix => key.startsWith(prefix))) {
             const majorName = key.replace('_URL', '').toLowerCase(); // 학과명을 소문자로 변환
             majors[majorName] = {
                 url: process.env[key] || '',
