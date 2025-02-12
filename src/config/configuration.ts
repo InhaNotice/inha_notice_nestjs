@@ -12,6 +12,8 @@ export default () => {
         }
     });
 
+    const majorStyleTypes = ['INTERNATIONAL', 'SWUNIV'];
+
     return {
         server: {
             port: process.env.PORT,
@@ -21,15 +23,12 @@ export default () => {
             baseUrl: process.env.WHOLE_URL,
             queryUrl: process.env.WHOLE_QUERY_URL,
         },
-        major_styles: {
-            INTERNATIONAL: {
-                url: process.env.INTERNATIONAL_URL,
-                queryUrl: process.env.INTERNATIONAL_QUERY_URL,
-            },
-            SWUNIV: {
-                url: process.env.SWUNIV_URL,
-                queryUrl: process.env.SWUNIV_QUERY_URL,
-            }
-        }
+        major_styles: majorStyleTypes.reduce((acc, type) => {
+            acc[type] = {
+                url: process.env[`${type}_URL`] || '',
+                queryUrl: process.env[`${type}_QUERY_URL`] || '',
+            };
+            return acc;
+        }, {} as Record<string, { url: string; queryUrl: string }>) // ✅ 가독성 개선
     };
 };
