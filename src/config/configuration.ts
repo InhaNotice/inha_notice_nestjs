@@ -21,5 +21,15 @@ export default () => {
             baseUrl: process.env.WHOLE_URL,
             queryUrl: process.env.WHOLE_QUERY_URL,
         },
+        major_styles: {
+            INTERNATIONAL: {
+                url: process.env.INTERNATIONAL_URL,
+                queryUrl: process.env.INTERNATIONAL_QUERY_URL,
+            },
+            SWUNIV: {
+                url: process.env.SWUNIV_URL,
+                queryUrl: process.env.SWUNIV_QUERY_URL,
+            }
+        }
     };
 };
