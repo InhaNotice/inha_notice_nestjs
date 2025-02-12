@@ -23,7 +23,7 @@ export class MajorNoticeScraperService {
 
     private loadMajors(): string[] {
         return Object.keys(process.env)
-            .filter(key => (key.endsWith('_QUERY_URL') && !key.startsWith('WHOLE')))
+            .filter(key => (key.endsWith('_QUERY_URL') && !['WHOLE', 'SWUNIV', 'INTERNATIONAL'].some(prefix => key.startsWith(prefix))))
             .map(key => key.replace('_QUERY_URL', ''));
     }
 

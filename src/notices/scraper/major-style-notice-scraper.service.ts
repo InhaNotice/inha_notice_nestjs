@@ -23,18 +23,17 @@ export class MajorStyleNoticeScraperService {
 
     private loadNoticeTypeUrls(): Record<string, string> {
         return this.noticeTypes.reduce((acc, noticeType) => {
-            acc[noticeType] = this.configService.get<string>(`${noticeType}_URL`, '');
+            acc[noticeType] = this.configService.get<string>(`major_styles.${noticeType}.url`, '');
             return acc;
         }, {} as Record<string, string>);
     }
 
     private loadNoticeTypeQueryUrls(): Record<string, string> {
         return this.noticeTypes.reduce((acc, noticeType) => {
-            acc[noticeType] = this.configService.get<string>(`${noticeType}_QUERY_URL`, '');
+            acc[noticeType] = this.configService.get<string>(`major_styles.${noticeType}.queryUrl`, '');
             return acc;
         }, {} as Record<string, string>);
     }
-
     async fetchNoticesForAllNoticeTypes(): Promise<Record<string, Notice[]>> {
         const results: Record<string, Notice[]> = {};
 
