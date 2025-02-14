@@ -127,6 +127,76 @@ export class WholeNoticeSchedulerService {
         }
     }
 
+    @Cron('0 */30 16-22 * * 1-5', { timeZone: 'Asia/Seoul' })
+    async handleEveningCron() {
+        this.logger.log('🌙 학사 저녁 시간대(16시~22시) 크롤링 실행 중...');
+
+        try {
+            const allNotices: Notice[] = await this.wholeNoticeScraperService.fetchNotices(1);
+            const newNotices: Notice[] = await this.filterNewNotices(allNotices);
+
+            if (newNotices.length === 0) {
+                this.logger.log(`✅ 학사의 새로운 공지가 없으므로 알림을 보내지 않습니다.`);
+                return;
+            }
+
+            for (const notice of newNotices) {
+                this.logger.log(`🚀 학사 새로운 공지 발견(주말): ${notice.title}`);
+
+                if (process.env.NODE_ENV === 'production') {
+                    await this.firebaseService.sendWholeNotification(
+                        notice.title,
+                        { id: notice.id, link: notice.link }
+                    );
+                } else {
+                    this.logger.debug('🔕 개발 환경이므로 푸시 알림을 전송하지 않습니다.');
+                }
+
+                await this.saveLastNoticeId(notice);
+                this.cachedNoticeIds.add(notice.id);
+            }
+        } catch (error) {
+            this.logger.error('🚨 저녁 시간대 크롤링 중 오류 발생:', error.message);
+        } finally {
+            this.logger.log('🏁 학사 저녁 시간대 크롤링 끝!');
+        }
+    }
+
+    @Cron('0 */30 9-22 * * 6-7', { timeZone: 'Asia/Seoul' })
+    async handleWeekendCron() {
+        this.logger.log('🌙 학사 주말 시간대(9시~22시) 크롤링 실행 중...');
+
+        try {
+            const allNotices: Notice[] = await this.wholeNoticeScraperService.fetchNotices(1);
+            const newNotices: Notice[] = await this.filterNewNotices(allNotices);
+
+            if (newNotices.length === 0) {
+                this.logger.log(`✅ 학사의 새로운 공지가 없으므로 알림을 보내지 않습니다.`);
+                return;
+            }
+
+            for (const notice of newNotices) {
+                this.logger.log(`🚀 학사 새로운 공지 발견(저녁): ${notice.title}`);
+
+                if (process.env.NODE_ENV === 'production') {
+                    await this.firebaseService.sendWholeNotification(
+                        notice.title,
+                        { id: notice.id, link: notice.link }
+                    );
+                } else {
+                    this.logger.debug('🔕 개발 환경이므로 푸시 알림을 전송하지 않습니다.');
+                }
+
+                await this.saveLastNoticeId(notice);
+                this.cachedNoticeIds.add(notice.id);
+            }
+        } catch (error) {
+            this.logger.error('🚨 주말 시간대 크롤링 중 오류 발생:', error.message);
+        } finally {
+            this.logger.log('🏁 학사 주말 시간대 크롤링 끝!');
+        }
+    }
+
     @Cron('0 0 17 * * 1-5', { timeZone: 'Asia/Seoul' })
     async deleteOldNotices() {
         this.logger.log('🗑️ 학사 오래된 공지사항 삭제 작업 시작...');
