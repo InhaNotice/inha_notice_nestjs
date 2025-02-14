@@ -25,18 +25,18 @@ export class WholeNoticeSchedulerService {
     }
 
     @Cron('0 */10 9-16 * * 1-5', { timeZone: 'Asia/Seoul' })
-    async handleCron() {
-        await this.executeCrawlingJob('학사 정기(9~16시)');
+    async handleWeekDaysCron() {
+        await this.executeCrawling('학사 정기(9~16시)');
     }
 
     @Cron('0 */30 16-22 * * 1-5', { timeZone: 'Asia/Seoul' })
     async handleEveningCron() {
-        await this.executeCrawlingJob('학사 저녁(16~22시)');
+        await this.executeCrawling('학사 저녁(16~22시)');
     }
 
     @Cron('0 */30 9-22 * * 6-7', { timeZone: 'Asia/Seoul' })
     async handleWeekendCron() {
-        await this.executeCrawlingJob('학사 주말(9~22시)');
+        await this.executeCrawling('학사 주말(9~22시)');
     }
 
     // 오늘 날짜가 아닌 공지사항 삭제 진행
@@ -120,7 +120,7 @@ export class WholeNoticeSchedulerService {
     }
 
     // 학사 공지사항 크롤링 함수
-    private async executeCrawlingJob(logPrefix: string) {
+    private async executeCrawling(logPrefix: string) {
         this.logger.log(`📌 ${logPrefix} 크롤링 실행 중...`);
 
         try {
