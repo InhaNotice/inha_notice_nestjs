@@ -24,6 +24,38 @@ export class WholeNoticeSchedulerService {
         this.initializeDatabase();
     }
 
+    @Cron('0 */10 9-16 * * 1-5', { timeZone: 'Asia/Seoul' })
+    async handleCron() {
+        await this.executeCrawlingJob('학사 정기(9~16시)');
+    }
+
+    @Cron('0 */30 16-22 * * 1-5', { timeZone: 'Asia/Seoul' })
+    async handleEveningCron() {
+        await this.executeCrawlingJob('학사 저녁(16~22시)');
+    }
+
+    @Cron('0 */30 9-22 * * 6-7', { timeZone: 'Asia/Seoul' })
+    async handleWeekendCron() {
+        await this.executeCrawlingJob('학사 주말(9~22시)');
+    }
+
+    // 오늘 날짜가 아닌 공지사항 삭제 진행
+    @Cron('0 0 23 * * 1-5', { timeZone: 'Asia/Seoul' })
+    async deleteOldNotices() {
+        this.logger.log('🗑️ 학사 오래된 공지사항 삭제 작업 시작...');
+
+        const todayDate: string = this.getTodayDate();
+
+        try {
+            await this.deleteNoticesExceptToday(todayDate);
+        } catch (error) {
+            this.logger.error(`🚨 학사 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
+        } finally {
+            this.logger.log('🏁 학사 오래된 공지사항 삭제 작업 완료!');
+        }
+    }
+
+    // database/whole 디렉터리 존재 여부 확인
     private initializeDatabaseDir(): void {
 
         if (!fs.existsSync(this.databaseDir)) {
@@ -41,7 +73,7 @@ export class WholeNoticeSchedulerService {
         })
     }
 
-    // ✅ SQLite 테이블 생성 (없다면 자동 생성)
+    // SQLite 테이블 생성 (없다면 자동 생성)
     private initializeDatabaseTable(): void {
         this.db.run(
             `CREATE TABLE IF NOT EXISTS notices (
@@ -54,13 +86,13 @@ export class WholeNoticeSchedulerService {
                 if (err) {
                     this.logger.error('🚨 학사(WHOLE) 테이블 생성 실패:', err.message);
                 } else {
-                    this.loadCache(); // ✅ 서버 시작 시 캐싱 데이터 로드
+                    this.loadCache(); // 서버 시작 시 캐싱 데이터 로드
                 }
             }
         );
     }
 
-    // ✅ 서버 시작 시 기존 데이터 로드 & 캐싱
+    // 서버 시작 시 기존 데이터 로드 & 캐싱
     private loadCache(): void {
         this.cachedNoticeIds = new Set();
 
@@ -87,131 +119,42 @@ export class WholeNoticeSchedulerService {
         });
     }
 
-    @Cron('0 */10 9-16 * * 1-5', { timeZone: 'Asia/Seoul' })
-    async handleCron() {
-        this.logger.log('📌 학사 정기 크롤링 실행 중...');
+    // 학사 공지사항 크롤링 함수
+    private async executeCrawlingJob(logPrefix: string) {
+        this.logger.log(`📌 ${logPrefix} 크롤링 실행 중...`);
 
         try {
             const allNotices: Notice[] = await this.wholeNoticeScraperService.fetchNotices(1);
             const newNotices: Notice[] = await this.filterNewNotices(allNotices);
 
             if (newNotices.length === 0) {
-                this.logger.log(`✅ 학사의 새로운 공지가 없으므로 알림을 보내지 않습니다.`);
+                this.logger.log(`✅ ${logPrefix} 새로운 공지가 없으므로 알림을 보내지 않습니다.`);
                 return;
             }
 
             for (const notice of newNotices) {
-                this.logger.log(`🚀 학사 새로운 공지 발견: ${notice.title}`);
-
-                // ✅ 학과별 FCM 푸시 알림 전송 (production 환경에서만 전송)
-                if (process.env.NODE_ENV === 'production') {
-                    await this.firebaseService.sendWholeNotification(
-                        notice.title,
-                        {
-                            id: notice.id,
-                            link: notice.link,
-                        }
-                    )
-                } else {
-                    this.logger.debug('🔕 개발 환경이므로 푸시 알림을 전송하지 않습니다.');
-                }
-
-                // ✅ 새로운 공지사항 ID를 데이터베이스 및 캐싱에 추가
-                await this.saveLastNoticeId(notice);
-                this.cachedNoticeIds.add(notice.id);
-            }
-        } catch (error) {
-            this.logger.error('🚨 크롤링 중 오류 발생:', error.message);
-        } finally {
-            this.logger.log('🏁 학사 정기 크롤링 끝!');
-        }
-    }
-
-    @Cron('0 */30 16-22 * * 1-5', { timeZone: 'Asia/Seoul' })
-    async handleEveningCron() {
-        this.logger.log('🌙 학사 저녁 시간대(16시~22시) 크롤링 실행 중...');
-
-        try {
-            const allNotices: Notice[] = await this.wholeNoticeScraperService.fetchNotices(1);
-            const newNotices: Notice[] = await this.filterNewNotices(allNotices);
-
-            if (newNotices.length === 0) {
-                this.logger.log(`✅ 학사의 새로운 공지가 없으므로 알림을 보내지 않습니다.`);
-                return;
-            }
-
-            for (const notice of newNotices) {
-                this.logger.log(`🚀 학사 새로운 공지 발견(주말): ${notice.title}`);
+                this.logger.log(`🚀 ${logPrefix} 새로운 공지 발견: ${notice.title}`);
 
                 if (process.env.NODE_ENV === 'production') {
-                    await this.firebaseService.sendWholeNotification(
-                        notice.title,
-                        { id: notice.id, link: notice.link }
-                    );
+                    await this.firebaseService.sendWholeNotification(notice.title, {
+                        id: notice.id,
+                        link: notice.link,
+                    });
                 } else {
-                    this.logger.debug('🔕 개발 환경이므로 푸시 알림을 전송하지 않습니다.');
+                    this.logger.debug(`🔕 ${logPrefix} 개발 환경이므로 푸시 알림을 전송하지 않습니다.`);
                 }
 
                 await this.saveLastNoticeId(notice);
                 this.cachedNoticeIds.add(notice.id);
             }
         } catch (error) {
-            this.logger.error('🚨 저녁 시간대 크롤링 중 오류 발생:', error.message);
+            this.logger.error(`🚨 ${logPrefix} 크롤링 중 오류 발생: ${error.message}`);
         } finally {
-            this.logger.log('🏁 학사 저녁 시간대 크롤링 끝!');
+            this.logger.log(`🏁 ${logPrefix} 크롤링 끝!`);
         }
     }
 
-    @Cron('0 */30 9-22 * * 6-7', { timeZone: 'Asia/Seoul' })
-    async handleWeekendCron() {
-        this.logger.log('🌙 학사 주말 시간대(9시~22시) 크롤링 실행 중...');
-
-        try {
-            const allNotices: Notice[] = await this.wholeNoticeScraperService.fetchNotices(1);
-            const newNotices: Notice[] = await this.filterNewNotices(allNotices);
-
-            if (newNotices.length === 0) {
-                this.logger.log(`✅ 학사의 새로운 공지가 없으므로 알림을 보내지 않습니다.`);
-                return;
-            }
-
-            for (const notice of newNotices) {
-                this.logger.log(`🚀 학사 새로운 공지 발견(저녁): ${notice.title}`);
-
-                if (process.env.NODE_ENV === 'production') {
-                    await this.firebaseService.sendWholeNotification(
-                        notice.title,
-                        { id: notice.id, link: notice.link }
-                    );
-                } else {
-                    this.logger.debug('🔕 개발 환경이므로 푸시 알림을 전송하지 않습니다.');
-                }
-
-                await this.saveLastNoticeId(notice);
-                this.cachedNoticeIds.add(notice.id);
-            }
-        } catch (error) {
-            this.logger.error('🚨 주말 시간대 크롤링 중 오류 발생:', error.message);
-        } finally {
-            this.logger.log('🏁 학사 주말 시간대 크롤링 끝!');
-        }
-    }
-
-    @Cron('0 0 17 * * 1-5', { timeZone: 'Asia/Seoul' })
-    async deleteOldNotices() {
-        this.logger.log('🗑️ 학사 오래된 공지사항 삭제 작업 시작...');
-
-        const todayDate: string = dayjs().format('YYYY.MM.DD');
-
-        try {
-            await this.deleteNoticesExceptToday(todayDate);
-        } catch (error) {
-            this.logger.error(`🚨 학사 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
-        } finally {
-            this.logger.log('🏁 학사 오래된 공지사항 삭제 작업 완료!');
-        }
-    }
-
+    // WHOLE.db에서 삭제 진행
     private deleteNoticesExceptToday(todayDate: string): Promise<void> {
         return new Promise((resolve, reject) => {
             this.db.run(
@@ -232,19 +175,19 @@ export class WholeNoticeSchedulerService {
     }
 
 
-    // ✅ 학과별 새로운 공지 필터링
+    // 학과별 새로운 공지 필터링
     private async filterNewNotices(notices: Notice[]): Promise<Notice[]> {
-        // ✅ 오늘 날짜의 공지만 필터링하여 반환
-        const todayDate: string = dayjs().format('YYYY.MM.DD');
+        // 오늘 날짜의 공지만 필터링하여 반환
+        const todayDate: string = this.getTodayDate();
         const todayNotices: Notice[] = notices.filter((notice) => notice.date === todayDate);
 
-        // 🔹 캐싱된 공지사항 ID를 활용하여 필터링
+        // 캐싱된 공지사항 ID를 활용하여 필터링
         const newNotices: Notice[] = todayNotices.filter(notice => !this.cachedNoticeIds.has(notice.id));
 
         return newNotices;
     }
 
-    // ✅ 학과별 새로운 공지사항 ID를 데이터베이스에 저장
+    // 학과별 새로운 공지사항 ID를 데이터베이스에 저장
     private saveLastNoticeId(notice: Notice): Promise<void> {
         return new Promise((resolve, reject) => {
             this.db.run(
@@ -261,5 +204,9 @@ export class WholeNoticeSchedulerService {
                 }
             );
         });
+    }
+
+    private getTodayDate(): string {
+        return dayjs().format('YYYY.MM.DD');
     }
 }
