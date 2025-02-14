@@ -103,14 +103,18 @@ export class WholeNoticeSchedulerService {
             for (const notice of newNotices) {
                 this.logger.log(`🚀 학사 새로운 공지 발견: ${notice.title}`);
 
-                // ✅ 학과별 FCM 푸시 알림 전송
-                await this.firebaseService.sendWholeNotification(
-                    notice.title,
-                    {
-                        id: notice.id,
-                        link: notice.link,
-                    }
-                )
+                // ✅ 학과별 FCM 푸시 알림 전송 (production 환경에서만 전송)
+                if (process.env.NODE_ENV === 'production') {
+                    await this.firebaseService.sendWholeNotification(
+                        notice.title,
+                        {
+                            id: notice.id,
+                            link: notice.link,
+                        }
+                    )
+                } else {
+                    this.logger.debug('🔕 개발 환경이므로 푸시 알림을 전송하지 않습니다.');
+                }
 
                 // ✅ 새로운 공지사항 ID를 데이터베이스 및 캐싱에 추가
                 await this.saveLastNoticeId(notice);
