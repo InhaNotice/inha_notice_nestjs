@@ -115,14 +115,18 @@ export class MajorNoticeSchedulerService {
                     this.logger.log(`🚀 ${major} 새로운 공지 발견: ${notice.title}`);
 
                     // ✅ 학과별 FCM 푸시 알림 전송
-                    await this.firebaseService.sendMajorNotification(
-                        notice.title,
-                        major,
-                        {
-                            id: notice.id,
-                            link: notice.link,
-                        }
-                    )
+                    if (process.env.NODE_ENV === 'production') {
+                        await this.firebaseService.sendMajorNotification(
+                            notice.title,
+                            major,
+                            {
+                                id: notice.id,
+                                link: notice.link,
+                            }
+                        )
+                    } else {
+                        this.logger.debug('🔕 개발 환경이므로 푸시 알림을 전송하지 않습니다.');
+                    }
 
                     // ✅ 새로운 공지사항 ID를 데이터베이스 및 캐싱에 추가
                     await this.saveLastNoticeId(major, notice);
