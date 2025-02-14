@@ -127,6 +127,40 @@ export class WholeNoticeSchedulerService {
         }
     }
 
+    @Cron('0 0 17 * * 1-5', { timeZone: 'Asia/Seoul' })
+    async deleteOldNotices() {
+        this.logger.log('🗑️ 학사 오래된 공지사항 삭제 작업 시작...');
+
+        const todayDate: string = dayjs().format('YYYY.MM.DD');
+
+        try {
+            await this.deleteNoticesExceptToday(todayDate);
+        } catch (error) {
+            this.logger.error(`🚨 학사 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
+        } finally {
+            this.logger.log('🏁 학사 오래된 공지사항 삭제 작업 완료!');
+        }
+    }
+
+    private deleteNoticesExceptToday(todayDate: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.db.run(
+                `DELETE FROM notices WHERE date != ?`,
+                [todayDate],
+                (err) => {
+                    if (err) {
+                        this.logger.error(`🚨 학사 오래된 공지사항 삭제 실패: ${err.message}`);
+                        reject(err);
+                    } else {
+                        this.logger.log('🗑️ 학사 오늘이 아닌 공지사항 삭제 완료');
+                        this.loadCache();
+                        resolve();
+                    }
+                }
+            );
+        });
+    }
+
 
     // ✅ 학과별 새로운 공지 필터링
     private async filterNewNotices(notices: Notice[]): Promise<Notice[]> {

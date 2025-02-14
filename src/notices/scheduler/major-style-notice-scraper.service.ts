@@ -141,6 +141,43 @@ export class MajorStyleNoticeSchedulerService {
         }
     }
 
+    @Cron('0 0 17 * * 1-5', { timeZone: 'Asia/Seoul' })
+    async deleteOldNotices() {
+        this.logger.log('🗑️ 학과 스타일(국제처, SW) 오래된 공지사항 삭제 작업 시작...');
+
+        const todayDate: string = dayjs().format('YYYY.MM.DD');
+
+        try {
+            for (const noticeType of Object.keys(this.databases)) {
+                await this.deleteNoticesExceptToday(noticeType, todayDate);
+            }
+        } catch (error) {
+            this.logger.error(`🚨 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
+        } finally {
+            this.logger.log('🏁 학과 스타일(국제처, SW) 오래된 공지사항 삭제 작업 완료!');
+        }
+    }
+
+    private deleteNoticesExceptToday(noticeType: string, todayDate: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.databases[noticeType].run(
+                `DELETE FROM notices WHERE date != ?`,
+                [todayDate],
+                (err) => {
+                    if (err) {
+                        this.logger.error(`🚨 ${noticeType} 오래된 공지사항 삭제 실패: ${err.message}`);
+                        reject(err);
+                    } else {
+                        this.logger.log(`🗑️ ${noticeType} 오늘이 아닌 공지사항 삭제 완료`);
+                        // 삭제 이후 캐시 재로딩 (최신 상태 유지 목적)
+                        this.loadCache(noticeType);
+                        resolve();
+                    }
+                }
+            );
+        });
+    }
+
     // ✅ 학과 스타일 공지별 새로운 공지 필터링
     private async filterNewNotices(noticeType: string, notices: Notice[]): Promise<Notice[]> {
         // ✅ 오늘 날짜의 공지만 필터링하여 반환
