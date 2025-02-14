@@ -13,87 +13,14 @@ export class MajorNoticeSchedulerService {
     private readonly logger: Logger = new Logger(MajorNoticeSchedulerService.name);
     private readonly databaseDir: string = path.join(process.cwd(), 'database', 'majors');
     private databases: Record<string, sqlite3.Database> = {};
-    private cachedNoticeIds: Record<string, Set<string>> = {}; // ✅ 학과별 공지사항 ID 캐싱
+    private cachedNoticeIds: Record<string, Set<string>> = {};
 
     constructor(
         private readonly majorNoticeScraperService: MajorNoticeScraperService,
         private readonly firebaseService: FirebaseService,
     ) {
-        this.initializeDatabaseDirectory(); // ✅ DB 폴더가 없으면 미리 생성
-        this.initializeDatabases(); // ✅ 학과별 데이터베이스 생성
-    }
-
-    // ✅ 데이터베이스 폴더가 없으면 생성하는 메서드
-    private initializeDatabaseDirectory(): void {
-        if (!fs.existsSync(this.databaseDir)) {
-            try {
-                fs.mkdirSync(this.databaseDir, { recursive: true });
-            } catch (err) {
-                this.logger.error(`🚨 데이터베이스 디렉터리 생성 실패: ${err.message}`);
-                this.logger.warn(`⚠️ 데이터베이스 디렉터리를 생성하지 못했습니다. 일부 기능이 제한될 수 있습니다.`);
-            }
-        }
-    }
-
-    // ✅ 학과별 SQLite 데이터베이스 초기화
-    private initializeDatabases(): void {
-        const majors: string[] = this.majorNoticeScraperService.getAllMajors(); // 🔹 학과 목록 가져오기
-        for (const major of majors) {
-            const dbPath: string = path.join(this.databaseDir, `${major}.db`);
-            this.databases[major] = new sqlite3.Database(dbPath, (err) => {
-                if (err) {
-                    this.logger.error(`🚨 ${major} 데이터베이스 연결 실패: ${err.message}`);
-                } else {
-                    this.initializeTable(major);
-                }
-            });
-        }
-    }
-
-    // ✅ 학과별 SQLite 테이블 생성 (없다면 자동 생성)
-    private initializeTable(major: string): void {
-        this.databases[major].run(
-            `CREATE TABLE IF NOT EXISTS notices (
-                id TEXT PRIMARY KEY,
-                title TEXT,
-                link TEXT,
-                date TEXT
-            )`,
-            (err) => {
-                if (err) {
-                    this.logger.error(`🚨 ${major} 테이블 생성 실패: ${err.message}`);
-                } else {
-                    this.loadCache(major); // ✅ 테이블 생성 후 캐시 로드
-                }
-            }
-        );
-    }
-
-    // ✅ 학과별 기존 데이터 로드 & 캐싱 (테이블이 존재할 때만 실행)
-    private loadCache(major: string): void {
-        this.cachedNoticeIds[major] = new Set();
-
-        this.databases[major].get("SELECT name FROM sqlite_master WHERE type='table' AND name='notices'", (err, row) => {
-            if (err) {
-                this.logger.error(`🚨 ${major} SQLite 테이블 확인 중 오류 발생: ${err.message}`);
-                return;
-            }
-
-            if (!row) {
-                this.logger.warn(`⚠️ ${major} notices 테이블이 존재하지 않아 캐시를 로드하지 않습니다.`);
-                return;
-            }
-
-            // ✅ notices 테이블이 존재하면 캐시 로드 실행
-            this.databases[major].all("SELECT id FROM notices", [], (err, rows) => {
-                if (err) {
-                    this.logger.error(`🚨 ${major} SQLite 캐시 로드 중 오류 발생: ${err.message}`);
-                } else {
-                    this.cachedNoticeIds[major] = new Set(rows.map(row => (row as { id: string }).id));
-                    this.logger.log(`✅ ${major} 캐싱된 공지사항 ID 로드 완료 (${this.cachedNoticeIds[major].size}개)`);
-                }
-            });
-        });
+        this.initializeDatabaseDirectory();
+        this.initializeDatabases();
     }
 
     @Cron('0 */10 9-16 * * 1-5', { timeZone: 'Asia/Seoul' })
@@ -140,7 +67,7 @@ export class MajorNoticeSchedulerService {
         }
     }
 
-    // ✅ 오후 4시에 오늘이 아닌 공지사항 삭제 스케줄링
+    // 오후 4시에 오늘이 아닌 공지사항 삭제 스케줄링
     @Cron('0 0 17 * * 1-5', { timeZone: 'Asia/Seoul' })
     async cleanupOldNotices(): Promise<void> {
         this.logger.log('🗑️ 학과별 오래된 공지사항 데이터 삭제 작업 시작...');
@@ -158,7 +85,80 @@ export class MajorNoticeSchedulerService {
         }
     }
 
-    // ✅ 학과별로 오늘이 아닌 데이터 삭제하는 메서드
+    // 데이터베이스 폴더가 없으면 생성하는 메서드
+    private initializeDatabaseDirectory(): void {
+        if (!fs.existsSync(this.databaseDir)) {
+            try {
+                fs.mkdirSync(this.databaseDir, { recursive: true });
+            } catch (err) {
+                this.logger.error(`🚨 데이터베이스 디렉터리 생성 실패: ${err.message}`);
+                this.logger.warn(`⚠️ 데이터베이스 디렉터리를 생성하지 못했습니다. 일부 기능이 제한될 수 있습니다.`);
+            }
+        }
+    }
+
+    // 학과별 SQLite 데이터베이스 초기화
+    private initializeDatabases(): void {
+        const majors: string[] = this.majorNoticeScraperService.getAllMajors(); // 🔹 학과 목록 가져오기
+        for (const major of majors) {
+            const dbPath: string = path.join(this.databaseDir, `${major}.db`);
+            this.databases[major] = new sqlite3.Database(dbPath, (err) => {
+                if (err) {
+                    this.logger.error(`🚨 ${major} 데이터베이스 연결 실패: ${err.message}`);
+                } else {
+                    this.initializeTable(major);
+                }
+            });
+        }
+    }
+
+    // 학과별 SQLite 테이블 생성 (없다면 자동 생성)
+    private initializeTable(major: string): void {
+        this.databases[major].run(
+            `CREATE TABLE IF NOT EXISTS notices (
+                id TEXT PRIMARY KEY,
+                title TEXT,
+                link TEXT,
+                date TEXT
+            )`,
+            (err) => {
+                if (err) {
+                    this.logger.error(`🚨 ${major} 테이블 생성 실패: ${err.message}`);
+                } else {
+                    this.loadCache(major); // ✅ 테이블 생성 후 캐시 로드
+                }
+            }
+        );
+    }
+
+    // 학과별 기존 데이터 로드 & 캐싱 (테이블이 존재할 때만 실행)
+    private loadCache(major: string): void {
+        this.cachedNoticeIds[major] = new Set();
+
+        this.databases[major].get("SELECT name FROM sqlite_master WHERE type='table' AND name='notices'", (err, row) => {
+            if (err) {
+                this.logger.error(`🚨 ${major} SQLite 테이블 확인 중 오류 발생: ${err.message}`);
+                return;
+            }
+
+            if (!row) {
+                this.logger.warn(`⚠️ ${major} notices 테이블이 존재하지 않아 캐시를 로드하지 않습니다.`);
+                return;
+            }
+
+            // notices 테이블이 존재하면 캐시 로드 실행
+            this.databases[major].all("SELECT id FROM notices", [], (err, rows) => {
+                if (err) {
+                    this.logger.error(`🚨 ${major} SQLite 캐시 로드 중 오류 발생: ${err.message}`);
+                } else {
+                    this.cachedNoticeIds[major] = new Set(rows.map(row => (row as { id: string }).id));
+                    this.logger.log(`✅ ${major} 캐싱된 공지사항 ID 로드 완료 (${this.cachedNoticeIds[major].size}개)`);
+                }
+            });
+        });
+    }
+
+    // 학과별로 오늘이 아닌 데이터 삭제하는 메서드
     private deleteOldNotices(major: string, todayDate: string): Promise<void> {
         return new Promise((resolve, reject) => {
             this.databases[major].run(
@@ -179,7 +179,7 @@ export class MajorNoticeSchedulerService {
         });
     }
 
-    // ✅ 학과별 새로운 공지 필터링
+    // 학과별 새로운 공지 필터링
     private async filterNewNotices(major: string, notices: Notice[]): Promise<Notice[]> {
         // ✅ 오늘 날짜의 공지만 필터링하여 반환
         const todayDate: string = dayjs().format('YYYY.MM.DD');
@@ -191,7 +191,7 @@ export class MajorNoticeSchedulerService {
         return newNotices;
     }
 
-    // ✅ 학과별 새로운 공지사항 ID를 데이터베이스에 저장
+    // 학과별 새로운 공지사항 ID를 데이터베이스에 저장
     private saveLastNoticeId(major: string, notice: Notice): Promise<void> {
         return new Promise((resolve, reject) => {
             this.databases[major].run(
