@@ -140,6 +140,45 @@ export class MajorNoticeSchedulerService {
         }
     }
 
+    // ✅ 오후 4시에 오늘이 아닌 공지사항 삭제 스케줄링
+    @Cron('0 0 17 * * 1-5', { timeZone: 'Asia/Seoul' })
+    async cleanupOldNotices(): Promise<void> {
+        this.logger.log('🗑️ 학과별 오래된 공지사항 데이터 삭제 작업 시작...');
+
+        const todayDate: string = dayjs().format('YYYY.MM.DD');
+
+        try {
+            const majors = Object.keys(this.databases);
+            for (const major of majors) {
+                await this.deleteOldNotices(major, todayDate);
+            }
+            this.logger.log('✅ 오래된 공지사항 삭제 작업 완료!');
+        } catch (error) {
+            this.logger.error(`🚨 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
+        }
+    }
+
+    // ✅ 학과별로 오늘이 아닌 데이터 삭제하는 메서드
+    private deleteOldNotices(major: string, todayDate: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.databases[major].run(
+                `DELETE FROM notices WHERE date != ?`,
+                [todayDate],
+                (err) => {
+                    if (err) {
+                        this.logger.error(`🚨 ${major} 오래된 공지 삭제 실패: ${err.message}`);
+                        reject(err);
+                    } else {
+                        this.logger.log(`🗑️ ${major} 오늘이 아닌 공지사항 데이터 삭제 완료`);
+                        // 삭제 이후 캐시 재로딩 (최신 상태 유지 목적)
+                        this.loadCache(major);
+                        resolve();
+                    }
+                }
+            );
+        });
+    }
+
     // ✅ 학과별 새로운 공지 필터링
     private async filterNewNotices(major: string, notices: Notice[]): Promise<Notice[]> {
         // ✅ 오늘 날짜의 공지만 필터링하여 반환
