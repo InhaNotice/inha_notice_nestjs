@@ -14,12 +14,12 @@ export class FirebaseController {
     await this.firebaseService.sendNotificationToDevice(token, noticeTitle, data);
   }
 
-  // 학사 새로운 공지사항 알림
-  @Post('send-to-all')
+  // 학과 새로운 공지사항 알림
+  @Post('send-to-major')
   async sendNotificationToAll(@Body() body: any): Promise<void> {
-    const { noticeTitle, data } = body;
+    const { topic, noticeTitle, data } = body;
 
     // Firebase 푸시 알림 발송 (전체 사용자)
-    await this.firebaseService.sendWholeNotification(noticeTitle, data);
+    await this.firebaseService.sendMajorNotification(noticeTitle, topic, data);
   }
 }
