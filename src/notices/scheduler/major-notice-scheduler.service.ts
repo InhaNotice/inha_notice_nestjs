@@ -34,7 +34,7 @@ export class MajorNoticeSchedulerService {
                 const newNotices: Notice[] = await this.filterNewNotices(major, allNotices[major]);
 
                 if (newNotices.length === 0) {
-                    this.logger.log(`✅ ${major}학과의 새로운 공지가 없으므로 알림을 보내지 않습니다.`);
+                    // this.logger.log(`✅ ${major}학과의 새로운 공지가 없으므로 알림을 보내지 않습니다.`);
                     continue;
                 }
 
@@ -79,7 +79,7 @@ export class MajorNoticeSchedulerService {
             for (const major of majors) {
                 await this.deleteOldNotices(major, todayDate);
             }
-            this.logger.log('✅ 오래된 공지사항 삭제 작업 완료!');
+            // this.logger.log('✅ 오래된 공지사항 삭제 작업 완료!');
         } catch (error) {
             this.logger.error(`🚨 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
         }
