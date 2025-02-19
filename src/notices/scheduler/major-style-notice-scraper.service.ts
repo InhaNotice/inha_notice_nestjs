@@ -107,7 +107,7 @@ export class MajorStyleNoticeSchedulerService {
                 const newNotices: Notice[] = await this.filterNewNotices(noticeType, allNotices[noticeType]);
 
                 if (newNotices.length === 0) {
-                    this.logger.log(`✅ ${noticeType}의 새로운 공지가 없으므로 알림을 보내지 않습니다.`);
+                    // this.logger.log(`✅ ${noticeType}의 새로운 공지가 없으므로 알림을 보내지 않습니다.`);
                     continue;
                 }
 
