@@ -43,15 +43,15 @@ export class WholeNoticeScraperService {
                 const $: cheerio.CheerioAPI = cheerio.load(response.data);
                 return this.fetchGeneralNotices($, this.baseUrl);
             } else {
-                throw new Error(`공지사항 불러오는데 실패 - 상태코드: ${response.status}`);
+                throw new Error(`❌ 인하대 서버 응답 오류: ${response.status}`);
             }
         } catch (error) {
-            throw new Error(`공지사항 가져오는 중 오류가 발생: ${error.message}`);
+            throw new Error(`❌ 학사 공지사항 크롤링 실패: ${error.message}`);
         }
     }
 
     /**
-     * 
+     * 응답 받은 HTML을 전처리하는 함수
      * @param {cheerio.CheerioAPI} $ - Cheerio API 인스턴스 
      * @param {string} baseUrl - 공지사항 표준 링크 (이후 게시물 링크 생성)
      * @returns {Notice[]} - 전처리된 공지사항 객체 배열
@@ -66,7 +66,7 @@ export class WholeNoticeScraperService {
             const writerTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_WRITER);
             const accessTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_ACCESS);
 
-            // (제목태그, 날짜태그, 작성자, 조회수)가 존재하지 않는 공지사항은 포함시키지 않음
+            // (제목, 날짜, 작성자, 조회수)가 존재하지 않는 공지사항은 포함시키지 않음
             if (!titleTag.length || !dateTag.length || !writerTag.length || !accessTag.length) {
                 return;
             }
@@ -93,7 +93,7 @@ export class WholeNoticeScraperService {
     }
 
     /**
-     * 
+     * 데이터베이스 저장을 위한 식별 가능한 공지 Id 생성 함수
      * @param {string} postUrl - 공지의 고유 URL: (bbs/kr/8/[게시물 고유 번호]/artclView.do)
      * @returns {string} - 식별 가능한 공지 Id: (kr-[게시물 고유 번호])
      */
