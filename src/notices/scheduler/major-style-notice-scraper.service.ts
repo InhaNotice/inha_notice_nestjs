@@ -101,7 +101,7 @@ export class MajorStyleNoticeSchedulerService {
         this.logger.log('📌 학과 스타일(국제처, SW) 정기 크롤링 실행 중...');
 
         try {
-            const allNotices: Record<string, Notice[]> = await this.majorStyleNoticeScraperService.fetchNoticesForAllNoticeTypes();
+            const allNotices: Record<string, Notice[]> = await this.majorStyleNoticeScraperService.fetchAllNotices();
 
             for (const noticeType of Object.keys(allNotices)) {
                 const newNotices: Notice[] = await this.filterNewNotices(noticeType, allNotices[noticeType]);
