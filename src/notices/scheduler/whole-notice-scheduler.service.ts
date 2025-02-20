@@ -7,6 +7,7 @@ import * as path from 'path';
 import * as dayjs from 'dayjs';
 import * as fs from 'fs';
 import { WholeNoticeScraperService } from 'src/notices/scraper/whole-notice-scraper.service';
+import { log } from 'console';
 
 /**
  * 학사 공지 스캐줄러
@@ -18,8 +19,8 @@ import { WholeNoticeScraperService } from 'src/notices/scraper/whole-notice-scra
  * 
  * 목차
  * 1. 초기화 관련 메서드
- * 2. 스케줄링 메서드 (Cron)
- * 3. 주요 비즈니스 로직 (크롤링, 알림)
+ * 2. 스케줄링 메서드 (Cron, 4개)
+ * 3. 주요 비즈니스 로직 (크롤링, 오래된 공지 삭제)
  * 4. DB 조작 및 삭제 관련 메서드
  * 5. 유틸리티 메서드
  */
@@ -44,12 +45,15 @@ export class WholeNoticeSchedulerService {
     // ========================================
 
     /**
-    * databaseDir 디렉터리 존재 확인 및 생성 함수
+    * databaseDir 디렉터리 존재 확인 및 생성
     */
     private initializeDatabaseDir(): void {
-
         if (!fs.existsSync(this.databaseDir)) {
-            fs.mkdirSync(this.databaseDir, { recursive: true });
+            try {
+                fs.mkdirSync(this.databaseDir, { recursive: true });
+            } catch (err) {
+                this.logger.error(`❌ 데이터베이스 디렉터리 생성 실패: ${err.message}`);
+            }
         }
     }
 
@@ -59,7 +63,7 @@ export class WholeNoticeSchedulerService {
     private initializeDatabase(): void {
         this.db = new sqlite3.Database(this.dbPath, (err) => {
             if (err) {
-                this.logger.error('🚨 SQLite 데이터베이스 연결 실패:', err.message);
+                this.logger.error('❌ SQLite 데이터베이스 연결 실패:', err.message);
             } else {
                 this.initializeDatabaseTable();
             }
@@ -121,27 +125,27 @@ export class WholeNoticeSchedulerService {
 
 
     // ========================================
-    // 2. 스케줄링 메서드 (Cron)
+    // 2. 스케줄링 메서드 (Cron, 4개)
     // ========================================
 
     /**
-     * 평일(월~금) 9시~16시 59분, 10분 간격으로 학사 공지 크롤링
+     * 평일(월~금) 9시~16시 59분까지, 10분 간격으로 학사 공지 크롤링
      */
     @Cron('0 */10 9-16 * * 1-5', { timeZone: 'Asia/Seoul' })
     async handleWeekDaysCron() {
-        await this.executeCrawling('학사 정기(9~16시)');
+        await this.executeCrawling('학사 정기(9~17시)');
     }
 
     /**
-     * 평일(월~금) 17시~23시, 30분 간격으로 학사 공지 크롤링
+     * 평일(월~금) 17시~22시 59분까지, 30분 간격으로 학사 공지 크롤링
      */
     @Cron('0 */30 16-22 * * 1-5', { timeZone: 'Asia/Seoul' })
     async handleEveningCron() {
-        await this.executeCrawling('학사 저녁(16~22시)');
+        await this.executeCrawling('학사 저녁(17~22시)');
     }
 
     /**
-     * 주말(토~일) 9시~23시, 30분 간격으로 학사 공지 크롤링
+     * 주말(토~일) 9시~22시 59분까지, 30분 간격으로 학사 공지 크롤링
      */
     @Cron('0 */30 9-22 * * 6-7', { timeZone: 'Asia/Seoul' })
     async handleWeekendCron() {
@@ -149,26 +153,18 @@ export class WholeNoticeSchedulerService {
     }
 
     /**
-     * 평일(월~금) 23시, 1회 오늘 날짜가 아닌 공지사항 삭제
+     * 평일(월~금) 23시 정각, 1회 오늘 날짜가 아닌 공지사항 삭제
      * 
      * 참고: 오늘 날짜 포함한 모든 공지 삭제시 크롤링이 다시 진행된다면 푸시 알림 발생 가능하지만,
      * 오늘 날짜가 아닌 공지사항 삭제시 그러한 문제가 발생해도 아무런 영향 없음
      */
     @Cron('0 0 23 * * 1-5', { timeZone: 'Asia/Seoul' })
-    async deleteOldNotices() {
-        const todayDate: string = this.getTodayDate();
-
-        try {
-            await this.deleteNoticesExceptToday(todayDate);
-        } catch (error) {
-            this.logger.error(`🚨 학사 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
-        } finally {
-            this.logger.log('🏁 학사 오래된 공지사항 삭제 작업 완료!');
-        }
+    async handleDeleteCron() {
+        await this.deleteOldNotices('학사 (23시)');
     }
 
     // ========================================
-    // 3. 주요 비즈니스 로직 (크롤링, 알림)
+    // 3. 주요 비즈니스 로직 (크롤링, 오래된 공지 삭제)
     // ========================================
 
     /**
@@ -209,6 +205,22 @@ export class WholeNoticeSchedulerService {
             this.logger.error(`❌ ${logPrefix} 크롤링 중 오류 발생: ${error.message}`);
         } finally {
             this.logger.log(`🏁 ${logPrefix} 크롤링 끝!`);
+        }
+    }
+
+    /**
+     * 학사 오래된 공지 삭제
+     * @param {string} logPrefix - 로그 식별용 접두사
+     */
+    private async deleteOldNotices(logPrefix: string): Promise<void> {
+        const todayDate: string = this.getTodayDate();
+
+        try {
+            await this.deleteNoticesExceptToday(todayDate);
+        } catch (error) {
+            this.logger.error(`❌ ${logPrefix} 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
+        } finally {
+            this.logger.log(`🏁 ${logPrefix} 오래된 공지사항 삭제 작업 완료!`);
         }
     }
 
@@ -259,7 +271,6 @@ export class WholeNoticeSchedulerService {
         return newNotices;
     }
 
-    // 학과별 새로운 공지사항 ID를 데이터베이스에 저장
     /**
      * 새로운 공지를 데이터베이스에 저장
      * @param {Notice} notice - 새로운 공지사항 객체
