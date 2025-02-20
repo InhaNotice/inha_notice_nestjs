@@ -1,0 +1,14 @@
+{
+    "entryPoints": [
+        "src"
+    ],
+    "entryPointStrategy": "expand",
+    "out": "docs",
+    "tsconfig": "tsconfig.json",
+    "includeVersion": true,
+    "name": "inha_notice_nestjs 문서화",
+    "hideGenerator": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "excludeInternal": true
+}
