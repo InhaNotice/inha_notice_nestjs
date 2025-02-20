@@ -1,7 +1,8 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { majorMappings } from 'src/firebase/mappings/major-mappings';
-import { noticeTypeMappings } from './mappings/notice-type-mappings';
+import { noticeTypeMappings } from 'src/firebase/mappings/notice-type-mappings';
+import { IdentifierConstants } from 'src/constants/identifiers';
 
 @Injectable()
 export class FirebaseService {
@@ -26,8 +27,13 @@ export class FirebaseService {
         data: data || {},
       };
 
-      const response = await this.firebaseAdmin.messaging().send(message);
-      FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${response}`);
+      if (process.env.NODE_ENV === 'production') {
+        const response: string = await this.firebaseAdmin.messaging().send(message);
+        const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
+        FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
+      } else {
+        FirebaseService.logger.log(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+      }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
     }
@@ -51,9 +57,13 @@ export class FirebaseService {
         data: data || {},
         topic: topic,
       };
-
-      const response = await this.firebaseAdmin.messaging().send(message);
-      FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${response}`);
+      if (process.env.NODE_ENV === 'production') {
+        const response: string = await this.firebaseAdmin.messaging().send(message);
+        const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
+        FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
+      } else {
+        FirebaseService.logger.log(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+      }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
     }
@@ -78,8 +88,13 @@ export class FirebaseService {
         topic: topic
       };
 
-      const response = await this.firebaseAdmin.messaging().send(message);
-      FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${response}`);
+      if (process.env.NODE_ENV === 'production') {
+        const response: string = await this.firebaseAdmin.messaging().send(message);
+        const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
+        FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
+      } else {
+        FirebaseService.logger.log(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+      }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
     }
@@ -105,8 +120,13 @@ export class FirebaseService {
         topic: topic
       };
 
-      const response = await this.firebaseAdmin.messaging().send(message);
-      FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${response}`);
+      if (process.env.NODE_ENV === 'production') {
+        const response: string = await this.firebaseAdmin.messaging().send(message);
+        const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
+        FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
+      } else {
+        FirebaseService.logger.log(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+      }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
     }
