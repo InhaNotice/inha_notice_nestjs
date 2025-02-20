@@ -1,34 +1,39 @@
 export default () => {
-    const majors: Record<string, { url: string; queryUrl: string }> = {};
+    const majors: Record<string, { baseUrl: string; queryUrl: string }> = {};
 
-    // 환경 변수에서 자동으로 학과 정보를 가져오기
-    Object.keys(process.env).forEach((key) => {
+    // 모든 학과 URL 가져오기
+    for (const key of Object.keys(process.env)) {
         if (key.endsWith('_URL') && !['WHOLE', 'SWUNIV', 'INTERNATIONAL'].some(prefix => key.startsWith(prefix))) {
-            const majorName = key.replace('_URL', '').toLowerCase(); // 학과명을 소문자로 변환
-            majors[majorName] = {
-                url: process.env[key] || '',
-                queryUrl: process.env[`${majorName.toUpperCase()}_QUERY_URL`] || '',
+            // major는 대문자
+            const major = key.replace('_URL', '');
+            majors[major] = {
+                baseUrl: process.env[key] || '',
+                queryUrl: process.env[`${major}_QUERY_URL`] || '',
             };
         }
-    });
+    }
 
-    const majorStyleTypes = ['INTERNATIONAL', 'SWUNIV'];
+    // 학과 스타일 (국제처, SW중심대학사업단)의 URL 가져오기
+    const majorStyleNoticeTypes = ['INTERNATIONAL', 'SWUNIV'];
+
+    const majorStyles: Record<string, { baseUrl: string; queryUrl: string }> = {};
+
+    for (const type of majorStyleNoticeTypes) {
+        majorStyles[type] = {
+            baseUrl: process.env[`${type}_URL`] || '',
+            queryUrl: process.env[`${type}_QUERY_URL`] || '',
+        };
+    }
 
     return {
         server: {
             port: process.env.PORT,
         },
-        majors,
         whole: {
             baseUrl: process.env.WHOLE_URL,
             queryUrl: process.env.WHOLE_QUERY_URL,
         },
-        major_styles: majorStyleTypes.reduce((acc, type) => {
-            acc[type] = {
-                url: process.env[`${type}_URL`] || '',
-                queryUrl: process.env[`${type}_QUERY_URL`] || '',
-            };
-            return acc;
-        }, {} as Record<string, { url: string; queryUrl: string }>) // ✅ 가독성 개선
+        majors,
+        majorStyles,
     };
 };
