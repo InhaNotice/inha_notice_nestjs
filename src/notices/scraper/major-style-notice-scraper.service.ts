@@ -59,7 +59,7 @@ export class MajorStyleNoticeScraperService {
 
     /**
      * 학과 스타일(국제처, SW중심대학사업단)의 모든 공지사항을 크롤링 후 전처리한 공지 반환
-     * @returns 
+     * @returns {Promise<Record<string, Notice[]>>} 전처리된 모든 공지들 반환
      */
     async fetchAllNotices(): Promise<Record<string, Notice[]>> {
         const results: Record<string, Notice[]> = {};

@@ -28,7 +28,7 @@ export class MajorNoticeSchedulerService {
         this.logger.log('📌 학과 정기 크롤링 실행 중...');
 
         try {
-            const allNotices: Record<string, Notice[]> = await this.majorNoticeScraperService.fetchNoticesForAllMajors();
+            const allNotices: Record<string, Notice[]> = await this.majorNoticeScraperService.fetchAllNotices();
 
             for (const major of Object.keys(allNotices)) {
                 const newNotices: Notice[] = await this.filterNewNotices(major, allNotices[major]);
