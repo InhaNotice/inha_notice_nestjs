@@ -67,6 +67,7 @@ export class WholeNoticeScraperService {
             const accessTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_ACCESS);
 
             // (제목, 날짜, 작성자, 조회수)가 존재하지 않는 공지사항은 포함시키지 않음
+            // 이 규칙은 웹페이지 구조 변경시 동작하지 않을 수 있음
             if (!titleTag.length || !dateTag.length || !writerTag.length || !accessTag.length) {
                 return;
             }
