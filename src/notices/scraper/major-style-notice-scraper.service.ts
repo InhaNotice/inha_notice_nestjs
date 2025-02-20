@@ -37,8 +37,6 @@ export class MajorStyleNoticeScraperService {
     }
 
     /**
-     * @function
-     * @name loadUrls
      * 학과 스타일(국제처, SW중심대학사업단)의 공지사항 크롤링 URL(기본 URL 또는 조회 URL)을 초기화하는 함수
      *
      * @param {Record<string, { baseUrl: string; queryUrl: string }>} majorStyles - 학과 스타일별 baseUrl 및 queryUrl이 담긴 설정 객체
