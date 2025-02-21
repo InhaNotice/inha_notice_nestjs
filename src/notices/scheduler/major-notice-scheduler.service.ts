@@ -59,7 +59,7 @@ export class MajorNoticeSchedulerService {
      * 데이터베이스 연결 및 생성
      */
     private initializeDatabases(): void {
-        const majors: string[] = this.majorNoticeScraperService.getAllMajors(); // 🔹 학과 목록 가져오기
+        const majors: string[] = this.majorNoticeScraperService.getAllMajors();
         for (const major of majors) {
             const dbPath: string = path.join(this.databaseDir, `${major}.db`);
             this.databases[major] = new sqlite3.Database(dbPath, (err) => {
