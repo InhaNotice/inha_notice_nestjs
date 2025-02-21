@@ -158,7 +158,7 @@ export class MajorNoticeSchedulerService {
      * 학과별 공지 크롤링
      * @param {string} logPrefix - 로그 식별용 접두사
      */
-    async executeCrawling(logPrefix: string) {
+    async executeCrawling(logPrefix: string): Promise<void> {
         this.logger.log(`📌 ${logPrefix} 크롤링 실행 중...`);
 
         try {
@@ -213,10 +213,10 @@ export class MajorNoticeSchedulerService {
             const majors = Object.keys(this.databases);
             for (const major of majors) {
                 await this.deleteNoticesExceptToday(major, todayDate);
+                this.logger.log(`✅ ${logPrefix}-${major} 오래된 공지사항 삭제 완료`);
             }
-            // this.logger.log('✅ 오래된 공지사항 삭제 작업 완료!');
         } catch (error) {
-            this.logger.error(`🚨 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
+            this.logger.error(`❌ ${logPrefix} 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
         }
     }
 

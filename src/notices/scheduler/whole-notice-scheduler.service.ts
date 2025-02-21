@@ -7,7 +7,6 @@ import * as path from 'path';
 import * as dayjs from 'dayjs';
 import * as fs from 'fs';
 import { WholeNoticeScraperService } from 'src/notices/scraper/whole-notice-scraper.service';
-import { log } from 'console';
 
 /**
  * 학사 공지 스캐줄러
@@ -217,10 +216,9 @@ export class WholeNoticeSchedulerService {
 
         try {
             await this.deleteNoticesExceptToday(todayDate);
+            this.logger.log(`✅ ${logPrefix} 오래된 공지사항 삭제 완료`);
         } catch (error) {
             this.logger.error(`❌ ${logPrefix} 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
-        } finally {
-            this.logger.log(`🏁 ${logPrefix} 오래된 공지사항 삭제 작업 완료!`);
         }
     }
 

@@ -212,11 +212,10 @@ export class MajorStyleNoticeSchedulerService {
         try {
             for (const noticeType of Object.keys(this.databases)) {
                 await this.deleteNoticesExceptToday(noticeType, todayDate);
+                this.logger.log(`✅ ${logPrefix}-${noticeType} 오래된 공지사항 삭제 완료`);
             }
         } catch (error) {
             this.logger.error(`❌ ${logPrefix} 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
-        } finally {
-            this.logger.log(`🏁 ${logPrefix} 오래된 공지사항 삭제 작업 완료!`);
         }
     }
 
