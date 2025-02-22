@@ -42,7 +42,7 @@ export class FirebaseService {
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
         FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
       } else {
-        FirebaseService.logger.log(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+        FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
       }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
@@ -72,7 +72,7 @@ export class FirebaseService {
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
         FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
       } else {
-        FirebaseService.logger.log(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+        FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
       }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
@@ -103,7 +103,7 @@ export class FirebaseService {
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
         FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
       } else {
-        FirebaseService.logger.log(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+        FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
       }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
@@ -135,7 +135,7 @@ export class FirebaseService {
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
         FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
       } else {
-        FirebaseService.logger.log(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+        FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
       }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
