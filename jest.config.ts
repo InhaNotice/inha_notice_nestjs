@@ -14,4 +14,6 @@ export default {
   coverageDirectory: './coverage',
   testEnvironment: 'node',
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
+  clearMocks: true,
+  resetMocks: true,
 };
