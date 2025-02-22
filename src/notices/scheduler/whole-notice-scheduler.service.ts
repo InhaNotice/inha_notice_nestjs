@@ -167,7 +167,7 @@ export class WholeNoticeSchedulerService {
      * 참고: 오늘 날짜 포함한 모든 공지 삭제시 크롤링이 다시 진행된다면 푸시 알림 발생 가능하지만,
      * 오늘 날짜가 아닌 공지사항 삭제시 그러한 문제가 발생해도 아무런 영향 없음
      */
-    @Cron('0 0 24 * * 1-5', { timeZone: 'Asia/Seoul' })
+    @Cron('0 0 0 * * 1-5', { timeZone: 'Asia/Seoul' })
     async handleDeleteCron() {
         await this.deleteOldNotices('학사 (00시)');
     }
