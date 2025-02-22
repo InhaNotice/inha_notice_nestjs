@@ -1,3 +1,13 @@
+/*
+ * This is file of the project INGONG
+ * Licensed under the MIT License.
+ * Copyright (c) 2025 INGONG
+ * For full license text, see the LICENSE file in the root directory or at
+ * https://opensource.org/license/mit
+ * Author: junho Kim
+ * Latest Updated Date: 2025-02-22
+ */
+
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { majorMappings } from 'src/firebase/mappings/major-mappings';
