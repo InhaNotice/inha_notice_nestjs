@@ -1,3 +1,13 @@
+/*
+ * This is file of the project INGONG
+ * Licensed under the MIT License.
+ * Copyright (c) 2025 INGONG
+ * For full license text, see the LICENSE file in the root directory or at
+ * https://opensource.org/license/mit
+ * Author: junho Kim
+ * Latest Updated Date: 2025-02-22
+ */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { WholeNoticeSchedulerService } from 'src/notices/scheduler/whole-notice-scheduler.service';
 import { WholeNoticeScraperService } from 'src/notices/scraper/whole-notice-scraper.service';
