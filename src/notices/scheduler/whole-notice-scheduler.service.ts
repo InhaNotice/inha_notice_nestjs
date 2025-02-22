@@ -146,17 +146,17 @@ export class WholeNoticeSchedulerService {
     }
 
     /**
-     * 평일(월~금) 17시~22시 59분까지, 30분 간격으로 학사 공지 크롤링
+     * 평일(월~금) 17시~23시 59분까지, 30분 간격으로 학사 공지 크롤링
      */
-    @Cron('0 */30 16-22 * * 1-5', { timeZone: 'Asia/Seoul' })
+    @Cron('0 */30 16-23 * * 1-5', { timeZone: 'Asia/Seoul' })
     async handleEveningCron() {
         await this.executeCrawling('학사 저녁(17~22시)');
     }
 
     /**
-     * 주말(토~일) 9시~22시 59분까지, 30분 간격으로 학사 공지 크롤링
+     * 주말(토~일) 9시~23시 59분까지, 30분 간격으로 학사 공지 크롤링
      */
-    @Cron('0 */30 9-22 * * 6-7', { timeZone: 'Asia/Seoul' })
+    @Cron('0 */30 9-23 * * 6-7', { timeZone: 'Asia/Seoul' })
     async handleWeekendCron() {
         await this.executeCrawling('학사 주말(9~22시)');
     }
@@ -167,7 +167,7 @@ export class WholeNoticeSchedulerService {
      * 참고: 오늘 날짜 포함한 모든 공지 삭제시 크롤링이 다시 진행된다면 푸시 알림 발생 가능하지만,
      * 오늘 날짜가 아닌 공지사항 삭제시 그러한 문제가 발생해도 아무런 영향 없음
      */
-    @Cron('0 0 23 * * 1-5', { timeZone: 'Asia/Seoul' })
+    @Cron('0 0 24 * * 1-5', { timeZone: 'Asia/Seoul' })
     async handleDeleteCron() {
         await this.deleteOldNotices('학사 (23시)');
     }
