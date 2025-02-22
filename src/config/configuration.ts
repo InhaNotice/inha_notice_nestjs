@@ -13,11 +13,11 @@ export default () => {
 
     // 모든 학과 URL 가져오기
     for (const key of Object.keys(process.env)) {
-        if (key.endsWith('_URL') && !['WHOLE', 'SWUNIV', 'INTERNATIONAL'].some(prefix => key.startsWith(prefix))) {
+        if (key.endsWith('_QUERY_URL') && !['WHOLE', 'SWUNIV', 'INTERNATIONAL'].some(prefix => key.startsWith(prefix))) {
             // major는 대문자
-            const major = key.replace('_URL', '');
+            const major = key.replace('_QUERY_URL', '');
             majors[major] = {
-                baseUrl: process.env[key] || '',
+                baseUrl: process.env[`${major}_URL`] || '',
                 queryUrl: process.env[`${major}_QUERY_URL`] || '',
             };
         }
