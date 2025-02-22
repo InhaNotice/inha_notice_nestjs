@@ -26,6 +26,7 @@ import { StatusCodeSettings } from 'src/constants/http-status';
  */
 @Injectable()
 export class MajorNoticeScraperService {
+    private readonly majorsConfig: Record<string, { baseUrl: string; queryUrl: string }>;
     private readonly majors: string[];
     private readonly majorUrls: Record<string, string>;
     private readonly majorQueryUrls: Record<string, string>;
@@ -36,11 +37,11 @@ export class MajorNoticeScraperService {
      * @param {ConfigService} configService - 모든 학과 URL 초기화
      */
     constructor(private readonly configService: ConfigService) {
-        const majorsConfig: Record<string, { baseUrl: string; queryUrl: string }> =
+        this.majorsConfig =
             this.configService.get<Record<string, { baseUrl: string; queryUrl: string }>>('majors', {});
-        this.majors = Object.keys(majorsConfig);
-        this.majorUrls = this.loadUrls(majorsConfig, 'baseUrl');
-        this.majorQueryUrls = this.loadUrls(majorsConfig, 'queryUrl');
+        this.majors = Object.keys(this.majorsConfig);
+        this.majorUrls = this.loadUrls(this.majorsConfig, 'baseUrl');
+        this.majorQueryUrls = this.loadUrls(this.majorsConfig, 'queryUrl');
     }
 
     /**
@@ -177,6 +178,6 @@ export class MajorNoticeScraperService {
      * @returns {string[]} - 학과 키 배열 리턴
      */
     getAllMajors(): string[] {
-        return this.majors;
+        return Object.keys(this.majorsConfig);
     }
 }
