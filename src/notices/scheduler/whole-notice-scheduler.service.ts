@@ -150,7 +150,7 @@ export class WholeNoticeSchedulerService {
      */
     @Cron('0 */30 16-23 * * 1-5', { timeZone: 'Asia/Seoul' })
     async handleEveningCron() {
-        await this.executeCrawling('학사 저녁(17~22시)');
+        await this.executeCrawling('학사 저녁(17~24시)');
     }
 
     /**
@@ -158,7 +158,7 @@ export class WholeNoticeSchedulerService {
      */
     @Cron('0 */30 9-23 * * 6-7', { timeZone: 'Asia/Seoul' })
     async handleWeekendCron() {
-        await this.executeCrawling('학사 주말(9~22시)');
+        await this.executeCrawling('학사 주말(9~24시)');
     }
 
     /**
@@ -169,7 +169,7 @@ export class WholeNoticeSchedulerService {
      */
     @Cron('0 0 24 * * 1-5', { timeZone: 'Asia/Seoul' })
     async handleDeleteCron() {
-        await this.deleteOldNotices('학사 (23시)');
+        await this.deleteOldNotices('학사 (00시)');
     }
 
     // ========================================
