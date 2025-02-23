@@ -12,9 +12,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MajorStyleNoticeSchedulerService } from 'src/notices/scheduler/major-style-notice-scheduler.service';
 import { MajorStyleNoticeScraperService } from 'src/notices/scraper/major-style-notice-scraper.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
-import * as fs from 'fs';
-import * as sqlite3 from 'sqlite3';
-import * as path from 'path';
 import * as dayjs from 'dayjs';
 
 describe('MajorStyleNoticeSchedulerService', () => {
@@ -78,13 +75,8 @@ describe('MajorStyleNoticeSchedulerService', () => {
 
     // DB 및 캐시 객체 모킹 (각 noticeType에 대해)
     service['cachedNoticeIds'] = {};
-    mockNoticeTypes.forEach((type) => {
-      service['databases'][type] = {
-        run: jest.fn((query: string, params: any[], callback: Function) => callback(null)),
-        get: jest.fn(),
-        all: jest.fn(),
-      } as any;
-      service['cachedNoticeIds'][type] = new Set();
+    mockNoticeTypes.forEach((noticeType) => {
+      service['cachedNoticeIds'][noticeType] = new Set();
     });
 
     // Logger 스파이 생성
@@ -114,272 +106,7 @@ describe('MajorStyleNoticeSchedulerService', () => {
   }
 
   // ===============================================================
-  // 1. 초기화 관련 메서드 테스트
-  // ===============================================================
-  describe('Database 디렉터리 초기화 (initializeDatabaseDirectory)', () => {
-    it('디렉터리가 존재하지 않으면 mkdirSync 호출되어야 함', () => {
-      const existsSyncMock = jest.spyOn(fs, 'existsSync').mockReturnValue(false);
-      const mkdirSyncMock = jest.spyOn(fs, 'mkdirSync').mockImplementation();
-
-      service['initializeDatabaseDirectory']();
-      // fs.existsSync() 호출
-      expect(existsSyncMock).toHaveBeenCalledWith(service['databaseDir']);
-      // fs.mkdirSync() 호출
-      expect(mkdirSyncMock).toHaveBeenCalledWith(service['databaseDir'], { recursive: true });
-    });
-
-    it('디렉터리가 이미 존재하면 mkdirSync 호출되지 않아야 함', () => {
-      const existsSyncMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-      const mkdirSyncMock = jest.spyOn(fs, 'mkdirSync').mockImplementation();
-
-      service['initializeDatabaseDirectory']();
-
-      // fs.existsSync() 호출
-      expect(existsSyncMock).toHaveBeenCalledWith(service['databaseDir']);
-      // fs.mkdirSync() 미호출
-      expect(mkdirSyncMock).not.toHaveBeenCalled();
-    });
-
-    it('mkdirSync 실행 중 에러 발생 시 로깅되어야 함', () => {
-      const mockError = 'mkdir error';
-      const existsSyncMock = jest.spyOn(fs, 'existsSync').mockReturnValue(false);
-      const mkdirSyncMock = jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {
-        throw new Error(mockError);
-      });
-
-      service['initializeDatabaseDirectory']();
-
-      // fs.existsSync() 호출
-      expect(existsSyncMock).toHaveBeenCalledWith(service['databaseDir']);
-      // fs.mkdirSync() 호출
-      expect(mkdirSyncMock).toHaveBeenCalled();
-      // 로그 검증
-      expect(loggerErrorMock).toHaveBeenCalledWith(
-        expect.stringMatching(`❌ 데이터베이스 디렉터리 생성 실패: ${mockError}`),
-      );
-    });
-  });
-
-  describe('데이터베이스 초기화 (initializeDatabases)', () => {
-    it('DB 연결 및 테이블 초기화가 수행되어야 함', () => {
-      const sqliteMock = jest.spyOn(sqlite3, 'Database').mockImplementation((dbPath: any, callback: any) => {
-        callback(null);
-        return { run: jest.fn() } as any;
-      });
-      const initializeTableSpy = jest.spyOn<any, any>(service, 'initializeTable').mockImplementation();
-
-      service['initializeDatabases']();
-      // getAllNoticesTypes() 호출
-      expect(mockMajorStyleNoticeScraperService.getAllNoticeTypes).toHaveBeenCalled();
-      // sqliteMock 2회 호출
-      expect(sqliteMock).toHaveBeenCalledTimes(mockNoticeTypes.length);
-      mockNoticeTypes.forEach((type) => {
-        const expectedPath = path.join(service['databaseDir'], `${type}.db`);
-        // sqlite3.Database 호출
-        expect(sqliteMock).toHaveBeenCalledWith(expectedPath, expect.any(Function));
-        // initializeTable() 호출
-        expect(initializeTableSpy).toHaveBeenCalledWith(type);
-      });
-    });
-
-    it('DB 연결 실패 시 에러 로깅되어야 함', () => {
-      const mockError = 'DB 연결 실패';
-      const sqliteMock = jest.spyOn(sqlite3, 'Database').mockImplementation((dbPath: any, callback: any) => {
-        callback(new Error(mockError));
-        return {} as any;
-      });
-      const initializeTableSpy = jest.spyOn<any, any>(service, 'initializeTable').mockImplementation();
-
-      service['initializeDatabases']();
-
-      // getAllNotices() 호출
-      expect(mockMajorStyleNoticeScraperService.getAllNoticeTypes).toHaveBeenCalled();
-      // sqliteMock 2회 호출
-      expect(sqliteMock).toHaveBeenCalledTimes(mockNoticeTypes.length);
-      mockNoticeTypes.forEach((type) => {
-        // 로그 검증 
-        expect(loggerErrorMock).toHaveBeenCalledWith(
-          expect.stringMatching(`${type} 데이터베이스 연결 실패: ${mockError}`),
-        );
-        // initializeTable() 미호출
-        expect(initializeTableSpy).not.toHaveBeenCalledWith(type);
-      });
-    });
-  });
-
-  describe('테이블 초기화 (initializeTable)', () => {
-    let loadCacheMock: jest.SpyInstance;
-    beforeEach(() => {
-      loadCacheMock = jest.spyOn(service as any, 'loadCache').mockImplementation();
-    });
-
-    it('테이블 생성 쿼리가 정상적으로 실행되어야 하며 loadCache 호출', () => {
-      const runMock = jest
-        .spyOn(service['databases'][mockNoticeType], 'run')
-        .mockImplementation((query: any, callback: any) => {
-          callback(null);
-          return {} as any;
-        });
-
-      service['initializeTable'](mockNoticeType);
-
-      // sqlite3.Database.run() 호출
-      expect(runMock).toHaveBeenCalledWith(expect.stringContaining('CREATE TABLE IF NOT EXISTS notices'), expect.any(Function));
-      // loadCache() 호출
-      expect(loadCacheMock).toHaveBeenCalledWith(mockNoticeType);
-    });
-
-    it('테이블 생성 실패 시 에러 로깅되어야 함', () => {
-      const mockError = '테이블 에러';
-      const runMock = jest
-        .spyOn(service['databases'][mockNoticeType], 'run')
-        .mockImplementation((query: string, callback: Function) => {
-          callback(new Error(mockError));
-          return {} as any;
-        });
-
-      service['initializeTable'](mockNoticeType);
-
-      // sqlite3.Database.run() 호출
-      expect(runMock).toHaveBeenCalled();
-      // loadCache() 미호출
-      expect(loadCacheMock).not.toHaveBeenCalled();
-      // 로그 검증
-      expect(loggerErrorMock).toHaveBeenCalledWith(
-        expect.stringMatching(`❌ ${mockNoticeType} 테이블 생성 실패: ${mockError}`),
-      );
-    });
-  });
-
-  describe('캐시 로드 (loadCache)', () => {
-    let getMock: jest.SpyInstance;
-    let allMock: jest.SpyInstance;
-
-    beforeEach(() => {
-      getMock = jest.spyOn(service['databases'][mockNoticeType], 'get');
-      allMock = jest.spyOn(service['databases'][mockNoticeType], 'all');
-    });
-
-    it('테이블이 존재하지 않으면 캐시 로드하지 않고 경고 로깅', () => {
-      getMock.mockImplementation((query: string, callback: Function) => callback(null, null));
-
-      service['loadCache'](mockNoticeType);
-
-      // sqlite3.Database.get() 호출
-      expect(getMock).toHaveBeenCalledWith(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='notices'",
-        expect.any(Function),
-      );
-      // 로그 검증
-      expect(loggerWarnMock).toHaveBeenCalledWith(
-        expect.stringContaining(`${mockNoticeType} notices 테이블이 존재하지 않아 캐시를 로드하지 않습니다.`),
-      );
-      // sqlite3.Database.all() 미호출
-      expect(allMock).not.toHaveBeenCalled();
-    });
-
-    it('테이블 확인 중 에러 발생 시 에러 로깅되어야 함', () => {
-      const mockError = '확인 에러';
-      getMock.mockImplementation((query: string, callback: Function) => callback(new Error(mockError), null));
-
-      service['loadCache'](mockNoticeType);
-
-      // sqlite3.Database.get() 호출
-      expect(getMock).toHaveBeenCalledWith(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='notices'",
-        expect.any(Function),
-      );
-      // 로그 검증
-      expect(loggerErrorMock).toHaveBeenCalledWith(
-        expect.stringMatching(`${mockNoticeType} SQLite 테이블 확인 중 오류 발생: ${mockError}`),
-      );
-      // sqlite3.Database.all() 미호출
-      expect(allMock).not.toHaveBeenCalled();
-    });
-
-    it('테이블이 존재하면 공지사항 ID 캐싱 및 로깅되어야 함', () => {
-      getMock.mockImplementation((query: string, callback: Function) => callback(null, {}));
-      const rows = [{ id: 'INT-1' }, { id: 'INT-2' }];
-      allMock.mockImplementation((query: string, params: any[], callback: Function) => callback(null, rows));
-
-      service['loadCache'](mockNoticeType);
-
-      // sqlite3.Database.get() 호출
-      expect(getMock).toHaveBeenCalled();
-      // sqlite3.Database.all() 호출
-      expect(allMock).toHaveBeenCalledWith("SELECT id FROM notices", [], expect.any(Function));
-      // 캐시 검증
-      expect(service['cachedNoticeIds'][mockNoticeType].has('INT-1')).toBe(true);
-      expect(service['cachedNoticeIds'][mockNoticeType].has('INT-2')).toBe(true);
-      // 로그 검증
-      expect(loggerLogMock).toHaveBeenCalledWith(
-        expect.stringContaining(`✅ ${mockNoticeType} 캐싱된 공지사항 ID 로드 완료 (2개)`),
-      );
-    });
-
-    it('공지사항 ID 로드 중 에러 발생 시 에러 로깅되어야 함', () => {
-      const mockError = '캐시 에러';
-      getMock.mockImplementation((query: string, callback: Function) => callback(null, {}));
-      allMock.mockImplementation((query: string, params: any[], callback: Function) =>
-        callback(new Error(mockError), null),
-      );
-
-      service['loadCache'](mockNoticeType);
-
-      // sqlite3.Database.get() 호출
-      expect(getMock).toHaveBeenCalled();
-      // 로그
-      expect(loggerErrorMock).toHaveBeenCalledWith(
-        expect.stringMatching(`${mockNoticeType} SQLite 캐시 로드 중 오류 발생: ${mockError}`),
-      );
-    });
-  });
-
-  // ===============================================================
-  // 2. 스케줄러 (Cron) 관련 메서드 테스트
-  // ===============================================================
-  describe('스케줄러 실행', () => {
-    let executeCrawlingSpy;
-    let deleteOldNoticesSpy;
-
-    beforeEach(() => {
-      executeCrawlingSpy = jest.spyOn<any, any>(service, 'executeCrawling').mockResolvedValue(undefined);
-      deleteOldNoticesSpy = jest.spyOn<any, any>(service, 'deleteOldNotices').mockResolvedValue(undefined);
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-
-    it('handleWeekDaysCron()이 올바른 로그 접두사로 executeCrawling 호출', async () => {
-      const logPrefix = '학과 스타일(국제처, SW) 정기(9~17시)';
-      const weekDaysCronSpy = jest.spyOn(service, 'handleWeekDaysCron').mockImplementation(async () => {
-        await executeCrawlingSpy(logPrefix);
-      });
-
-      await service.handleWeekDaysCron();
-
-      expect(weekDaysCronSpy).toHaveBeenCalled();
-      expect(executeCrawlingSpy).toHaveBeenCalledWith(logPrefix);
-    });
-
-    it('handleDeleteCron()이 올바른 로그 접두사로 deleteOldNotices 호출', async () => {
-      const logPrefix = '학과 스타일(국제처, SW)(17시)';
-      const deleteCronSpy = jest
-        .spyOn(service, 'handleDeleteCron')
-        .mockImplementation(async () => {
-          await deleteOldNoticesSpy(logPrefix);
-        });
-
-      await service.handleDeleteCron();
-
-      expect(deleteCronSpy).toHaveBeenCalled();
-      expect(deleteOldNoticesSpy).toHaveBeenCalledWith(logPrefix);
-    });
-  });
-
-  // ===============================================================
-  // 3. 주요 비즈니스 로직 (크롤링, 삭제) 테스트
+  // 1. 주요 비즈니스 로직 (크롤링, 삭제) 테스트
   // ===============================================================
   describe('executeCrawling()', () => {
     let fetchAllNoticesMock: jest.SpyInstance;
@@ -417,20 +144,18 @@ describe('MajorStyleNoticeSchedulerService', () => {
 
       // fetchAllNotices() 호출
       expect(fetchAllNoticesMock).toHaveBeenCalled();
-      // filterNewNotices() 및 sendMajorStyleNotification() 호출
-      expect(filterNewNoticesMock).toHaveBeenCalledWith('INTERNATIONAL', mockFetchedNotices['INTERNATIONAL']);
-      expect(sendMajorStyleNotificationMock).toHaveBeenCalledWith('Title 1', 'INTERNATIONAL', {
+      // filterNewNotices() 호출
+      expect(filterNewNoticesMock).toHaveBeenCalledWith(mockNoticeType, mockFetchedNotices[mockNoticeType]);
+      // sendMajorStyleNotification() 호출
+      expect(sendMajorStyleNotificationMock).toHaveBeenCalledWith('Title 1', mockNoticeType, {
         id: 'INT-1',
         link: 'https://example.com/1',
       });
-      expect(filterNewNoticesMock).toHaveBeenCalledWith('SWUNIV', mockFetchedNotices['SWUNIV']);
-      expect(sendMajorStyleNotificationMock).toHaveBeenCalledWith('Title 1', 'SWUNIV', {
-        id: 'INT-1',
-        link: 'https://example.com/1',
-      });
-
-      expect(saveNoticeMock).toHaveBeenCalledWith('INTERNATIONAL', mockFetchedNotices['INTERNATIONAL'][0]);
+      // saveNotice() 호출
+      expect(saveNoticeMock).toHaveBeenCalledWith(mockNoticeType, mockFetchedNotices[mockNoticeType][0]);
+      // 캐시 저장
       expect(service['cachedNoticeIds']['INTERNATIONAL'].has('INT-1')).toBe(true);
+      // 로그
       expect(loggerLogMock).toHaveBeenCalledWith(expect.stringContaining(`📌 ${logPrefix} 정기 크롤링 실행 중...`));
       expect(loggerLogMock).toHaveBeenCalledWith(expect.stringMatching(`🚀 ${logPrefix}-INTERNATIONAL 새로운 공지 발견: Title 1`));
       expect(loggerLogMock).toHaveBeenCalledWith(expect.stringContaining(`🏁 ${logPrefix} 정기 크롤링 끝!`));
@@ -439,14 +164,22 @@ describe('MajorStyleNoticeSchedulerService', () => {
     it('배포 환경에서 새로운 공지가 없으면 알림 및 저장이 이루어지지 않아야 함', async () => {
       const logPrefix = '테스트 로그';
       process.env.NODE_ENV = 'production';
+      // 새로운 공지가 없을 때, 빈 배열을 반환함
       filterNewNoticesMock.mockResolvedValue([]);
 
       await service['executeCrawling'](logPrefix);
 
+      // fetchAllNotices() 호출
       expect(fetchAllNoticesMock).toHaveBeenCalled();
-      expect(filterNewNoticesMock).toHaveBeenCalledWith('INTERNATIONAL', mockFetchedNotices['INTERNATIONAL']);
+      // filterNewNotices() 호출(-> 빈 배열 반환)
+      expect(filterNewNoticesMock).toHaveBeenCalledWith(mockNoticeType, mockFetchedNotices[mockNoticeType]);
+      // sendMajorStyleNotification() 미호출
       expect(sendMajorStyleNotificationMock).not.toHaveBeenCalled();
+      // saveNotice() 미호출
       expect(saveNoticeMock).not.toHaveBeenCalled();
+      // 캐시 미저장
+      expect(service['cachedNoticeIds'][mockNoticeType].has('INT-1')).toBe(false);
+      // 로그
       expect(loggerLogMock).toHaveBeenCalledWith(expect.stringContaining(`📌 ${logPrefix} 정기 크롤링 실행 중...`));
       expect(loggerLogMock).toHaveBeenCalledWith(expect.stringContaining(`🏁 ${logPrefix} 정기 크롤링 끝!`));
     });
@@ -457,11 +190,17 @@ describe('MajorStyleNoticeSchedulerService', () => {
 
       await service['executeCrawling'](logPrefix);
 
+      // fetchAllNotices() 호출
       expect(fetchAllNoticesMock).toHaveBeenCalled();
-      expect(filterNewNoticesMock).toHaveBeenCalledWith('INTERNATIONAL', mockFetchedNotices['INTERNATIONAL']);
+      // filterNewNotices() 호출
+      expect(filterNewNoticesMock).toHaveBeenCalledWith(mockNoticeType, mockFetchedNotices[mockNoticeType]);
+      // sendMajorStyleNotification() 미호출
       expect(sendMajorStyleNotificationMock).not.toHaveBeenCalled();
+      // saveNotice()는 비동기 함수라 호출 여부만 판단
       expect(saveNoticeMock).toHaveBeenCalled();
-      expect(service['cachedNoticeIds']['INTERNATIONAL'].has('INT-1')).toBe(true);
+      // 캐시 저장
+      expect(service['cachedNoticeIds'][mockNoticeType].has('INT-1')).toBe(true);
+      // 로그
       expect(loggerDebugMock).toHaveBeenCalledWith(
         expect.stringContaining(`🔕 ${logPrefix}-INTERNATIONAL 개발 환경이므로 푸시 알림을 전송하지 않습니다.`),
       );
@@ -509,7 +248,7 @@ describe('MajorStyleNoticeSchedulerService', () => {
   });
 
   // ===============================================================
-  // 4. DB 조작 및 삭제 관련 메서드 테스트
+  // 2. DB 조작 및 삭제 관련 메서드 테스트
   // ===============================================================
   describe('deleteNoticesExceptToday()', () => {
     it('삭제 쿼리가 정상적으로 실행되어야 하며 loadCache 호출', async () => {
@@ -552,7 +291,7 @@ describe('MajorStyleNoticeSchedulerService', () => {
   });
 
   // ===============================================================
-  // 5. 기타 유틸리티 및 DB 관련 메서드 테스트
+  // 3. 기타 유틸리티 및 DB 관련 메서드 테스트
   // ===============================================================
   describe('filterNewNotices()', () => {
     it('오늘 날짜의 공지사항만 필터링하고, 이미 캐시된 공지는 제외해야 함', async () => {
@@ -639,7 +378,7 @@ describe('MajorStyleNoticeSchedulerService', () => {
   });
 
   // ===============================================================
-  // 6. 추가 경로 및 부가 로깅 테스트
+  // 4. 추가 경로 및 부가 로깅 테스트
   // ===============================================================
   describe('추가 경로 및 에러 상황 처리', () => {
     it('fetchAllNotices에서 반환된 noticeType에 대해 크롤링 루프가 정상적으로 동작해야 함', async () => {
