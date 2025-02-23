@@ -125,10 +125,10 @@ export class MajorStyleNoticeScraperService {
      * @returns {Notice[]} - 전처리된 공지사항 객체 배열
      */
     private fetchGeneralNotices($: cheerio.CheerioAPI, baseUrl: string): Notice[] {
-        const headlines: cheerio.Cheerio<AnyNode> = $(GeneralTagSelectors.NOTICE_BOARD);
+        const generals: cheerio.Cheerio<AnyNode> = $(GeneralTagSelectors.NOTICE_BOARD);
         const results: Notice[] = [];
 
-        headlines.each((_, element) => {
+        generals.each((_, element) => {
             const titleLinkTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_TITLE_LINK);
             const titleStrongTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_TITLE_STRONG);
             const dateTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_DATE);
