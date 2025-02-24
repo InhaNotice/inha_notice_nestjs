@@ -66,6 +66,9 @@ export class FirebaseService {
         },
         data: data || {},
         topic: topic,
+        android: {
+          priority: 'high',
+        },
       };
       if (process.env.NODE_ENV === 'production') {
         const response: string = await this.firebaseAdmin.messaging().send(message);
@@ -95,7 +98,10 @@ export class FirebaseService {
           body: notificationBody
         },
         data: data || {},
-        topic: topic
+        topic: topic,
+        android: {
+          priority: 'high',
+        },
       };
 
       if (process.env.NODE_ENV === 'production') {
@@ -127,7 +133,10 @@ export class FirebaseService {
           body: notificationBody
         },
         data: data || {},
-        topic: topic
+        topic: topic,
+        android: {
+          priority: 'high',
+        },
       };
 
       if (process.env.NODE_ENV === 'production') {
