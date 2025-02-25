@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-22
+ * Latest Updated Date: 2025-02-25
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
@@ -35,6 +35,9 @@ export class FirebaseService {
           body: notificationBody
         },
         data: data || {},
+        "android": {
+          "priority": "high",
+        },
       };
 
       if (process.env.NODE_ENV === 'production') {

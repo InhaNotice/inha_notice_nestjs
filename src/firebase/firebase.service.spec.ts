@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-22
+ * Latest Updated Date: 2025-02-25
  */
 
 import { FirebaseService } from 'src/firebase/firebase.service';
@@ -69,6 +69,9 @@ describe('FirebaseService', () => {
                     body: noticeTitle,
                 },
                 data: sampleData,
+                "android": {
+                    "priority": "high",
+                },
             };
 
             expect(firebaseAdminMock.messaging).toHaveBeenCalled();
@@ -93,6 +96,9 @@ describe('FirebaseService', () => {
                     body: noticeTitle,
                 },
                 data: sampleData,
+                "android": {
+                    "priority": "high",
+                },
             };
 
             expect(firebaseAdminMock.messaging).toHaveBeenCalled();
@@ -131,6 +137,9 @@ describe('FirebaseService', () => {
                     body: noticeTitle,
                 },
                 data: sampleData,
+                "android": {
+                    "priority": "high",
+                },
             };
 
             await service.sendNotificationToDevice(token, noticeTitle, sampleData);
@@ -162,6 +171,9 @@ describe('FirebaseService', () => {
                 },
                 data: sampleData,
                 topic: 'all-notices',
+                "android": {
+                    "priority": "high",
+                },
             };
 
             expect(firebaseAdminMock.messaging).toHaveBeenCalled();
@@ -185,6 +197,9 @@ describe('FirebaseService', () => {
                 },
                 data: sampleData,
                 topic: 'all-notices',
+                "android": {
+                    "priority": "high",
+                },
             };
 
             expect(firebaseAdminMock.messaging).toHaveBeenCalled();
@@ -222,6 +237,9 @@ describe('FirebaseService', () => {
                 },
                 data: sampleData,
                 topic: 'all-notices',
+                "android": {
+                    "priority": "high",
+                },
             };
 
             await service.sendWholeNotification(noticeTitle, sampleData);
@@ -255,6 +273,9 @@ describe('FirebaseService', () => {
                 },
                 data: sampleData,
                 topic: topic,
+                "android": {
+                    "priority": "high",
+                },
             };
 
             expect(messagingMock.send).toHaveBeenCalledWith(expectedMessage);
@@ -312,6 +333,9 @@ describe('FirebaseService', () => {
                 },
                 data: sampleData,
                 topic: topic,
+                "android": {
+                    "priority": "high",
+                },
             };
 
             expect(firebaseAdminMock.messaging).toHaveBeenCalled();
@@ -335,6 +359,9 @@ describe('FirebaseService', () => {
                 },
                 data: sampleData,
                 topic: topic,
+                "android": {
+                    "priority": "high",
+                },
             };
 
             expect(firebaseAdminMock.messaging).toHaveBeenCalled();
