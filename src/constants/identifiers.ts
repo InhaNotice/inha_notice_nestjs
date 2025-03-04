@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-22
+ * Latest Updated Date: 2025-03-04
  */
 
 /**
@@ -13,4 +13,5 @@
  */
 export abstract class IdentifierConstants {
     static readonly UNKNOWN_ID: string = 'unknownId';
+    static readonly kProduction: string = 'production';
 };
