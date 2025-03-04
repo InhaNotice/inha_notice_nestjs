@@ -5,13 +5,13 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-25
+ * Latest Updated Date: 2025-03-04
  */
 
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { IdentifierConstants } from 'src/constants/identifiers';
 import { majorMappings } from 'src/firebase/mappings/major-mappings';
-import { noticeTypeMappings } from 'src/firebase/mappings/notice-type-mappings';
+import { majorStyleMappings } from 'src/firebase/mappings/major-style-mappings';
 
 describe('FirebaseService', () => {
     let service: FirebaseService;
@@ -318,7 +318,7 @@ describe('FirebaseService', () => {
     describe('sendMajorStyleNotification', () => {
         const noticeTitle = 'Test Major Style Notice';
         const topic = 'SW';
-        const expectedNotificationTitle = noticeTypeMappings[topic] ?? "새로운 공지사항이 있습니다!";
+        const expectedNotificationTitle = majorStyleMappings[topic] ?? "새로운 공지사항이 있습니다!";
 
         it('프로덕션 환경에서 정상 호출 시, 올바른 메시지로 firebaseAdmin.messaging().send가 호출되어야 함', async () => {
             process.env.NODE_ENV = 'production';

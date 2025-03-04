@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-22
+ * Latest Updated Date: 2025-03-04
  */
 
 import { Injectable, Logger } from '@nestjs/common';
@@ -19,7 +19,7 @@ import { IdentifierConstants } from 'src/constants/identifiers';
 import { StatusCodeSettings } from 'src/constants/http-status';
 
 /**
- * 학과 공지사항 스타일의 (국제처, SW중심대학사업단) 공지 크롤링 서비스
+ * 학과 공지사항 스타일의 (국제처, SW중심대학사업단, 단과대, 대학원) 공지 크롤링 서비스
  * 
  * 주요 기능
  * - 입력 받은 공지타입과 페이지 기반의 일반 공지사항을 크롤링하여 공지사항 객체 배열로 반환
@@ -33,21 +33,21 @@ export class MajorStyleNoticeScraperService {
 
     /**
      * MajorStyleNoticeScraperService 생성자
-     * @param {ConfigService} configService - 학과 공지사항 스타일의 (국제처, SW중심대학사업단) 공지 URL 초기화
+     * @param {ConfigService} configService - 학과 공지사항 스타일의 공지 URL 초기화
      */
     constructor(private readonly configService: ConfigService) {
-        this.noticeTypes = ['INTERNATIONAL', 'SWUNIV'];
-        const majorStyles: Record<string, {
+        const noticeConfig: Record<string, {
             baseUrl: string;
             queryUrl: string;
         }> = this.configService.get<Record<string, { baseUrl: string; queryUrl: string }>>('majorStyles', {});
 
-        this.noticeTypeUrls = this.loadUrls(majorStyles, 'baseUrl');
-        this.noticeTypeQueryUrls = this.loadUrls(majorStyles, 'queryUrl');
+        this.noticeTypes = Object.keys(noticeConfig);
+        this.noticeTypeUrls = this.loadUrls(noticeConfig, 'baseUrl');
+        this.noticeTypeQueryUrls = this.loadUrls(noticeConfig, 'queryUrl');
     }
 
     /**
-     * 학과 스타일(국제처, SW중심대학사업단)의 공지사항 크롤링 URL(기본 URL 또는 조회 URL)을 초기화하는 함수
+     * 학과 스타일의 공지사항 크롤링 URL(기본 URL 또는 조회 URL)을 초기화하는 함수
      *
      * @param {Record<string, { baseUrl: string; queryUrl: string }>} majorStyles - 학과 스타일별 baseUrl 및 queryUrl이 담긴 설정 객체
      * @param {'baseUrl' | 'queryUrl'} key - 가져오고자 하는 URL의 종류 ('baseUrl' 또는 'queryUrl')
@@ -68,7 +68,7 @@ export class MajorStyleNoticeScraperService {
     }
 
     /**
-     * 학과 스타일(국제처, SW중심대학사업단)의 모든 공지사항을 크롤링 후 전처리한 공지 반환
+     * 학과 스타일의 모든 공지사항을 크롤링 후 전처리한 공지 반환
      * @returns {Promise<Record<string, Notice[]>>} 전처리된 모든 공지들 반환
      */
     async fetchAllNotices(): Promise<Record<string, Notice[]>> {
@@ -88,7 +88,7 @@ export class MajorStyleNoticeScraperService {
 
     /**
      * 공지타입과 페이지 기반의 일반 공지사항을 크롤링하는 함수
-     * @param {string} noticeType - 공지타입: (국제처, SW중심대학사업단)
+     * @param {string} noticeType - 공지타입: (국제처, SW중심대학사업단, 단과대, 대학원)
      * @param {number} page - 페이지 번호
      * @returns {Promise<{general: Notice[]}>} - 공지사항 객체 배열로 반환
      */
@@ -180,7 +180,7 @@ export class MajorStyleNoticeScraperService {
 
     /**
      * noticeTypes의 접근자
-     * @returns {string[]} - 학과 공지사항 스타일의 (국제처, SW중심대학사업단) 키 리턴
+     * @returns {string[]} - 학과 공지사항 스타일의 키 리턴
      */
     getAllNoticeTypes(): string[] {
         return this.noticeTypes;

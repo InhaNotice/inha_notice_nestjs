@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-22
+ * Latest Updated Date: 2025-03-04
  */
 
 import { Injectable, Logger, Scope } from '@nestjs/common';
@@ -17,6 +17,8 @@ import * as sqlite3 from 'sqlite3';
 import * as path from 'path';
 import * as dayjs from 'dayjs';
 import * as fs from 'fs';
+import { IdentifierConstants } from 'src/constants/identifiers';
+import { MajorNoticeSchedulerConstants } from 'src/constants/scheduler-constants/major-notice-scheduler-constants';
 
 /**
  * 모든 학과 공지 스캐줄러
@@ -144,9 +146,9 @@ export class MajorNoticeSchedulerService {
     /**
     * 평일(월~금) 9시~16시 59분까지, 10분 간격으로 학과별 공지 크롤링
     */
-    @Cron('0 */10 9-16 * * 1-5', { timeZone: 'Asia/Seoul' })
+    @Cron(MajorNoticeSchedulerConstants.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
     async handleWeekDaysCron() {
-        await this.executeCrawling('학과 정기(9~17시)');
+        await this.executeCrawling(MajorNoticeSchedulerConstants.TASK_WEEKDAYS);
     }
 
     /**
@@ -155,9 +157,9 @@ export class MajorNoticeSchedulerService {
      * 참고: 오늘 날짜 포함한 모든 공지 삭제시 크롤링이 다시 진행된다면 푸시 알림 발생 가능하지만,
      * 오늘 날짜가 아닌 공지사항 삭제시 그러한 문제가 발생해도 아무런 영향 없음
      */
-    @Cron('0 0 17 * * 1-5', { timeZone: 'Asia/Seoul' })
+    @Cron(MajorNoticeSchedulerConstants.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
     async handleDeleteCron() {
-        await this.deleteOldNotices('학과 (17시)');
+        await this.deleteOldNotices(MajorNoticeSchedulerConstants.TASK_DELETE_OLD);
     }
 
     // ========================================
@@ -183,10 +185,10 @@ export class MajorNoticeSchedulerService {
                 }
 
                 for (const notice of newNotices) {
-                    this.logger.log(`🚀 ${major} 새로운 공지 발견: ${notice.title}`);
+                    this.logger.log(`🚀 ${major} 새로운 공지 발견: ${notice.title}-${notice.date}`);
 
                     // 배포 환경일 때만 FCM 알림 전송
-                    if (process.env.NODE_ENV === 'production') {
+                    if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
                         await this.firebaseService.sendMajorNotification(
                             notice.title,
                             major,
