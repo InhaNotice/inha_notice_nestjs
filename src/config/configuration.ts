@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-02
+ * Latest Updated Date: 2025-03-04
  */
 
 export default () => {
@@ -350,7 +350,9 @@ export default () => {
                 queryUrl: process.env.CVGHUMAN_QUERY_URL,
             },
         },
+        // 학과 스타일(국제처, SWUNIV, 단과대) URL 불러오기
         majorStyles: {
+            // 국제처, SWUNIV
             INTERNATIONAL: {
                 baseUrl: process.env.INTERNATIONAL_URL,
                 queryUrl: process.env.INTERNATIONAL_QUERY_URL,
@@ -358,9 +360,8 @@ export default () => {
             SWUNIV: {
                 baseUrl: process.env.SWUNIV_URL,
                 queryUrl: process.env.SWUNIV_QUERY_URL,
-            }
-        },
-        colleges: {
+            },
+            // 단과대
             ENGCOLLEAGE: {
                 baseUrl: process.env.ENGCOLLEAGE_URL,
                 queryUrl: process.env.ENGCOLLEAGE_QUERY_URL,
@@ -396,9 +397,8 @@ export default () => {
             GENERALEDU: {
                 baseUrl: process.env.GENERALEDU_URL,
                 queryUrl: process.env.GENERALEDU_QUERY_URL,
-            }
-        },
-        graduateSchools: {
+            },
+            // 대학원
             GRAD: {
                 baseUrl: process.env.GRAD_URL,
                 queryUrl: process.env.GRAD_QUERY_URL,
@@ -439,6 +439,6 @@ export default () => {
                 baseUrl: process.env.IMIS_URL,
                 queryUrl: process.env.IMIS_QUERY_URL,
             }
-        }
+        },
     };
 };

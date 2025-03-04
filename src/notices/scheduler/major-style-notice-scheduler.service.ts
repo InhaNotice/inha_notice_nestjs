@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-22
+ * Latest Updated Date: 2025-03-04
  */
 
 import { Injectable, Logger, Scope } from '@nestjs/common';
@@ -17,9 +17,11 @@ import * as sqlite3 from 'sqlite3';
 import * as path from 'path';
 import * as dayjs from 'dayjs';
 import * as fs from 'fs';
+import { IdentifierConstants } from 'src/constants/identifiers';
+import { MajorStyleNoticeSchedulerConstants } from 'src/constants/scheduler-constants/major-style-notice-scheduler-constants';
 
 /**
- * 학과 스타일(국제처, SW중심대학사업단) 공지 스캐줄러
+ * 학과 스타일(국제처, SW중심대학사업단, 단과대, 대학원) 공지 스캐줄러
  * 
  * 주요 기능
  * - 학과 스타일의 공지를 크롤링하여 새로운 공지가 존재시 FCM 알림 전송
@@ -144,9 +146,9 @@ export class MajorStyleNoticeSchedulerService {
     /**
      * 평일(월~금) 9시~16시 59분까지, 10분 간격으로 학과 스타일 공지 크롤링
      */
-    @Cron('0 */10 9-16 * * 1-5', { timeZone: 'Asia/Seoul' })
+    @Cron(MajorStyleNoticeSchedulerConstants.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
     async handleWeekDaysCron() {
-        await this.executeCrawling('학과 스타일(국제처, SW) 정기(9~17시)');
+        await this.executeCrawling(MajorStyleNoticeSchedulerConstants.TASK_WEEKDAYS);
     }
 
     /**
@@ -155,9 +157,9 @@ export class MajorStyleNoticeSchedulerService {
      * 참고: 오늘 날짜 포함한 모든 공지 삭제시 크롤링이 다시 진행된다면 푸시 알림 발생 가능하지만,
      * 오늘 날짜가 아닌 공지사항 삭제시 그러한 문제가 발생해도 아무런 영향 없음
      */
-    @Cron('0 0 17 * * 1-5', { timeZone: 'Asia/Seoul' })
+    @Cron(MajorStyleNoticeSchedulerConstants.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
     async handleDeleteCron() {
-        await this.deleteOldNotices('학과 스타일(국제처, SW)(17시)');
+        await this.deleteOldNotices(MajorStyleNoticeSchedulerConstants.TASK_DELETE_OLD);
     }
 
     // ========================================
@@ -183,10 +185,10 @@ export class MajorStyleNoticeSchedulerService {
                 }
 
                 for (const notice of newNotices) {
-                    this.logger.log(`🚀 ${logPrefix}-${noticeType} 새로운 공지 발견: ${notice.title}`);
+                    this.logger.log(`🚀 ${noticeType} 새로운 공지 발견: ${notice.title} - ${notice.date}`);
 
                     // 배포 환경일 때만 FCM 알림 전송
-                    if (process.env.NODE_ENV === 'production') {
+                    if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
                         await this.firebaseService.sendMajorStyleNotification(
                             notice.title,
                             noticeType,
