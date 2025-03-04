@@ -5,13 +5,13 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-25
+ * Latest Updated Date: 2025-03-04
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { majorMappings } from 'src/firebase/mappings/major-mappings';
-import { noticeTypeMappings } from 'src/firebase/mappings/notice-type-mappings';
+import { majorStyleMappings } from 'src/firebase/mappings/major-style-mappings';
 import { IdentifierConstants } from 'src/constants/identifiers';
 
 @Injectable()
@@ -35,12 +35,12 @@ export class FirebaseService {
           body: notificationBody
         },
         data: data || {},
-        "android": {
-          "priority": "high",
+        android: {
+          priority: "high",
         },
       };
 
-      if (process.env.NODE_ENV === 'production') {
+      if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
         const response: string = await this.firebaseAdmin.messaging().send(message);
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
         FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
@@ -73,7 +73,7 @@ export class FirebaseService {
           priority: 'high',
         },
       };
-      if (process.env.NODE_ENV === 'production') {
+      if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
         const response: string = await this.firebaseAdmin.messaging().send(message);
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
         FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
@@ -107,7 +107,7 @@ export class FirebaseService {
         },
       };
 
-      if (process.env.NODE_ENV === 'production') {
+      if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
         const response: string = await this.firebaseAdmin.messaging().send(message);
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
         FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
@@ -120,14 +120,14 @@ export class FirebaseService {
   }
 
   // 학과 스타일 공지사항 알림
-  // 지원 대상: 국제처, SW중심대학사업단
+  // 지원 대상: 국제처, SW중심대학사업단, 단과대, 대학원
   async sendMajorStyleNotification(
     noticeTitle: string,
     topic: string,
     data?: Record<string, string>
   ): Promise<void> {
     try {
-      const notificationTitle: string = noticeTypeMappings[topic] ?? "새로운 공지사항이 있습니다!";
+      const notificationTitle: string = majorStyleMappings[topic] ?? "새로운 공지사항이 있습니다!";
       const notificationBody: string = noticeTitle;
 
       const message: admin.messaging.Message = {
@@ -142,10 +142,10 @@ export class FirebaseService {
         },
       };
 
-      if (process.env.NODE_ENV === 'production') {
-        const response: string = await this.firebaseAdmin.messaging().send(message);
+      if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
+        // const response: string = await this.firebaseAdmin.messaging().send(message);
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
-        FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
+        // FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
       } else {
         FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
       }
