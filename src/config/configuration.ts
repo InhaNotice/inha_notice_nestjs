@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-04
+ * Latest Updated Date: 2025-03-05
  */
 
 export default () => {
@@ -13,9 +13,22 @@ export default () => {
         server: {
             port: process.env.PORT,
         },
-        whole: {
-            baseUrl: process.env.WHOLE_URL,
-            queryUrl: process.env.WHOLE_QUERY_URL,
+        wholes: {
+            // 전체
+            WHOLE: {
+                baseUrl: process.env.WHOLE_URL,
+                queryUrl: process.env.WHOLE_QUERY_URL,
+            },
+            // 장학
+            SCHOLARSHIP: {
+                baseUrl: process.env.SCHOLARSHIP_URL,
+                queryUrl: process.env.SCHOLARSHIP_QUERY_URL,
+            },
+            // 모집/채용
+            RECRUITMENT: {
+                baseUrl: process.env.RECRUITMENT_URL,
+                queryUrl: process.env.RECRUITMENT_QUERY_URL,
+            },
         },
         majors: {
             // 공과대학

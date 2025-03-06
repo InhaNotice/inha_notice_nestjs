@@ -5,19 +5,34 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-04
+ * Latest Updated Date: 2025-03-06
  */
 
 export abstract class WholeNoticeSchedulerConstants {
-    // 크론 표현식 상수
+    /**
+     * 평일(월~금) 9시~16시 59분까지, 10분 간격으로 학사 공지 크롤링
+     */
     static readonly CRON_WEEKDAYS = '0 */10 9-16 * * 1-5';
-    static readonly CRON_EVENING = '0 */30 16-23 * * 1-5';
-    static readonly CRON_WEEKEND = '0 */30 9-23 * * 6-7';
-    static readonly CRON_DELETE_OLD = '0 0 0 * * 1-5';
-
-    // 태스크 명칭 상수
     static readonly TASK_WEEKDAYS = '학사 정기(9~17시)';
+
+    /**
+    * 평일(월~금) 17시~23시 59분까지, 30분 간격으로 학사 공지 크롤링
+    */
+    static readonly CRON_EVENING = '0 */30 16-23 * * 1-5';
     static readonly TASK_EVENING = '학사 저녁(17~24시)';
+
+    /**
+     * 주말(토~일) 9시~23시 59분까지, 30분 간격으로 학사 공지 크롤링
+     */
+    static readonly CRON_WEEKEND = '0 */30 9-23 * * 6-7';
     static readonly TASK_WEEKEND = '학사 주말(9~24시)';
+
+    /**
+     * 평일(월~금) 23시 정각, 1회 오늘 날짜가 아닌 공지사항 삭제
+     * 
+     * 참고: 오늘 날짜 포함한 모든 공지 삭제시 크롤링이 다시 진행된다면 푸시 알림 발생 가능하지만,
+     * 오늘 날짜가 아닌 공지사항 삭제시 그러한 문제가 발생해도 아무런 영향 없음
+     */
+    static readonly CRON_DELETE_OLD = '0 0 0 * * 1-5';
     static readonly TASK_DELETE_OLD = '학사 (00시)';
 }
