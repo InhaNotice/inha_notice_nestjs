@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-06
+ * Latest Updated Date: 2025-03-07
  */
 import { Logger } from '@nestjs/common';
 import * as sqlite3 from 'sqlite3';
@@ -213,7 +213,7 @@ export abstract class AbsoluteStyleNoticeSchedulerService {
      * @param {string} noticeType - 공지타입
      * @param todayDate - 오늘날짜: YYYY.MM.DD
      */
-    protected deleteNoticesExceptToday(noticeType: string, todayDate: string): Promise<void> {
+    protected async deleteNoticesExceptToday(noticeType: string, todayDate: string): Promise<void> {
         return new Promise((resolve, reject) => {
             this.databases[noticeType].run(
                 `DELETE FROM notices WHERE date != ?`,
@@ -257,7 +257,7 @@ export abstract class AbsoluteStyleNoticeSchedulerService {
      * @param {string} noticeType - 공지타입
      * @param {Notice} notice - 새로운 공지사항 객체
      */
-    protected saveNotice(noticeType: string, notice: Notice): Promise<void> {
+    protected async saveNotice(noticeType: string, notice: Notice): Promise<void> {
         return new Promise((resolve, reject) => {
             this.databases[noticeType].run(
                 "INSERT OR IGNORE INTO notices (id, title, link, date) VALUES (?, ?, ?, ?)",
