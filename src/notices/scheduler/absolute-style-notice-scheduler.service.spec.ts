@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-06
+ * Latest Updated Date: 2025-03-07
  */
 
 import * as fs from 'fs';
@@ -395,5 +395,32 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
             expect(service['scraperService'].fetchAllNotices).toHaveBeenCalled();
             expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
         });
+    });
+
+    describe('deleteOldNotices 메서드는', () => {
+        let getTodayDateMock: jest.SpyInstance;
+        let deleteNoticesExceptTodayMock: jest.SpyInstance;
+
+        beforeEach(async () => {
+            service = new TestSchedulerService();
+
+            getTodayDateMock = jest.spyOn<any, any>(service, 'getTodayDate').mockReturnValue('2025.01.01');
+            deleteNoticesExceptTodayMock = jest.spyOn<any, any>(service, 'deleteNoticesExceptToday').mockImplementation();
+        });
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        it('오늘날짜가 아닌 공지 삭제가 정상적으로 이루어진다.', async () => {
+            const logPrefixMock = '정기 삭제';
+
+            await service['deleteOldNotices'](logPrefixMock);
+
+            expect(getTodayDateMock).toHaveBeenCalled();
+            expect(deleteNoticesExceptTodayMock).toHaveBeenCalledWith('TEST1', '2025.01.01');
+            expect(service['logger'].log).toHaveBeenCalledWith(expect.stringContaining('삭제 완료'));
+        })
+
     });
 });
