@@ -85,6 +85,7 @@ export class MajorNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerSer
             {
                 id: notice.id,
                 link: notice.link,
+                date: notice.date,
             }
         );
     }
