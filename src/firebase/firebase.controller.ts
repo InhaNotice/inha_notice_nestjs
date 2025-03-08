@@ -5,11 +5,11 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-22
+ * Latest Updated Date: 2025-03-08
  */
 
 import { Controller, Post, Body } from '@nestjs/common';
-import { FirebaseService } from './firebase.service';
+import { FirebaseService } from 'src/firebase/firebase.service';
 
 /**
  * FirebaseController
