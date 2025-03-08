@@ -5,17 +5,17 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-04
+ * Latest Updated Date: 2025-03-08
  */
 
 import { Module } from '@nestjs/common';
-import { MajorNoticeScraperService } from 'src/notices/scraper/major-notice-scraper.service';
-import { MajorNoticeSchedulerService } from 'src/notices/scheduler/major-notice-scheduler.service';
+import { MajorNoticeScraperService } from 'src/notices/scrapers/absolute-style/major-notice-scraper.service';
+import { MajorNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/major-notice-scheduler.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
-import { WholeNoticeScraperService } from 'src/notices/scraper/whole-notice-scraper.service';
-import { WholeNoticeSchedulerService } from 'src/notices/scheduler/whole-notice-scheduler.service';
-import { MajorStyleNoticeScraperService } from 'src/notices/scraper/major-style-notice-scraper.service';
-import { MajorStyleNoticeSchedulerService } from 'src/notices/scheduler/major-style-notice-scheduler.service';
+import { WholeNoticeScraperService } from 'src/notices/scrapers/absolute-style/whole-notice-scraper.service';
+import { WholeNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/whole-notice-scheduler.service';
+import { MajorStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/major-style-notice-scraper.service';
+import { MajorStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/major-style-notice-scheduler.service';
 
 @Module({
     providers: [
