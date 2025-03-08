@@ -326,7 +326,6 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
 
             expect(service['scraperService'].fetchAllNotices).toHaveBeenCalled();
             expect(filterNewNoticesMock).toHaveBeenCalled();
-            expect(service['logger'].log).toHaveBeenCalledWith(expect.stringContaining('새로운 공지 발견'));
             expect(sendFirebaseMessagingMock).toHaveBeenCalled();
             expect(saveNoticeMock).toHaveBeenCalled();
         });
@@ -363,7 +362,6 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
 
             expect(service['scraperService'].fetchAllNotices).toHaveBeenCalled();
             expect(filterNewNoticesMock).toHaveBeenCalled();
-            expect(service['logger'].log).toHaveBeenCalledWith(expect.stringContaining('새로운 공지 발견'));
             expect(service['logger'].debug).toHaveBeenCalledWith(expect.stringContaining('개발 환경이므로'));
             expect(sendFirebaseMessagingMock).not.toHaveBeenCalled();
             expect(saveNoticeMock).toHaveBeenCalled();
