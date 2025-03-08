@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-05
+ * Latest Updated Date: 2025-03-08
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
@@ -45,9 +45,11 @@ export class FirebaseService {
         const response: string = await this.firebaseAdmin.messaging().send(message);
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
         FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
-      } else {
-        FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+        return;
       }
+
+      FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
     }
@@ -78,9 +80,11 @@ export class FirebaseService {
         const response: string = await this.firebaseAdmin.messaging().send(message);
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
         FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
-      } else {
-        FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+        return;
       }
+
+      FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
     }
@@ -112,9 +116,11 @@ export class FirebaseService {
         const response: string = await this.firebaseAdmin.messaging().send(message);
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
         FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
-      } else {
-        FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+        return;
       }
+
+      FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
     }
@@ -147,9 +153,11 @@ export class FirebaseService {
         const response: string = await this.firebaseAdmin.messaging().send(message);
         const noticeId: string = (data && 'id' in data) ? data['id'] : IdentifierConstants.UNKNOWN_ID;
         FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${response}`);
-      } else {
-        FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+        return;
       }
+
+      FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
+
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
     }
