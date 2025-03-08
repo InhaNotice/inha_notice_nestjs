@@ -15,7 +15,6 @@ import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
 import { MajorStyleNoticeSchedulerConstants } from 'src/constants/schedulers/major-style-notice-scheduler-constants';
 import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/absolute-style-notice-scheduler.service';
-import { IdentifierConstants } from 'src/constants/identifiers';
 
 /**
  * 학과 스타일(국제처, SW중심대학사업단, 단과대, 대학원) 공지 스캐줄러
@@ -79,15 +78,13 @@ export class MajorStyleNoticeSchedulerService extends AbsoluteStyleNoticeSchedul
     async sendFirebaseMessaging(
         notice: Notice, noticeType: string
     ): Promise<void> {
-        if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
-            await this.firebaseService.sendMajorStyleNotification(
-                notice.title,
-                noticeType,
-                {
-                    id: notice.id,
-                    link: notice.link,
-                }
-            )
-        }
+        return this.firebaseService.sendMajorStyleNotification(
+            notice.title,
+            noticeType,
+            {
+                id: notice.id,
+                link: notice.link,
+            }
+        );
     }
 }

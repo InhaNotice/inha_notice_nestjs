@@ -13,7 +13,6 @@ import { Cron } from '@nestjs/schedule';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
-import { IdentifierConstants } from 'src/constants/identifiers';
 import { MajorNoticeSchedulerConstants } from 'src/constants/schedulers/major-notice-scheduler-constants';
 import { MajorNoticeScraperService } from 'src/notices/scrapers/absolute-style/major-notice-scraper.service';
 import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/absolute-style-notice-scheduler.service';
@@ -80,15 +79,13 @@ export class MajorNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerSer
     async sendFirebaseMessaging(
         notice: Notice, noticeType: string
     ): Promise<void> {
-        if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
-            await this.firebaseService.sendMajorNotification(
-                notice.title,
-                noticeType,
-                {
-                    id: notice.id,
-                    link: notice.link,
-                }
-            )
-        }
+        return await this.firebaseService.sendMajorNotification(
+            notice.title,
+            noticeType,
+            {
+                id: notice.id,
+                link: notice.link,
+            }
+        );
     }
 }
