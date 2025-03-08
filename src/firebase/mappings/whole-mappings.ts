@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-05
+ * Latest Updated Date: 2025-03-08
  */
 
 /**
@@ -13,7 +13,7 @@
  */
 export const wholeMappings: Record<string, string> = {
     // 전체공지
-    'WHOLE': '학사',
+    'all-notices': '학사',
     // 장학
     'SCHOLARSHIP': '장학',
     // 모집/채용

@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-05
+ * Latest Updated Date: 2025-03-08
  */
 
 export default () => {
@@ -15,7 +15,7 @@ export default () => {
         },
         wholes: {
             // 전체
-            WHOLE: {
+            'all-notices': {
                 baseUrl: process.env.WHOLE_URL,
                 queryUrl: process.env.WHOLE_QUERY_URL,
             },
