@@ -94,6 +94,7 @@ export class WholeNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerSer
             {
                 id: notice.id,
                 link: notice.link,
+                date: notice.date,
             }
         )
     }

@@ -84,6 +84,7 @@ export class MajorStyleNoticeSchedulerService extends AbsoluteStyleNoticeSchedul
             {
                 id: notice.id,
                 link: notice.link,
+                date: notice.date,
             }
         );
     }
