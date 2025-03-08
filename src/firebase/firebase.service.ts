@@ -54,12 +54,9 @@ export class FirebaseService {
         await this.firebaseAdmin.messaging().send(message);
 
         const noticeId: string = data?.id ?? IdentifierConstants.UNKNOWN_ID;
-        FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}`);
-        return;
+        const noticeDate: string = data?.date ?? IdentifierConstants.UNKNOWN_DATE;
+        FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${noticeDate}`);
       }
-
-      FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
-
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
     }
@@ -96,12 +93,9 @@ export class FirebaseService {
         await this.firebaseAdmin.messaging().send(message);
 
         const noticeId: string = data?.id ?? IdentifierConstants.UNKNOWN_ID;
-        FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}`);
-        return;
+        const noticeDate: string = data?.date ?? IdentifierConstants.UNKNOWN_DATE;
+        FirebaseService.logger.log(`✅ 푸시알림 보내기 성공: ${noticeId}-${noticeDate}`);
       }
-
-      FirebaseService.logger.debug(`🔕 개발 환경이므로 알림을 보내지 않습니다.`);
-
     } catch (e) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${e.message}`);
     }

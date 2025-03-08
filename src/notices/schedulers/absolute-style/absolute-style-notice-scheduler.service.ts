@@ -165,13 +165,11 @@ export abstract class AbsoluteStyleNoticeSchedulerService {
                 }
 
                 for (const notice of newNotices) {
-                    this.logger.log(`🚀 ${noticeType} 새로운 공지 발견: ${notice.title} - ${notice.date}`);
-
                     // 배포 환경일 때만 FCM 알림 전송
                     if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
                         await this.sendFirebaseMessaging(notice, noticeType);
                     } else {
-                        this.logger.debug(`🔕 ${logPrefix}-${noticeType} 개발 환경이므로 푸시 알림을 전송하지 않습니다.`);
+                        this.logger.debug(`🔕 ${noticeType}의 새로운 공지 - 개발 환경이므로 푸시 알림을 전송하지 않습니다.`);
                     }
 
                     // File에 기록
