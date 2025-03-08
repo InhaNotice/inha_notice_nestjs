@@ -169,7 +169,7 @@ export abstract class AbsoluteStyleNoticeSchedulerService {
                     if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
                         await this.sendFirebaseMessaging(notice, noticeType);
                     } else {
-                        this.logger.debug(`🔕 ${noticeType}의 새로운 공지 - 개발 환경이므로 푸시 알림을 전송하지 않습니다.`);
+                        this.logger.debug(`🔕 ${noticeType}의 새로운 공지 - ${notice.title}-${notice.date}`);
                     }
 
                     // File에 기록
