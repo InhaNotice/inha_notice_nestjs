@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-04
+ * Latest Updated Date: 2025-03-08
  */
 
 import { FirebaseService } from 'src/firebase/firebase.service';
@@ -58,7 +58,7 @@ describe('FirebaseService', () => {
         const noticeTitle = 'Test Device Notice';
 
         it('프로덕션 환경에서 정상 호출 시, firebaseAdmin.messaging().send가 호출되고 성공 로그가 남아야 함', async () => {
-            process.env.NODE_ENV = 'production';
+            process.env.NODE_ENV = IdentifierConstants.kProduction;
             const sampleData = { id: 'device123', link: 'https://example.com/1' };
             await service.sendNotificationToDevice(token, noticeTitle, sampleData);
 
@@ -85,7 +85,7 @@ describe('FirebaseService', () => {
         });
 
         it('프로덕션 환경에서 정상 호출 시, data.id가 없는 경우 UNKNOWN_ID가 사용되어야 함', async () => {
-            process.env.NODE_ENV = 'production';
+            process.env.NODE_ENV = IdentifierConstants.kProduction;
             const sampleData = { link: 'https://example.com/1' };
             await service.sendNotificationToDevice(token, noticeTitle, sampleData);
 
@@ -157,12 +157,13 @@ describe('FirebaseService', () => {
     // ============================================================================
     describe('sendWholeNotification', () => {
         const noticeTitle = 'Test Whole Notice';
+        const topicMock = 'all-notices';
 
         it('프로덕션 환경에서 정상 호출 시, 올바른 메시지로 firebaseAdmin.messaging().send가 호출되어야 함', async () => {
-            process.env.NODE_ENV = 'production';
+            process.env.NODE_ENV = IdentifierConstants.kProduction;
             const sampleData = { id: 'whole123', link: 'https://example.com/1' };
 
-            await service.sendWholeNotification(noticeTitle, sampleData);
+            await service.sendWholeNotification(noticeTitle, topicMock, sampleData);
 
             const expectedMessage = {
                 notification: {
@@ -170,7 +171,7 @@ describe('FirebaseService', () => {
                     body: noticeTitle,
                 },
                 data: sampleData,
-                topic: 'all-notices',
+                topic: topicMock,
                 "android": {
                     "priority": "high",
                 },
@@ -185,10 +186,10 @@ describe('FirebaseService', () => {
         });
 
         it('프로덕션 환경에서 정상 호출 시, data.id가 없는 경우 UNKNOWN_ID 로그가 남아야 함', async () => {
-            process.env.NODE_ENV = 'production';
+            process.env.NODE_ENV = IdentifierConstants.kProduction;
             const sampleData = { link: 'https://example.com/1' };
 
-            await service.sendWholeNotification(noticeTitle, sampleData);
+            await service.sendWholeNotification(noticeTitle, topicMock, sampleData);
 
             const expectedMessage = {
                 notification: {
@@ -196,7 +197,7 @@ describe('FirebaseService', () => {
                     body: noticeTitle,
                 },
                 data: sampleData,
-                topic: 'all-notices',
+                topic: topicMock,
                 "android": {
                     "priority": "high",
                 },
@@ -213,7 +214,7 @@ describe('FirebaseService', () => {
             process.env.NODE_ENV = 'development';
             const sampleData = { id: 'whole123', link: 'https://example.com/1' };
 
-            await service.sendWholeNotification(noticeTitle, sampleData);
+            await service.sendWholeNotification(noticeTitle, topicMock, sampleData);
 
             // production 환경이 아니므로 messaging() 및 send() 호출되지 않아야 함
             expect(firebaseAdminMock.messaging).not.toHaveBeenCalled();
@@ -242,7 +243,7 @@ describe('FirebaseService', () => {
                 },
             };
 
-            await service.sendWholeNotification(noticeTitle, sampleData);
+            await service.sendWholeNotification(noticeTitle, topicMock, sampleData);
 
             expect(firebaseAdminMock.messaging).toHaveBeenCalled();
             expect(messagingMock.send).toHaveBeenCalledWith(expectedMessage);
@@ -261,7 +262,7 @@ describe('FirebaseService', () => {
         const expectedNotificationTitle = majorMappings[topic] ?? "학과";
 
         it('프로덕션 환경에서 정상 호출 시, 올바른 메시지로 firebaseAdmin.messaging().send가 호출되어야 함', async () => {
-            process.env.NODE_ENV = 'production';
+            process.env.NODE_ENV = IdentifierConstants.kProduction;
             const sampleData = { id: 'major123', link: 'https://example.com/1' };
 
             await service.sendMajorNotification(noticeTitle, topic, sampleData);
@@ -321,7 +322,7 @@ describe('FirebaseService', () => {
         const expectedNotificationTitle = majorStyleMappings[topic] ?? "새로운 공지사항이 있습니다!";
 
         it('프로덕션 환경에서 정상 호출 시, 올바른 메시지로 firebaseAdmin.messaging().send가 호출되어야 함', async () => {
-            process.env.NODE_ENV = 'production';
+            process.env.NODE_ENV = IdentifierConstants.kProduction;
             const sampleData = { id: 'majorStyle123', link: 'https://example.com/1' };
 
             await service.sendMajorStyleNotification(noticeTitle, topic, sampleData);
@@ -347,7 +348,7 @@ describe('FirebaseService', () => {
         });
 
         it('프로덕션 환경에서 정상 호출 시, data.id가 없는 경우 UNKNOWN_ID 로그가 남아야 함', async () => {
-            process.env.NODE_ENV = 'production';
+            process.env.NODE_ENV = IdentifierConstants.kProduction;
             const sampleData = { link: 'https://example.com/1' };
 
             await service.sendMajorStyleNotification(noticeTitle, topic, sampleData);

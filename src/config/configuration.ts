@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-04
+ * Latest Updated Date: 2025-03-08
  */
 
 export default () => {
@@ -13,9 +13,22 @@ export default () => {
         server: {
             port: process.env.PORT,
         },
-        whole: {
-            baseUrl: process.env.WHOLE_URL,
-            queryUrl: process.env.WHOLE_QUERY_URL,
+        wholes: {
+            // 전체
+            'all-notices': {
+                baseUrl: process.env.WHOLE_URL,
+                queryUrl: process.env.WHOLE_QUERY_URL,
+            },
+            // 장학
+            SCHOLARSHIP: {
+                baseUrl: process.env.SCHOLARSHIP_URL,
+                queryUrl: process.env.SCHOLARSHIP_QUERY_URL,
+            },
+            // 모집/채용
+            RECRUITMENT: {
+                baseUrl: process.env.RECRUITMENT_URL,
+                queryUrl: process.env.RECRUITMENT_QUERY_URL,
+            },
         },
         majors: {
             // 공과대학
@@ -109,10 +122,7 @@ export default () => {
                 baseUrl: process.env.FOODNUTRI_URL,
                 queryUrl: process.env.FOODNUTRI_QUERY_URL,
             },
-            OCEANOGRAPHY: {
-                baseUrl: process.env.OCEANOGRAPHY_URL,
-                queryUrl: process.env.OCEANOGRAPHY_QUERY_URL,
-            },
+            // 해양과학과
 
             // 경영대학
             BIZ: {
@@ -239,10 +249,7 @@ export default () => {
                 baseUrl: process.env.FINEARTS_URL,
                 queryUrl: process.env.FINEARTS_QUERY_URL,
             },
-            INHADESIGN: {
-                baseUrl: process.env.INHADESIGN_URL,
-                queryUrl: process.env.INHADESIGN_QUERY_URL,
-            },
+            // 디자인융합학과 (마지막 페이지:16)
             SPORT: {
                 baseUrl: process.env.SPORT_URL,
                 queryUrl: process.env.SPORT_QUERY_URL,
