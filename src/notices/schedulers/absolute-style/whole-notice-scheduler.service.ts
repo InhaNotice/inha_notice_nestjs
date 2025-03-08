@@ -13,7 +13,6 @@ import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
 import { WholeNoticeScraperService } from 'src/notices/scrapers/absolute-style/whole-notice-scraper.service';
-import { IdentifierConstants } from 'src/constants/identifiers';
 import { WholeNoticeSchedulerConstants } from 'src/constants/schedulers/whole-notice-scheduler-constants';
 import { AbsoluteStyleNoticeSchedulerService } from './absolute-style-notice-scheduler.service';
 
@@ -89,15 +88,13 @@ export class WholeNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerSer
     async sendFirebaseMessaging(
         notice: Notice, noticeType: string
     ): Promise<void> {
-        if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
-            await this.firebaseService.sendWholeNotification(
-                notice.title,
-                noticeType,
-                {
-                    id: notice.id,
-                    link: notice.link,
-                }
-            )
-        }
+        return this.firebaseService.sendWholeNotification(
+            notice.title,
+            noticeType,
+            {
+                id: notice.id,
+                link: notice.link,
+            }
+        )
     }
 }
