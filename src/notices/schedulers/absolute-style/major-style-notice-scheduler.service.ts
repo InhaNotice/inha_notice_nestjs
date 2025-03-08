@@ -5,16 +5,16 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-05
+ * Latest Updated Date: 2025-03-08
  */
 import { Injectable, Logger, Scope } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { MajorStyleNoticeScraperService } from 'src/notices/scraper/absolute-style-scraper/major-style-notice-scraper.service';
+import { MajorStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/major-style-notice-scraper.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
-import { MajorStyleNoticeSchedulerConstants } from 'src/constants/scheduler-constants/major-style-notice-scheduler-constants';
-import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/scheduler/absolute-style-notice-scheduler.service';
+import { MajorStyleNoticeSchedulerConstants } from 'src/constants/schedulers/major-style-notice-scheduler-constants';
+import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/absolute-style-notice-scheduler.service';
 import { IdentifierConstants } from 'src/constants/identifiers';
 
 /**

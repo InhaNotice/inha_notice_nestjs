@@ -14,9 +14,9 @@ import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
 import { IdentifierConstants } from 'src/constants/identifiers';
-import { MajorNoticeSchedulerConstants } from 'src/constants/scheduler-constants/major-notice-scheduler-constants';
-import { MajorNoticeScraperService } from '../scraper/absolute-style-scraper/major-notice-scraper.service';
-import { AbsoluteStyleNoticeSchedulerService } from './absolute-style-notice-scheduler.service';
+import { MajorNoticeSchedulerConstants } from 'src/constants/schedulers/major-notice-scheduler-constants';
+import { MajorNoticeScraperService } from 'src/notices/scrapers/absolute-style/major-notice-scraper.service';
+import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/absolute-style-notice-scheduler.service';
 
 /**
  * 모든 학과 공지 스캐줄러

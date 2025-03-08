@@ -10,7 +10,7 @@
 
 import * as fs from 'fs';
 import { Notice } from 'src/notices/interfaces/notice.interface';
-import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/scheduler/absolute-style-notice-scheduler.service';
+import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/absolute-style-notice-scheduler.service';
 import * as sqlite3 from 'sqlite3';
 import { IdentifierConstants } from 'src/constants/identifiers';
 import * as dayjs from 'dayjs';

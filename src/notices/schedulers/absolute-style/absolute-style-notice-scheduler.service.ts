@@ -5,14 +5,14 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-07
+ * Latest Updated Date: 2025-03-08
  */
 import { Logger } from '@nestjs/common';
 import * as sqlite3 from 'sqlite3';
 import * as fs from 'fs';
 import * as dayjs from 'dayjs';
 import * as path from 'path';
-import { AbsoluteStyleScraperService } from 'src/notices/scraper/absolute-style-scraper/absolute-style-scraper.service';
+import { AbsoluteStyleScraperService } from 'src/notices/scrapers/absolute-style/absolute-style-scraper.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import { IdentifierConstants } from 'src/constants/identifiers';
 
