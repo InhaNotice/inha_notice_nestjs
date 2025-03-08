@@ -5,46 +5,45 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-05
+ * Latest Updated Date: 2025-03-08
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
 import { GeneralTagSelectors } from 'src/notices/selectors/major-notice-tag-selectors';
 import { Notice } from 'src/notices/interfaces/notice.interface';
-import { AbsoluteStyleScraperService } from 'src/notices/scraper/absolute-style-scraper/absolute-style-scraper.service';
+import { AbsoluteStyleScraperService } from 'src/notices/scrapers/absolute-style/absolute-style-scraper.service';
 
 /**
- * 학과 공지사항 스타일의 (국제처, SW중심대학사업단, 단과대, 대학원) 공지 크롤링 서비스
+ * 학과 공지 크롤링 서비스
  * 
  * ### 주요 기능:
- * - 입력 받은 공지타입과 페이지 기반의 일반 공지사항을 크롤링하여 공지사항 객체 배열로 반환
+ * - 입력 받은 학과와 페이지 기반의 일반 공지사항을 크롤링하여 공지사항 객체를 반환
  * 
  * ### 목차:
  * 1. 생성자 초기화
  * 2. fetchGeneralNotices() 구현
  */
 @Injectable()
-export class MajorStyleNoticeScraperService extends AbsoluteStyleScraperService {
+export class MajorNoticeScraperService extends AbsoluteStyleScraperService {
     // ========================================
     // 1. 생성자 초기화
     // ========================================
 
     /**
-     * MajorStyleNoticeScraperService 생성자
-     * @param {ConfigService} configService - 학과 공지사항 스타일의 공지 URL 초기화
+     * MajorNoticeScraperService 생성자
+     * @param {ConfigService} configService - 모든 학과 URL 초기화
      */
     constructor(private readonly configService: ConfigService) {
         super();
-        this.configName = 'majorStyles';
+        this.configName = 'majors';
         const noticeConfig: Record<string, {
-            baseUrl: string;
-            queryUrl: string;
-        }> = this.configService.get<Record<string, { baseUrl: string; queryUrl: string }>>(this.configName, {});
-
-        this.logger = new Logger(MajorStyleNoticeScraperService.name);
+            baseUrl: string,
+            queryUrl: string
+        }> =
+            this.configService.get<Record<string, { baseUrl: string; queryUrl: string }>>(this.configName, {});
         this.noticeTypes = Object.keys(noticeConfig);
         this.noticeTypeUrls = this.loadUrls(noticeConfig, 'baseUrl');
         this.noticeTypeQueryUrls = this.loadUrls(noticeConfig, 'queryUrl');
