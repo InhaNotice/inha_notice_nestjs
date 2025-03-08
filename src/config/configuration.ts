@@ -122,10 +122,7 @@ export default () => {
                 baseUrl: process.env.FOODNUTRI_URL,
                 queryUrl: process.env.FOODNUTRI_QUERY_URL,
             },
-            OCEANOGRAPHY: {
-                baseUrl: process.env.OCEANOGRAPHY_URL,
-                queryUrl: process.env.OCEANOGRAPHY_QUERY_URL,
-            },
+            // 해양과학과
 
             // 경영대학
             BIZ: {
@@ -252,10 +249,7 @@ export default () => {
                 baseUrl: process.env.FINEARTS_URL,
                 queryUrl: process.env.FINEARTS_QUERY_URL,
             },
-            INHADESIGN: {
-                baseUrl: process.env.INHADESIGN_URL,
-                queryUrl: process.env.INHADESIGN_QUERY_URL,
-            },
+            // 디자인융합학과 (마지막 페이지:16)
             SPORT: {
                 baseUrl: process.env.SPORT_URL,
                 queryUrl: process.env.SPORT_QUERY_URL,
