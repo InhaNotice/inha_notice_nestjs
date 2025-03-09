@@ -108,10 +108,10 @@ export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperS
 
     /**
      * HTML을 parse하여 반환합니다.
-     * @param {AxiosResponse<string>} response - 서버로 응답 받은 원본 HTML
+     * @param {AxiosResponse<ArrayBuffer>} response - 서버로 응답 받은 원본 HTML
      * @returns {Promise<cheerio.CheerioAPI>}
      */
-    async parseHTML(response: AxiosResponse<string>): Promise<cheerio.CheerioAPI> {
+    async parseHTML(response: AxiosResponse<ArrayBuffer>): Promise<cheerio.CheerioAPI> {
         // 1. 응답 데이터를 euc-kr에서 UTF-8로 디코딩
         const decodedHtml = iconv.decode(Buffer.from(response.data), 'euc-kr');
 

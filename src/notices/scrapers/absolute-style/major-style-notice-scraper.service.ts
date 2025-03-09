@@ -16,7 +16,8 @@ import { GeneralTagSelectors } from 'src/notices/selectors/major-notice-tag-sele
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import { AbsoluteStyleScraperService } from 'src/notices/scrapers/absolute-style/absolute-style-scraper.service';
 import { IdentifierConstants } from 'src/constants/identifiers';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
+import * as iconv from 'iconv-lite';
 
 /**
  * 학과 공지사항 스타일의 (국제처, SW중심대학사업단, 단과대, 대학원) 공지 크롤링 서비스
@@ -101,11 +102,13 @@ export class MajorStyleNoticeScraperService extends AbsoluteStyleScraperService 
 
     /**
      * HTML을 parse하여 반환합니다.
-     * @param {AxiosResponse<string>} response - 서버로 응답 받은 원본 HTML
+     * @param {AxiosResponse<ArrayBuffer>} response - 서버로 응답 받은 원본 HTML
      * @returns {Promise<cheerio.CheerioAPI>}
      */
-    async parseHTML(response: AxiosResponse<string>): Promise<cheerio.CheerioAPI> {
-        return cheerio.load(response.data);
+    async parseHTML(response: AxiosResponse<ArrayBuffer>): Promise<cheerio.CheerioAPI> {
+        const decodedHtml = Buffer.from(response.data).toString('utf-8');
+
+        return cheerio.load(decodedHtml);
     }
 
     // ========================================

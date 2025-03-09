@@ -48,7 +48,7 @@ export abstract class AbsoluteStyleScraperService {
      */
     abstract fetchGeneralNotices($: cheerio.CheerioAPI, baseUrl: string): Notice[];
 
-    abstract parseHTML(response: AxiosResponse<string>): Promise<cheerio.CheerioAPI>;
+    abstract parseHTML(response: AxiosResponse<ArrayBuffer>): Promise<cheerio.CheerioAPI>;
 
     // ========================================
     // 3. 서비스 로직 구현
@@ -110,7 +110,9 @@ export abstract class AbsoluteStyleScraperService {
 
         try {
             const connectUrl: string = `${queryUrl}${page}`;
-            const response: AxiosResponse<string> = await axios.get(connectUrl);
+            const response: AxiosResponse<ArrayBuffer> = await axios.get(connectUrl, {
+                responseType: 'arraybuffer',
+            });
 
             if (response.status === StatusCodeSettings.STATUS_OKAY) {
                 const $: cheerio.CheerioAPI = await this.parseHTML(response);
