@@ -15,6 +15,7 @@ import { majorStyleMappings } from 'src/firebase/mappings/major-style-mappings';
 import { IdentifierConstants } from 'src/constants/identifiers';
 import { wholeMappings } from 'src/firebase/mappings/whole-mappings';
 import { oceanographyStyleMappings } from 'src/firebase/mappings/oceanography-style-mappings';
+import { inhadesignStyleMappings } from 'src/firebase/mappings/inhadesign-style-mappings';
 
 @Injectable()
 export class FirebaseService {
@@ -170,6 +171,24 @@ export class FirebaseService {
     data?: Record<string, string>
   ): Promise<void> {
     const notificationTitle: string = oceanographyStyleMappings[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationBody: string = noticeTitle;
+
+    return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
+  }
+
+  /**
+   * 디자인융합학과 스타일인 경우, 일림을 보낸다.
+   * @param {string} topic - (ex) 'INHADESIGN'
+   * @param {string} noticeTitle 
+   * @param {Record<string, string>} data 
+   * @returns 
+   */
+  async sendInhadesignStyleNotification(
+    topic: string,
+    noticeTitle: string,
+    data?: Record<string, string>
+  ): Promise<void> {
+    const notificationTitle: string = inhadesignStyleMappings[topic] ?? FirebaseService.kDefaultNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
