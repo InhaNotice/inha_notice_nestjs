@@ -95,7 +95,6 @@ export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperS
             const date: string = dateTag.text().trim();
             const writer: string = writerTag.text().trim();
             const access: string = accessTag.text().trim();
-            console.log({ id, title, link, date, writer, access });
             results.push({ id, title, link, date, writer, access });
         });
 
