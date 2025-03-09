@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-08
+ * Latest Updated Date: 2025-03-09
  */
 
 import { Injectable } from '@nestjs/common';
@@ -15,6 +15,7 @@ import { AnyNode } from 'domhandler';
 import { GeneralTagSelectors } from 'src/notices/selectors/major-notice-tag-selectors';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import { AbsoluteStyleScraperService } from 'src/notices/scrapers/absolute-style/absolute-style-scraper.service';
+import { IdentifierConstants } from 'src/constants/identifiers';
 
 /**
  * 학과 공지 크롤링 서비스
@@ -88,5 +89,28 @@ export class MajorNoticeScraperService extends AbsoluteStyleScraperService {
         });
 
         return results;
+    }
+
+    /**
+     * 식별 가능한 공지 id를 반환
+     * @param {string} postUrl - [bbs/[provider]/3113/[게시물 고유 번호]/artclView.do]
+     * @returns {string} - 반환: [provider]-[게시물 고유 번호]
+     */
+    private makeUniqueNoticeId(postUrl: string): string {
+        if (postUrl.length === 0) {
+            return IdentifierConstants.UNKNOWN_ID;
+        }
+
+        // 공지의 고유 URL을 배열로 변환
+        const postUrlList: string[] = postUrl.split('/');
+        if (postUrlList.length <= 4) {
+            return IdentifierConstants.UNKNOWN_ID;
+        }
+
+        // provider - [provider]
+        const provider: string = postUrlList[2];
+        // postId: [게시물 고유 번호]
+        const postId: string = postUrlList[4];
+        return `${provider}-${postId}`;
     }
 }

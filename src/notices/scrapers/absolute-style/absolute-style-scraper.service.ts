@@ -5,13 +5,12 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-08
+ * Latest Updated Date: 2025-03-09
  */
 import { Logger } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import * as cheerio from 'cheerio';
 import { Notice } from 'src/notices/interfaces/notice.interface';
-import { IdentifierConstants } from 'src/constants/identifiers';
 import { StatusCodeSettings } from 'src/constants/http-status';
 
 /**
@@ -121,29 +120,6 @@ export abstract class AbsoluteStyleScraperService {
         } catch (error) {
             throw new Error(`❌ ${noticeType}의 공지사항 크롤링 실패: ${error.message}`);
         }
-    }
-
-    /**
-     * 식별 가능한 공지 id를 반환
-     * @param {string} postUrl - [bbs/[provider]/3113/[게시물 고유 번호]/artclView.do]
-     * @returns {string} - 반환: [provider]-[게시물 고유 번호]
-     */
-    makeUniqueNoticeId(postUrl: string): string {
-        if (postUrl.length === 0) {
-            return IdentifierConstants.UNKNOWN_ID;
-        }
-
-        // 공지의 고유 URL을 배열로 변환
-        const postUrlList: string[] = postUrl.split('/');
-        if (postUrlList.length <= 4) {
-            return IdentifierConstants.UNKNOWN_ID;
-        }
-
-        // provider - [provider]
-        const provider: string = postUrlList[2];
-        // postId: [게시물 고유 번호]
-        const postId: string = postUrlList[4];
-        return `${provider}-${postId}`;
     }
 
     /**
