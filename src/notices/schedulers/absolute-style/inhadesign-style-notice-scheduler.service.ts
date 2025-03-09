@@ -68,10 +68,10 @@ export class InhadesignStyleNoticeSchedulerService extends AbsoluteStyleNoticeSc
     // 3. sendFirebaseMessaging() 구현
     // ========================================
     /**
-         * 
-         * @param {Notice} notice - 새로운 공지 정보가 담긴 객체
-         * @param {string} noticeType - 알림을 보낼 공지 타입
-         */
+    * 
+    * @param {Notice} notice - 새로운 공지 정보가 담긴 객체
+    * @param {string} noticeType - 알림을 보낼 공지 타입
+    */
     async sendFirebaseMessaging(
         notice: Notice, noticeType: string
     ): Promise<void> {
