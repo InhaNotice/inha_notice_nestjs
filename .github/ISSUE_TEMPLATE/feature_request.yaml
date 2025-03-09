@@ -17,16 +17,6 @@ body:
 
   - type: textarea
     attributes:
-      label: 🚀 기대 효과
-      description: |
-        - 이 기능이 추가되면 어떤 효과가 있을까요?
-        - 사용자 경험(UX) 개선, 성능 향상, 유지보수 편의성 증가 등 구체적으로 적어주세요.
-        - 예) "UI 개선으로 사용자 접근성이 증가할 것으로 기대됩니다."
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
       label: ✅ 구현 방안
       description: |
         - 이 기능을 어떻게 구현할 계획인가요?
