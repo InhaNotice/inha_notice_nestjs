@@ -14,5 +14,7 @@
 export abstract class IdentifierConstants {
     static readonly UNKNOWN_ID: string = 'unknownId';
     static readonly UNKNOWN_DATE: string = 'unknownDate';
+    static readonly UNKNOWN_WRITER: string = 'unknownWriter';
+    static readonly UNKNOWN_ACCESS: string = 'unknownAccess';
     static readonly kProduction: string = 'production';
 };

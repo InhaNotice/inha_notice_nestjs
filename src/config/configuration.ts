@@ -452,6 +452,12 @@ export default () => {
                 baseUrl: process.env.OCEANOGRAPHY_URL,
                 queryUrl: process.env.OCEANOGRAPHY_QUERY_URL,
             },
+        },
+        inhadesignStyles: {
+            INHADESIGN: {
+                baseUrl: process.env.INHADESIGN_URL,
+                queryUrl: process.env.INHADESIGN_QUERY_URL,
+            }
         }
     };
 };

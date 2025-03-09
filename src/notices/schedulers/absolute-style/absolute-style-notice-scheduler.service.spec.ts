@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-08
+ * Latest Updated Date: 2025-03-09
  */
 
 import * as fs from 'fs';
@@ -362,7 +362,7 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
 
             expect(service['scraperService'].fetchAllNotices).toHaveBeenCalled();
             expect(filterNewNoticesMock).toHaveBeenCalled();
-            expect(service['logger'].debug).toHaveBeenCalledWith(expect.stringContaining('개발 환경이므로'));
+            expect(service['logger'].debug).toHaveBeenCalledWith(expect.stringContaining('새로운 공지'));
             expect(sendFirebaseMessagingMock).not.toHaveBeenCalled();
             expect(saveNoticeMock).toHaveBeenCalled();
         });
