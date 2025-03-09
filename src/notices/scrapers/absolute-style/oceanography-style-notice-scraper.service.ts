@@ -131,7 +131,7 @@ export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperS
      */
     private makeUniqueNoticeId(postUrl: string): string {
         // 1. postUrl이 비어 있는 경우 기본값 반환
-        if (!postUrl || postUrl.trim().length === 0) {
+        if (!postUrl || postUrl.length === 0) {
             return IdentifierConstants.UNKNOWN_ID;
         }
 
@@ -148,9 +148,8 @@ export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperS
             const idxUrl = segments[2];
 
             // 5. idxUrl에서 'idx' 쿼리 파라미터 추출
-            const parsedUrl = new url.URL(idxUrl);
+            const parsedUrl = new url.URL(idxUrl, 'http://www.wdn.co.kr');
             const postId: string | null = parsedUrl.searchParams.get('idx');
-
             // 6. postId가 존재하지 않으면 기본값 반환
             if (!postId) {
                 return IdentifierConstants.UNKNOWN_ID;
