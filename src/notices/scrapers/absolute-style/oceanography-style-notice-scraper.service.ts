@@ -29,7 +29,7 @@ import * as iconv from 'iconv-lite';
  * 1. 생성자 초기화
  * 2. fetchGeneralNotices() 구현
  * 3. parseHTML() 구현
- * 4. makeUniqueNoticeId() 구현
+ * 4. 유틸리티 함수 구현
  */
 @Injectable()
 export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperService {
@@ -92,7 +92,10 @@ export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperS
             const id: string = this.makeUniqueNoticeId(postUrl);
             const title: string = titleTag.text().trim();
             const link: string = baseUrl + postUrl;
-            const date: string = dateTag.text().trim();
+
+            const rawDate: string = dateTag.text().trim();
+            const date: string = this.formatDate(rawDate);
+
             const writer: string = writerTag.text().trim();
             const access: string = accessTag.text().trim();
             results.push({ id, title, link, date, writer, access });
@@ -120,7 +123,7 @@ export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperS
 
 
     // ========================================
-    // 4. makeUniqueNoticeId() 구현
+    // 4. 유틸리티 함수 구현
     // ========================================
 
     /**
@@ -161,5 +164,27 @@ export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperS
             // URL 파싱 중 예외가 발생한 경우 기본값 반환
             return IdentifierConstants.UNKNOWN_ID;
         }
+    }
+
+    /**
+     * 'YY.MM.DD' 형식의 날짜를 'YYYY.MM.DD'로 변환하는 함수
+     * @param {string} rawDate - 변환할 날짜 (예: '25.02.13')
+     * @returns {string} - 변환된 날짜 (예: '2025.02.13')
+     */
+    private formatDate(rawDate: string): string {
+        // 1. YY.MM.DD 형식인지 확인
+        const datePattern = /^(\d{2})\.(\d{2})\.(\d{2})$/;
+        const match = rawDate.match(datePattern);
+
+        if (!match) {
+            return rawDate; // 형식이 다르면 변환 없이 그대로 반환
+        }
+
+        // 2. 연도 변환 ('25' → '2025', '99' → '1999' 처리)
+        const yearPrefix = parseInt(match[1], 10) >= 50 ? '19' : '20'; // 50 이상이면 1900년대, 미만이면 2000년대
+        const formattedYear = `${yearPrefix}${match[1]}`;
+
+        // 3. 변환된 날짜 반환 ('2025.02.13')
+        return `${formattedYear}.${match[2]}.${match[3]}`;
     }
 }
