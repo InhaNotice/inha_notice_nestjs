@@ -16,7 +16,21 @@ import { Notice } from 'src/notices/interfaces/notice.interface';
 import { GeneralTagSelectors } from "src/notices/selectors/oceanography-style-notice-tag-selectors";
 import { IdentifierConstants } from "src/constants/identifiers";
 import * as url from 'url';
+import { AxiosResponse } from 'axios';
+import * as iconv from 'iconv-lite';
 
+/**
+ * 해양과학과 공지사항 스타일의 공지 크롤링 서비스
+ * 
+ * ### 주요 기능:
+ * - 입력 받은 공지타입과 페이지 기반의 일반 공지사항을 크롤링하여 공지사항 객체 배열로 반환
+ * 
+ * ### 목차:
+ * 1. 생성자 초기화
+ * 2. fetchGeneralNotices() 구현
+ * 3. parseHTML() 구현
+ * 4. makeUniqueNoticeId() 구현
+ */
 @Injectable()
 export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperService {
     constructor(private readonly configService: ConfigService) {
@@ -87,6 +101,28 @@ export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperS
 
         return results;
     }
+
+    // ========================================
+    // 3. parseHTML() 구현
+    // ========================================
+
+    /**
+     * HTML을 parse하여 반환합니다.
+     * @param {AxiosResponse<string>} response - 서버로 응답 받은 원본 HTML
+     * @returns {Promise<cheerio.CheerioAPI>}
+     */
+    async parseHTML(response: AxiosResponse<string>): Promise<cheerio.CheerioAPI> {
+        // 1. 응답 데이터를 euc-kr에서 UTF-8로 디코딩
+        const decodedHtml = iconv.decode(Buffer.from(response.data), 'euc-kr');
+
+        // 2. Cheerio를 사용하여 HTML 파싱
+        return cheerio.load(decodedHtml);
+    }
+
+
+    // ========================================
+    // 4. makeUniqueNoticeId() 구현
+    // ========================================
 
     /**
      * 공지사항 URL을 기반으로 고유한 ID를 생성하는 함수
