@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-08
+ * Latest Updated Date: 2025-03-09
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
@@ -14,6 +14,7 @@ import { majorMappings } from 'src/firebase/mappings/major-mappings';
 import { majorStyleMappings } from 'src/firebase/mappings/major-style-mappings';
 import { IdentifierConstants } from 'src/constants/identifiers';
 import { wholeMappings } from 'src/firebase/mappings/whole-mappings';
+import { oceanographyStyleMappings } from 'src/firebase/mappings/oceanography-style-mappings';
 
 @Injectable()
 export class FirebaseService {
@@ -151,6 +152,24 @@ export class FirebaseService {
     data?: Record<string, string>
   ): Promise<void> {
     const notificationTitle: string = majorStyleMappings[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationBody: string = noticeTitle;
+
+    return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
+  }
+
+  /**
+   * 해양과학과 스타일인 경우, 일림을 보낸다.
+   * @param {string} topic - (ex) 'OCEANOGRAPHY'
+   * @param {string} noticeTitle 
+   * @param {Record<string, string>} data 
+   * @returns 
+   */
+  async sendOceanographyStyleNotification(
+    topic: string,
+    noticeTitle: string,
+    data?: Record<string, string>
+  ): Promise<void> {
+    const notificationTitle: string = oceanographyStyleMappings[topic] ?? FirebaseService.kDefaultNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);

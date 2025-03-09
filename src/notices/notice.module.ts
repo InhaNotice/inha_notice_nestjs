@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-08
+ * Latest Updated Date: 2025-03-09
  */
 
 import { Module } from '@nestjs/common';
@@ -16,7 +16,8 @@ import { WholeNoticeScraperService } from 'src/notices/scrapers/absolute-style/w
 import { WholeNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/whole-notice-scheduler.service';
 import { MajorStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/major-style-notice-scraper.service';
 import { MajorStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/major-style-notice-scheduler.service';
-
+import { OceanographyStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/oceanography-style-notice-scheduler.service';
+import { OceanographyStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/oceanography-style-notice-scraper.service';
 @Module({
     providers: [
         WholeNoticeScraperService,
@@ -25,6 +26,8 @@ import { MajorStyleNoticeSchedulerService } from 'src/notices/schedulers/absolut
         MajorNoticeSchedulerService,
         MajorStyleNoticeScraperService,
         MajorStyleNoticeSchedulerService,
+        OceanographyStyleNoticeSchedulerService,
+        OceanographyStyleNoticeScraperService,
         FirebaseService,
     ],
     exports: [
@@ -34,6 +37,8 @@ import { MajorStyleNoticeSchedulerService } from 'src/notices/schedulers/absolut
         MajorNoticeSchedulerService,
         MajorStyleNoticeScraperService,
         MajorStyleNoticeSchedulerService,
+        OceanographyStyleNoticeSchedulerService,
+        OceanographyStyleNoticeScraperService,
     ],
 })
 export class NoticeModule { }
