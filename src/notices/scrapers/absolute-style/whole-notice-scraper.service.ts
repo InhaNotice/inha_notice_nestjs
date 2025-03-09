@@ -16,6 +16,7 @@ import { Notice } from 'src/notices/interfaces/notice.interface';
 import { GeneralTagSelectors } from 'src/notices/selectors/whole-notice-tag-selectors';
 import { AbsoluteStyleScraperService } from 'src/notices/scrapers/absolute-style/absolute-style-scraper.service';
 import { IdentifierConstants } from 'src/constants/identifiers';
+import { AxiosResponse } from 'axios';
 
 /**
  * 학사 공지사항 크롤링 서비스(전체공지, 장학, 모집/채용)
@@ -26,6 +27,8 @@ import { IdentifierConstants } from 'src/constants/identifiers';
  * ### 목차:
  * 1. 생성자 초기화
  * 2. fetchGeneralNotices() 구현
+ * 3. parseHTML() 구현
+ * 4. makeUniqueNoticeId() 구현
  */
 @Injectable()
 export class WholeNoticeScraperService extends AbsoluteStyleScraperService {
@@ -90,6 +93,23 @@ export class WholeNoticeScraperService extends AbsoluteStyleScraperService {
 
         return results;
     }
+
+    // ========================================
+    // 3. parseHTML() 구현
+    // ========================================
+
+    /**
+     * HTML을 parse하여 반환합니다.
+     * @param {AxiosResponse<string>} response - 서버로 응답 받은 원본 HTML
+     * @returns {Promise<cheerio.CheerioAPI>}
+     */
+    async parseHTML(response: AxiosResponse<string>): Promise<cheerio.CheerioAPI> {
+        return cheerio.load(response.data);
+    }
+
+    // ========================================
+    // 4. makeUniqueNoticeId() 구현
+    // ========================================
 
     /**
      * 식별 가능한 공지 id를 반환

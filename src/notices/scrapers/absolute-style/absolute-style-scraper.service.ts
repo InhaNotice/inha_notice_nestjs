@@ -22,7 +22,7 @@ import { StatusCodeSettings } from 'src/constants/http-status';
  * 
  * ### 목차:
  * 1. 필드 선언
- * 2. 추상메서드 선언
+ * 2. 추상메서드 선언 (2개)
  * 3. 서비스 로직 구현
  */
 export abstract class AbsoluteStyleScraperService {
@@ -37,15 +37,18 @@ export abstract class AbsoluteStyleScraperService {
     protected noticeTypeQueryUrls: Record<string, string>;
 
     // ========================================
-    // 2. 추상메서드 선언
+    // 2. 추상메서드 선언 (2개)
     // ========================================
 
     /**
      * 응답 받은 HTML을 전처리하는 함수
      * @param {cheerio.CheerioAPI} $ - Cheerio API 인스턴스  
      * @param {string} baseUrl - 공지사항 표준 링크 (이후 게시물 링크 생성)
+     * @return {Notice[]} - 전처리된 공지사항 배열 객체
      */
     abstract fetchGeneralNotices($: cheerio.CheerioAPI, baseUrl: string): Notice[];
+
+    abstract parseHTML(response: AxiosResponse<string>): Promise<cheerio.CheerioAPI>;
 
     // ========================================
     // 3. 서비스 로직 구현
@@ -110,7 +113,7 @@ export abstract class AbsoluteStyleScraperService {
             const response: AxiosResponse<string> = await axios.get(connectUrl);
 
             if (response.status === StatusCodeSettings.STATUS_OKAY) {
-                const $: cheerio.CheerioAPI = cheerio.load(response.data);
+                const $: cheerio.CheerioAPI = await this.parseHTML(response);
                 return {
                     general: this.fetchGeneralNotices($, baseUrl),
                 };
