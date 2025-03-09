@@ -18,7 +18,7 @@ import { IdentifierConstants } from "src/constants/identifiers";
 import * as url from 'url';
 
 @Injectable()
-export class OceanographyStyleNoticeScraper extends AbsoluteStyleScraperService {
+export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperService {
     constructor(private readonly configService: ConfigService) {
         super();
         this.configName = 'oceanographyStyles';
@@ -27,7 +27,7 @@ export class OceanographyStyleNoticeScraper extends AbsoluteStyleScraperService 
             queryUrl: string;
         }> = this.configService.get<Record<string, { baseUrl: string; queryUrl: string }>>(this.configName, {});
 
-        this.logger = new Logger(OceanographyStyleNoticeScraper.name);
+        this.logger = new Logger(OceanographyStyleNoticeScraperService.name);
         this.noticeTypes = Object.keys(noticeConfig);
         this.noticeTypeUrls = this.loadUrls(noticeConfig, 'baseUrl');
         this.noticeTypeQueryUrls = this.loadUrls(noticeConfig, 'queryUrl');
@@ -93,7 +93,7 @@ export class OceanographyStyleNoticeScraper extends AbsoluteStyleScraperService 
      * @param {string} postUrl - 공지사항 상세 페이지의 URL
      * @returns {string} - 고유한 공지 ID
      */
-    makeUniqueNoticeId(postUrl: string): string {
+    private makeUniqueNoticeId(postUrl: string): string {
         // 1. postUrl이 비어 있는 경우 기본값 반환
         if (!postUrl || postUrl.trim().length === 0) {
             return IdentifierConstants.UNKNOWN_ID;

@@ -13,9 +13,9 @@ import { Cron } from '@nestjs/schedule';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
-import { MajorNoticeScraperService } from 'src/notices/scrapers/absolute-style/major-notice-scraper.service';
 import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/absolute-style-notice-scheduler.service';
 import { OceanographyStyleNoticeSchedulerConstants } from 'src/constants/schedulers/oceanography-style-notice-scheduler-constants';
+import { OceanographyStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/oceanography-style-notice-scraper.service';
 
 /**
  * 해양과학과 스타일 공지 크롤링 스케줄러
@@ -31,20 +31,20 @@ import { OceanographyStyleNoticeSchedulerConstants } from 'src/constants/schedul
  * 3. sendFirebaseMessaging() 구현
  */
 @Injectable({ scope: Scope.DEFAULT })
-export class OceanographyStyleNoticeScraperService extends AbsoluteStyleNoticeSchedulerService {
+export class OceanographyStyleNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerService {
     // ========================================
     // 1. 생성자 초기화
     // ========================================
 
     constructor(
         private readonly firebaseService: FirebaseService,
-        private readonly majorNoticeScraperService: MajorNoticeScraperService,
+        private readonly oceanographyStyleNoticeScraperService: OceanographyStyleNoticeScraperService,
     ) {
         // 초기화
         super();
-        this.logger = new Logger(OceanographyStyleNoticeScraperService.name);
+        this.logger = new Logger(OceanographyStyleNoticeSchedulerService.name);
         this.directoryName = 'oceanography_styles';
-        this.scraperService = this.majorNoticeScraperService;
+        this.scraperService = this.oceanographyStyleNoticeScraperService;
         this.databaseDirectory = path.join(process.cwd(), 'database', this.directoryName);
         this.databases = {};
         this.cachedNoticeIds = {};

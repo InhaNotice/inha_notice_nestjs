@@ -17,8 +17,7 @@ import { WholeNoticeSchedulerService } from 'src/notices/schedulers/absolute-sty
 import { MajorStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/major-style-notice-scraper.service';
 import { MajorStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/major-style-notice-scheduler.service';
 import { OceanographyStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/oceanography-style-notice-scheduler.service';
-import { OceanographyStyleNoticeScraper } from 'src/notices/scrapers/absolute-style/oceanography-style-notice-scraper.service';
-
+import { OceanographyStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/oceanography-style-notice-scraper.service';
 @Module({
     providers: [
         WholeNoticeScraperService,
@@ -28,7 +27,7 @@ import { OceanographyStyleNoticeScraper } from 'src/notices/scrapers/absolute-st
         MajorStyleNoticeScraperService,
         MajorStyleNoticeSchedulerService,
         OceanographyStyleNoticeSchedulerService,
-        OceanographyStyleNoticeScraper,
+        OceanographyStyleNoticeScraperService,
         FirebaseService,
     ],
     exports: [
@@ -39,7 +38,7 @@ import { OceanographyStyleNoticeScraper } from 'src/notices/scrapers/absolute-st
         MajorStyleNoticeScraperService,
         MajorStyleNoticeSchedulerService,
         OceanographyStyleNoticeSchedulerService,
-        OceanographyStyleNoticeScraper,
+        OceanographyStyleNoticeScraperService,
     ],
 })
 export class NoticeModule { }
