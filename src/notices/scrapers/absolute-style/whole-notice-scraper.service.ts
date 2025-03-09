@@ -17,6 +17,7 @@ import { GeneralTagSelectors } from 'src/notices/selectors/whole-notice-tag-sele
 import { AbsoluteStyleScraperService } from 'src/notices/scrapers/absolute-style/absolute-style-scraper.service';
 import { IdentifierConstants } from 'src/constants/identifiers';
 import { AxiosResponse } from 'axios';
+import * as iconv from 'iconv-lite';
 
 /**
  * 학사 공지사항 크롤링 서비스(전체공지, 장학, 모집/채용)
@@ -100,11 +101,13 @@ export class WholeNoticeScraperService extends AbsoluteStyleScraperService {
 
     /**
      * HTML을 parse하여 반환합니다.
-     * @param {AxiosResponse<string>} response - 서버로 응답 받은 원본 HTML
+     * @param {AxiosResponse<ArrayBuffer>} response - 서버로 응답 받은 원본 HTML
      * @returns {Promise<cheerio.CheerioAPI>}
      */
-    async parseHTML(response: AxiosResponse<string>): Promise<cheerio.CheerioAPI> {
-        return cheerio.load(response.data);
+    async parseHTML(response: AxiosResponse<ArrayBuffer>): Promise<cheerio.CheerioAPI> {
+        const decodedHtml = Buffer.from(response.data).toString('utf-8');
+
+        return cheerio.load(decodedHtml);
     }
 
     // ========================================
