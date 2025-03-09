@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-08
+ * Latest Updated Date: 2025-03-09
  */
 
 export default () => {
@@ -447,5 +447,11 @@ export default () => {
                 queryUrl: process.env.IMIS_QUERY_URL,
             }
         },
+        oceanographyStyles: {
+            OCEANOGRAPHY: {
+                baseUrl: process.env.OCEANOGRAPHY_URL,
+                queryUrl: process.env.OCEANOGRAPHY_QUERY_URL,
+            },
+        }
     };
 };

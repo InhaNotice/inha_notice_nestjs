@@ -128,7 +128,7 @@ export abstract class AbsoluteStyleScraperService {
      * @param {string} postUrl - [bbs/[provider]/3113/[게시물 고유 번호]/artclView.do]
      * @returns {string} - 반환: [provider]-[게시물 고유 번호]
      */
-    protected makeUniqueNoticeId(postUrl: string): string {
+    makeUniqueNoticeId(postUrl: string): string {
         if (postUrl.length === 0) {
             return IdentifierConstants.UNKNOWN_ID;
         }
