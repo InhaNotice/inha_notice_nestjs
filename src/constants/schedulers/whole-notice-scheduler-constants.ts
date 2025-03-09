@@ -13,19 +13,19 @@ export abstract class WholeNoticeSchedulerConstants {
      * 평일(월~금) 9시~16시 59분까지, 10분 간격으로 학사 공지 크롤링
      */
     static readonly CRON_WEEKDAYS = '0 */10 9-16 * * 1-5';
-    static readonly TASK_WEEKDAYS = '학사 정기(9~17시)';
+    static readonly TASK_WEEKDAYS = '정기(9~17시)';
 
     /**
     * 평일(월~금) 17시~23시 59분까지, 30분 간격으로 학사 공지 크롤링
     */
     static readonly CRON_EVENING = '0 */30 16-23 * * 1-5';
-    static readonly TASK_EVENING = '학사 저녁(17~24시)';
+    static readonly TASK_EVENING = '저녁(17~24시)';
 
     /**
      * 주말(토~일) 9시~23시 59분까지, 30분 간격으로 학사 공지 크롤링
      */
     static readonly CRON_WEEKEND = '0 */30 9-23 * * 6-7';
-    static readonly TASK_WEEKEND = '학사 주말(9~24시)';
+    static readonly TASK_WEEKEND = '주말(9~24시)';
 
     /**
      * 평일(월~금) 23시 정각, 1회 오늘 날짜가 아닌 공지사항 삭제
@@ -34,5 +34,5 @@ export abstract class WholeNoticeSchedulerConstants {
      * 오늘 날짜가 아닌 공지사항 삭제시 그러한 문제가 발생해도 아무런 영향 없음
      */
     static readonly CRON_DELETE_OLD = '0 0 0 * * 1-5';
-    static readonly TASK_DELETE_OLD = '학사 (00시)';
+    static readonly TASK_DELETE_OLD = '(00시)';
 }
