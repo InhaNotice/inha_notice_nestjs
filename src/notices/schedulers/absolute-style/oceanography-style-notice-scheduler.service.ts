@@ -80,8 +80,8 @@ export class OceanographyStyleNoticeSchedulerService extends AbsoluteStyleNotice
         notice: Notice, noticeType: string
     ): Promise<void> {
         return this.firebaseService.sendOceanographyStyleNotification(
-            notice.title,
             noticeType,
+            notice.title,
             {
                 id: notice.id,
                 link: notice.link,

@@ -80,8 +80,8 @@ export class MajorNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerSer
         notice: Notice, noticeType: string
     ): Promise<void> {
         return await this.firebaseService.sendMajorNotification(
-            notice.title,
             noticeType,
+            notice.title,
             {
                 id: notice.id,
                 link: notice.link,

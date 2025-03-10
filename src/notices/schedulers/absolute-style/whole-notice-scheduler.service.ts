@@ -89,8 +89,8 @@ export class WholeNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerSer
         notice: Notice, noticeType: string
     ): Promise<void> {
         return this.firebaseService.sendWholeNotification(
-            notice.title,
             noticeType,
+            notice.title,
             {
                 id: notice.id,
                 link: notice.link,
