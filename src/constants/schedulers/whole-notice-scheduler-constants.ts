@@ -18,7 +18,7 @@ export abstract class WholeNoticeSchedulerConstants {
     /**
     * 평일(월~금) 17시~23시 59분까지, 30분 간격으로 학사 공지 크롤링
     */
-    static readonly CRON_EVENING = '0 */30 16-23 * * 1-5';
+    static readonly CRON_EVENING = '0 */30 17-23 * * 1-5';
     static readonly TASK_EVENING = '저녁(17~24시)';
 
     /**
