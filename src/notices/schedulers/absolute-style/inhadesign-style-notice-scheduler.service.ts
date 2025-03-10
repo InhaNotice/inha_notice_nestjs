@@ -76,8 +76,8 @@ export class InhadesignStyleNoticeSchedulerService extends AbsoluteStyleNoticeSc
         notice: Notice, noticeType: string
     ): Promise<void> {
         return this.firebaseService.sendInhadesignStyleNotification(
-            notice.title,
             noticeType,
+            notice.title,
             {
                 id: notice.id,
                 link: notice.link,

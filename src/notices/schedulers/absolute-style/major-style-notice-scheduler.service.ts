@@ -79,8 +79,8 @@ export class MajorStyleNoticeSchedulerService extends AbsoluteStyleNoticeSchedul
         notice: Notice, noticeType: string
     ): Promise<void> {
         return this.firebaseService.sendMajorStyleNotification(
-            notice.title,
             noticeType,
+            notice.title,
             {
                 id: notice.id,
                 link: notice.link,
