@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-09
+ * Latest Updated Date: 2025-03-17
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
@@ -57,7 +57,7 @@ export class FirebaseService {
 
         const noticeId: string = data?.id ?? IdentifierConstants.UNKNOWN_ID;
         const noticeDate: string = data?.date ?? IdentifierConstants.UNKNOWN_DATE;
-        FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: ${noticeId}-${noticeDate}`);
+        FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: "${noticeId}"-${noticeDate}`);
       }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
@@ -96,7 +96,7 @@ export class FirebaseService {
 
         const noticeId: string = data?.id ?? IdentifierConstants.UNKNOWN_ID;
         const noticeDate: string = data?.date ?? IdentifierConstants.UNKNOWN_DATE;
-        FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: ${noticeId}-${noticeDate}`);
+        FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: "${noticeId}"-${noticeDate}`);
       }
     } catch (e) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${e.message}`);
