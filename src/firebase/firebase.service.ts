@@ -57,7 +57,7 @@ export class FirebaseService {
 
         const noticeId: string = data?.id ?? IdentifierConstants.UNKNOWN_ID;
         const noticeDate: string = data?.date ?? IdentifierConstants.UNKNOWN_DATE;
-        FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: "${noticeId}"-${noticeDate}`);
+        FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: \"${noticeId}\"-${noticeDate}`);
       }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
@@ -96,7 +96,7 @@ export class FirebaseService {
 
         const noticeId: string = data?.id ?? IdentifierConstants.UNKNOWN_ID;
         const noticeDate: string = data?.date ?? IdentifierConstants.UNKNOWN_DATE;
-        FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: "${noticeId}"-${noticeDate}`);
+        FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: \"${noticeId}\"-${noticeDate}`);
       }
     } catch (e) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${e.message}`);
