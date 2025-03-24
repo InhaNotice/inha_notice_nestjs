@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-09
+ * Latest Updated Date: 2025-03-24
  */
 
 export default () => {
@@ -230,6 +230,10 @@ export default () => {
             CULTURECM: {
                 baseUrl: process.env.CULTURECM_URL,
                 queryUrl: process.env.CULTURECM_QUERY_URL,
+            },
+            EES: {
+                baseUrl: process.env.EES_URL,
+                queryUrl: process.env.EES_QUERY_URL,
             },
 
             // 의과대학
