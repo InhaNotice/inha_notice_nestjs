@@ -63,7 +63,7 @@ database/
 docs/
 
 # 무시할 파일들
-config/*.json
+src/config/*.json
 
 # 예외: config/configuration.ts는 추적 (json이 아니므로 기본 포함됨)
-!config/configuration.ts
+!src/config/configuration.ts
