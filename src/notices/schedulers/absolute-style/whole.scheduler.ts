@@ -58,22 +58,22 @@ export class WholeNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerSer
     // ========================================
 
     @Cron(WholeConstant.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
-    async handleWeekDaysCron() {
+    async handleWeekDays() {
         await this.executeCrawling(WholeConstant.TASK_WEEKDAYS);
     }
 
     @Cron(WholeConstant.CRON_EVENING, { timeZone: 'Asia/Seoul' })
-    async handleEveningCron() {
+    async handleEvening() {
         await this.executeCrawling(WholeConstant.TASK_EVENING);
     }
 
     @Cron(WholeConstant.CRON_WEEKEND, { timeZone: 'Asia/Seoul' })
-    async handleWeekendCron() {
+    async handleWeekend() {
         await this.executeCrawling(WholeConstant.TASK_WEEKEND);
     }
 
     @Cron(WholeConstant.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
-    async handleDeleteCron() {
+    async handleDelete() {
         await this.deleteOldNotices(WholeConstant.TASK_DELETE_OLD);
     }
 

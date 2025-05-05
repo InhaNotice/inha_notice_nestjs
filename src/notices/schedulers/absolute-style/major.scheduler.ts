@@ -58,12 +58,12 @@ export class MajorNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerSer
     // ========================================
 
     @Cron(MajorConstant.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
-    async handleWeekDaysCron() {
+    async handleWeekDays() {
         await this.executeCrawling(MajorConstant.TASK_WEEKDAYS);
     }
 
     @Cron(MajorConstant.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
-    async handleDeleteCron() {
+    async handleDelete() {
         await this.deleteOldNotices(MajorConstant.TASK_DELETE_OLD);
     }
 

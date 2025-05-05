@@ -58,12 +58,12 @@ export class OceanographyStyleNoticeSchedulerService extends AbsoluteStyleNotice
     // ========================================
 
     @Cron(OceanographyStyleConstant.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
-    async handleWeekDaysCron() {
+    async handleWeekDays() {
         await this.executeCrawling(OceanographyStyleConstant.TASK_WEEKDAYS);
     }
 
     @Cron(OceanographyStyleConstant.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
-    async handleDeleteCron() {
+    async handleDelete() {
         await this.deleteOldNotices(OceanographyStyleConstant.TASK_DELETE_OLD);
     }
 

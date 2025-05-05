@@ -56,12 +56,12 @@ export class InhadesignStyleNoticeSchedulerService extends AbsoluteStyleNoticeSc
     // ========================================
 
     @Cron(InhadesignStyleConstant.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
-    async handleWeekDaysCron() {
+    async handleWeekDays() {
         await this.executeCrawling(InhadesignStyleConstant.TASK_WEEKDAYS);
     }
 
     @Cron(InhadesignStyleConstant.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
-    async handleDeleteCron() {
+    async handleDelete() {
         await this.deleteOldNotices(InhadesignStyleConstant.TASK_DELETE_OLD);
     }
 
