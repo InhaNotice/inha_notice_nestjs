@@ -12,7 +12,7 @@ import { ConfigService } from "@nestjs/config";
 import { Cron } from '@nestjs/schedule';
 
 @Injectable()
-export class UndergraduateService {
+export class UndergraduateScheduler {
     constructor(private readonly configService: ConfigService) {
 
     }

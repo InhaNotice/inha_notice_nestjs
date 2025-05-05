@@ -8,14 +8,14 @@
  * Latest Updated Date: 2025-05-06
  */
 import { Module } from '@nestjs/common';
-import { UndergraduateService } from 'src/calendar/schedulers/undergraduate.service';
+import { UndergraduateScheduler } from 'src/calendar/schedulers/undergraduate.scheduler';
 
 @Module({
     providers: [
-        UndergraduateService,
+        UndergraduateScheduler,
     ],
     exports: [
-        UndergraduateService,
+        UndergraduateScheduler,
     ],
 })
 export class CalendarModule { }
