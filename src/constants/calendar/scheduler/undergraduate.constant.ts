@@ -9,6 +9,9 @@
  */
 
 export abstract class UndergraduateConstant {
-    // 18시에 하루 전 알림 보내기
-    static readonly UNDERGRADUATE_DAY_BEFORE_REMINDER = '0 18 * * *';
+    // 평일 18시에 하루 전 알림 보내기
+    static readonly UNDERGRADUATE_DAY_BEFORE_REMINDER = '0 18 * * 1-5';
+
+    // 평일 8시에 오늘 일정 알림 보내기
+    static readonly UNDERGRADUATE_DAY_DAY_REMINDER = '0 8 * * 1-5';
 }
