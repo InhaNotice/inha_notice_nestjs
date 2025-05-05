@@ -5,17 +5,17 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-17
+ * Latest Updated Date: 2025-05-06
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import { majorMappings } from 'src/firebase/mappings/major-mappings';
-import { majorStyleMappings } from 'src/firebase/mappings/major-style-mappings';
+import { majorMapping } from 'src/mappings/major.mapping';
+import { majorStyleMapping } from 'src/mappings/major-style.mapping';
 import { IdentifierConstants } from 'src/constants/identifiers';
-import { wholeMappings } from 'src/firebase/mappings/whole-mappings';
-import { oceanographyStyleMappings } from 'src/firebase/mappings/oceanography-style-mappings';
-import { inhadesignStyleMappings } from 'src/firebase/mappings/inhadesign-style-mappings';
+import { wholeMapping } from 'src/mappings/whole.mapping';
+import { oceanographyStyleMapping } from 'src/mappings/oceanography-style.mapping';
+import { inhadesignStyleMapping } from 'src/mappings/inhadesign-style.mapping';
 
 @Injectable()
 export class FirebaseService {
@@ -115,7 +115,7 @@ export class FirebaseService {
     noticeTitle: string,
     data?: Record<string, string>
   ): Promise<void> {
-    const notificationTitle: string = wholeMappings[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationTitle: string = wholeMapping[topic] ?? FirebaseService.kDefaultNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
@@ -134,7 +134,7 @@ export class FirebaseService {
     noticeTitle: string,
     data?: Record<string, string>
   ): Promise<void> {
-    const notificationTitle: string = majorMappings[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationTitle: string = majorMapping[topic] ?? FirebaseService.kDefaultNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
@@ -152,7 +152,7 @@ export class FirebaseService {
     noticeTitle: string,
     data?: Record<string, string>
   ): Promise<void> {
-    const notificationTitle: string = majorStyleMappings[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationTitle: string = majorStyleMapping[topic] ?? FirebaseService.kDefaultNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
@@ -170,7 +170,7 @@ export class FirebaseService {
     noticeTitle: string,
     data?: Record<string, string>
   ): Promise<void> {
-    const notificationTitle: string = oceanographyStyleMappings[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationTitle: string = oceanographyStyleMapping[topic] ?? FirebaseService.kDefaultNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
@@ -188,7 +188,7 @@ export class FirebaseService {
     noticeTitle: string,
     data?: Record<string, string>
   ): Promise<void> {
-    const notificationTitle: string = inhadesignStyleMappings[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationTitle: string = inhadesignStyleMapping[topic] ?? FirebaseService.kDefaultNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);

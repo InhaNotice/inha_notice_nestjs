@@ -5,46 +5,46 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-09
+ * Latest Updated Date: 2025-05-06
  */
 
 import { Module } from '@nestjs/common';
-import { MajorNoticeScraperService } from 'src/notices/scrapers/absolute-style/major-notice-scraper.service';
-import { MajorNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/major-notice-scheduler.service';
+import { MajorNoticeScraperService as MajorScraper } from 'src/notices/scrapers/absolute-style/major.scraper';
+import { MajorNoticeSchedulerService as MajorScheduler } from 'src/notices/schedulers/absolute-style/major.scheduler';
 import { FirebaseService } from 'src/firebase/firebase.service';
-import { WholeNoticeScraperService } from 'src/notices/scrapers/absolute-style/whole-notice-scraper.service';
-import { WholeNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/whole-notice-scheduler.service';
-import { MajorStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/major-style-notice-scraper.service';
-import { MajorStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/major-style-notice-scheduler.service';
-import { OceanographyStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/oceanography-style-notice-scheduler.service';
-import { OceanographyStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/oceanography-style-notice-scraper.service';
-import { InhadesignStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/inhadesign-style-notice-scheduler.service';
-import { InhadesignStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/inhadesign-style-notice-scraper.service';
+import { WholeNoticeScraperService as WholeScraper } from 'src/notices/scrapers/absolute-style/whole.scraper';
+import { WholeNoticeSchedulerService as WholeScheduler } from 'src/notices/schedulers/absolute-style/whole.scheduler';
+import { MajorStyleNoticeScraperService as MajorStyleScraper } from 'src/notices/scrapers/absolute-style/major-style.scraper';
+import { MajorStyleNoticeSchedulerService as MajorStyleScheduler } from 'src/notices/schedulers/absolute-style/major-style.scheduler';
+import { OceanographyStyleNoticeSchedulerService as OceanographyStyleScheduler } from 'src/notices/schedulers/absolute-style/oceanography-style.scheduler';
+import { OceanographyStyleNoticeScraperService as OceanographyStyleScraper } from 'src/notices/scrapers/absolute-style/oceanography-style.scraper';
+import { InhadesignStyleNoticeSchedulerService as InhadesignStyleScheduler } from 'src/notices/schedulers/absolute-style/inhadesign-style.scheduler';
+import { InhadesignStyleNoticeScraperService as InhadesignStyleScraper } from 'src/notices/scrapers/absolute-style/inhadesign-style.scraper';
 @Module({
     providers: [
-        WholeNoticeScraperService,
-        WholeNoticeSchedulerService,
-        MajorNoticeScraperService,
-        MajorNoticeSchedulerService,
-        MajorStyleNoticeScraperService,
-        MajorStyleNoticeSchedulerService,
-        OceanographyStyleNoticeSchedulerService,
-        OceanographyStyleNoticeScraperService,
-        InhadesignStyleNoticeSchedulerService,
-        InhadesignStyleNoticeScraperService,
+        WholeScraper,
+        WholeScheduler,
+        MajorScraper,
+        MajorScheduler,
+        MajorStyleScraper,
+        MajorStyleScheduler,
+        OceanographyStyleScheduler,
+        OceanographyStyleScraper,
+        InhadesignStyleScheduler,
+        InhadesignStyleScraper,
         FirebaseService,
     ],
     exports: [
-        WholeNoticeScraperService,
-        WholeNoticeSchedulerService,
-        MajorNoticeScraperService,
-        MajorNoticeSchedulerService,
-        MajorStyleNoticeScraperService,
-        MajorStyleNoticeSchedulerService,
-        // OceanographyStyleNoticeSchedulerService,
-        // OceanographyStyleNoticeScraperService,
-        InhadesignStyleNoticeSchedulerService,
-        InhadesignStyleNoticeScraperService,
+        WholeScraper,
+        WholeScheduler,
+        MajorScraper,
+        MajorScheduler,
+        MajorStyleScraper,
+        MajorStyleScheduler,
+        OceanographyStyleScheduler,
+        OceanographyStyleScraper,
+        InhadesignStyleScheduler,
+        InhadesignStyleScraper,
     ],
 })
 export class NoticeModule { }
