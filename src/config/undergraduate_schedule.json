@@ -1,0 +1,340 @@
+{
+  "2024-12": [
+    {
+      "title": "기말고사",
+      "startDate": "2024-12-09",
+      "note": null,
+      "color": "#f3b9d6"
+    },
+    {
+      "title": "보강주간",
+      "startDate": "2024-12-16",
+      "note": "이러닝 기말고사: 12.18(수) ~ 12.19(목)",
+      "color": "#b9eaf3"
+    },
+    {
+      "title": "동계 계절학기 수업",
+      "startDate": "2024-12-23",
+      "note": null,
+      "color": "#e7f3b9"
+    }
+  ],
+  "2025-01": [
+    {
+      "title": "재입학 신청",
+      "startDate": "2025-01-02",
+      "note": null,
+      "color": "#b9f3d6"
+    },
+    {
+      "title": "전과 원서접수",
+      "startDate": "2025-01-09",
+      "note": null,
+      "color": "#f3e6b9"
+    },
+    {
+      "title": "전과시험",
+      "startDate": "2025-01-15",
+      "note": null,
+      "color": "#d6b9f3"
+    },
+    {
+      "title": "전과 합격자 발표",
+      "startDate": "2025-01-21",
+      "note": null,
+      "color": "#b9d6f3"
+    },
+    {
+      "title": "다중전공 신청",
+      "startDate": "2025-01-22",
+      "note": "(복수/부/연계/융합전공)",
+      "color": "#f3b9b9"
+    },
+    {
+      "title": "유급 신청",
+      "startDate": "2025-01-22",
+      "note": null,
+      "color": "#b9f3e6"
+    },
+    {
+      "title": "우선수강신청",
+      "startDate": "2025-01-22",
+      "note": null,
+      "color": "#e6b9f3"
+    }
+  ],
+  "2025-02": [
+    {
+      "title": "일반휴학 신청",
+      "startDate": "2025-02-01",
+      "note": null,
+      "color": "#b9f3f0"
+    },
+    {
+      "title": "우선수강신청 결과 발표",
+      "startDate": "2025-02-07",
+      "note": null,
+      "color": "#f0e6b9"
+    },
+    {
+      "title": "본수강신청 (전공/교양필수)",
+      "startDate": "2025-02-12",
+      "note": null,
+      "color": "#c6f3b9"
+    },
+    {
+      "title": "2월 학위수여식",
+      "startDate": "2025-02-14",
+      "note": null,
+      "color": "#b9c6f3"
+    },
+    {
+      "title": "본수강신청 (일반)",
+      "startDate": "2025-02-20",
+      "note": null,
+      "color": "#f3b9c6"
+    },
+    {
+      "title": "등록기간",
+      "startDate": "2025-02-24",
+      "note": null,
+      "color": "#b9f3c6"
+    },
+    {
+      "title": "8월 조기졸업 신청",
+      "startDate": "2025-02-26",
+      "note": null,
+      "color": "#f3c6b9"
+    }
+  ],
+  "2025-03": [
+    {
+      "title": "1학기 개강",
+      "startDate": "2025-03-03",
+      "note": "(개시일)",
+      "color": "#d6f3b9"
+    },
+    {
+      "title": "수강신청 변경",
+      "startDate": "2025-03-07",
+      "note": null,
+      "color": "#b9d6f3"
+    },
+    {
+      "title": "일반휴학 신청 마감",
+      "startDate": "2025-03-28",
+      "note": "(수업일수 1/4선)",
+      "color": "#e6b9f3"
+    }
+  ],
+  "2025-04": [
+    {
+      "title": "수강포기",
+      "startDate": "2025-03-31",
+      "note": null,
+      "color": "#b9e6f3"
+    },
+    {
+      "title": "중간고사",
+      "startDate": "2025-04-21",
+      "note": null,
+      "color": "#f3b9e6"
+    },
+    {
+      "title": "개교기념일",
+      "startDate": "2025-04-24",
+      "note": null,
+      "color": "#e6f3b9"
+    },
+    {
+      "title": "개교기념 휴업일",
+      "startDate": "2025-04-25",
+      "note": null,
+      "color": "#b9f3e6"
+    }
+  ],
+  "2025-05": [
+    {
+      "title": "수업일수 3/4선",
+      "startDate": "2025-05-23",
+      "note": null,
+      "color": "#f3d6b9"
+    },
+    {
+      "title": "하계 계절학기 수강신청",
+      "startDate": "2025-05-26",
+      "note": null,
+      "color": "#d6b9f3"
+    },
+    {
+      "title": "우수인재인증 신청",
+      "startDate": "2025-05-26",
+      "note": null,
+      "color": "#b9f3d6"
+    }
+  ],
+  "2025-06": [
+    {
+      "title": "기말고사",
+      "startDate": "2025-06-09",
+      "note": null,
+      "color": "#b9f0f3"
+    },
+    {
+      "title": "보강주간",
+      "startDate": "2025-06-16",
+      "note": null,
+      "color": "#f0b9f3"
+    },
+    {
+      "title": "하계 계절학기 수업",
+      "startDate": "2025-06-23",
+      "note": null,
+      "color": "#f3b9f0"
+    }
+  ],
+  "2025-07": [
+    {
+      "title": "재입학 신청",
+      "startDate": "2025-07-09",
+      "note": null,
+      "color": "#b9f3b9"
+    },
+    {
+      "title": "우선수강신청",
+      "startDate": "2025-07-23",
+      "note": null,
+      "color": "#f3b9e6"
+    },
+    {
+      "title": "다중전공 신청",
+      "startDate": "2025-07-28",
+      "note": "(복수/부/연계/융합전공)",
+      "color": "#e6f3b9"
+    },
+    {
+      "title": "유급 신청",
+      "startDate": "2025-07-28",
+      "note": null,
+      "color": "#b9e6f3"
+    }
+  ],
+  "2025-08": [
+    {
+      "title": "일반휴학 신청",
+      "startDate": "2025-08-01",
+      "note": null,
+      "color": "#b9f3c6"
+    },
+    {
+      "title": "우선수강신청 결과 발표",
+      "startDate": "2025-08-08",
+      "note": null,
+      "color": "#f3b9d6"
+    },
+    {
+      "title": "본수강신청 (전공/교양필수)",
+      "startDate": "2025-08-13",
+      "note": null,
+      "color": "#b9f3e6"
+    },
+    {
+      "title": "본수강신청 (일반)",
+      "startDate": "2025-08-20",
+      "note": null,
+      "color": "#e6b9f3"
+    },
+    {
+      "title": "8월 학위수여식",
+      "startDate": "2025-08-22",
+      "note": null,
+      "color": "#d6b9f3"
+    },
+    {
+      "title": "2학기 등록 기간",
+      "startDate": "2025-08-25",
+      "note": null,
+      "color": "#f3d6b9"
+    },
+    {
+      "title": "2월 조기졸업 신청",
+      "startDate": "2025-08-27",
+      "note": null,
+      "color": "#b9f3d6"
+    }
+  ],
+  "2025-09": [
+    {
+      "title": "2학기 개강일",
+      "startDate": "2025-09-01",
+      "note": null,
+      "color": "#f3b9c6"
+    },
+    {
+      "title": "수강신청 변경",
+      "startDate": "2025-09-05",
+      "note": null,
+      "color": "#b9d6f3"
+    },
+    {
+      "title": "일반휴학 신청 마감",
+      "startDate": "2025-09-26",
+      "note": "(수업일수 1/4선)",
+      "color": "#d6f3b9"
+    }
+  ],
+  "2025-10": [
+    {
+      "title": "수강포기",
+      "startDate": "2025-09-29",
+      "note": null,
+      "color": "#b9eaf3"
+    },
+    {
+      "title": "중간고사",
+      "startDate": "2025-10-20",
+      "note": null,
+      "color": "#f3b9e6"
+    }
+  ],
+  "2025-11": [
+    {
+      "title": "수업일수 3/4선",
+      "startDate": "2025-11-21",
+      "note": null,
+      "color": "#e7f3b9"
+    },
+    {
+      "title": "동계 계절학기 수강신청",
+      "startDate": "2025-11-24",
+      "note": null,
+      "color": "#b9f3e6"
+    },
+    {
+      "title": "우수인재인증 신청",
+      "startDate": "2025-11-24",
+      "note": null,
+      "color": "#e6f3b9"
+    }
+  ],
+  "2025-12": [
+    {
+      "title": "기말고사",
+      "startDate": "2025-12-08",
+      "note": null,
+      "color": "#b9f3d6"
+    },
+    {
+      "title": "보강주간",
+      "startDate": "2025-12-15",
+      "note": null,
+      "color": "#f3e6b9"
+    },
+    {
+      "title": "동계 계절학기 수업",
+      "startDate": "2025-12-22",
+      "note": null,
+      "color": "#b9f3f0"
+    }
+  ]
+}
