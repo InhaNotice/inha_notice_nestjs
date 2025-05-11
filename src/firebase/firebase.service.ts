@@ -5,17 +5,17 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-06
+ * Latest Updated Date: 2025-05-08
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import { majorMapping } from 'src/mappings/major.mapping';
-import { majorStyleMapping } from 'src/mappings/major-style.mapping';
+import { majorMapping } from 'src/constants/notice/mappings/major.mapping';
+import { majorStyleMapping } from 'src/constants/notice/mappings/major-style.mapping';
 import { IdentifierConstants } from 'src/constants/identifiers';
-import { wholeMapping } from 'src/mappings/whole.mapping';
-import { oceanographyStyleMapping } from 'src/mappings/oceanography-style.mapping';
-import { inhadesignStyleMapping } from 'src/mappings/inhadesign-style.mapping';
+import { wholeMapping } from 'src/constants/notice/mappings/whole.mapping';
+import { oceanographyStyleMapping } from 'src/constants/notice/mappings/oceanography-style.mapping';
+import { inhadesignStyleMapping } from 'src/constants/notice/mappings/inhadesign-style.mapping';
 
 @Injectable()
 export class FirebaseService {

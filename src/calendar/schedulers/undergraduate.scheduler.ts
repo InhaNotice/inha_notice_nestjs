@@ -10,10 +10,17 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Cron } from '@nestjs/schedule';
+import { UndergraduateConstant } from "src/constants/calendar/scheduler/undergraduate.constant";
 
 @Injectable()
 export class UndergraduateScheduler {
     constructor(private readonly configService: ConfigService) {
 
     }
+    @Cron(UndergraduateConstant.UNDERGRADUATE_DAY_BEFORE_REMINDER, { timeZone: 'Asia/Seoul' })
+    async handleDayBeforeReminder() {
+
+    }
+
+
 }
