@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-06
+ * Latest Updated Date: 2025-05-13
  */
 
 import { Logger } from '@nestjs/common';
@@ -48,7 +48,7 @@ export abstract class AbsoluteStyleNoticeSchedulerService {
     // 2. 추상메서드 선언
     // ========================================
 
-    abstract sendFirebaseMessaging(
+    abstract sendFirebaseNoticeMessaging(
         notice: Notice, noticeType: string
     ): Promise<void>;
 
@@ -168,7 +168,7 @@ export abstract class AbsoluteStyleNoticeSchedulerService {
                 for (const notice of newNotices) {
                     // 배포 환경일 때만 FCM 알림 전송
                     if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
-                        await this.sendFirebaseMessaging(notice, noticeType);
+                        await this.sendFirebaseNoticeMessaging(notice, noticeType);
                     } else {
                         this.logger.debug(`🔕 ${noticeType}의 새로운 공지 - ${notice.title}-${notice.date}`);
                     }

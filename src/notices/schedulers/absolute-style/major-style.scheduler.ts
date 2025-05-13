@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-06
+ * Latest Updated Date: 2025-05-13
  */
 
 import { Injectable, Logger, Scope } from '@nestjs/common';
@@ -76,7 +76,7 @@ export class MajorStyleNoticeSchedulerService extends AbsoluteStyleNoticeSchedul
      * @param {Notice} notice - 새로운 공지 정보가 담긴 객체
      * @param {string} noticeType - 알림을 보낼 공지 타입
      */
-    async sendFirebaseMessaging(
+    async sendFirebaseNoticeMessaging(
         notice: Notice, noticeType: string
     ): Promise<void> {
         return this.firebaseService.sendMajorStyleNotification(
