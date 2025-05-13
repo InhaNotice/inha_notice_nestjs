@@ -10,7 +10,7 @@
 
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { AbsoluteStyleScraperService } from "src/notices/scrapers/absolute-style/absolute-style.scraper";
+import { AbsoluteStyleScraper } from "src/notices/scrapers/absolute-style/absolute-style.scraper";
 import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
 import { Notice } from 'src/notices/interfaces/notice.interface';
@@ -33,7 +33,7 @@ import * as iconv from 'iconv-lite';
  * 4. 유틸리티 함수 구현
  */
 @Injectable()
-export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperService {
+export class OceanographyStyleScraper extends AbsoluteStyleScraper {
     constructor(private readonly configService: ConfigService) {
         super();
         this.configName = 'oceanographyStyles';
@@ -42,7 +42,7 @@ export class OceanographyStyleNoticeScraperService extends AbsoluteStyleScraperS
             queryUrl: string;
         }> = this.configService.get<Record<string, { baseUrl: string; queryUrl: string }>>(this.configName, {});
 
-        this.logger = new Logger(OceanographyStyleNoticeScraperService.name);
+        this.logger = new Logger(OceanographyStyleScraper.name);
         this.noticeTypes = Object.keys(noticeConfig);
         this.noticeTypeUrls = this.loadUrls(noticeConfig, 'baseUrl');
         this.noticeTypeQueryUrls = this.loadUrls(noticeConfig, 'queryUrl');

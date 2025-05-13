@@ -5,12 +5,12 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-06
+ * Latest Updated Date: 2025-05-13
  */
 
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { AbsoluteStyleScraperService } from "src/notices/scrapers/absolute-style/absolute-style.scraper";
+import { AbsoluteStyleScraper } from "src/notices/scrapers/absolute-style/absolute-style.scraper";
 import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
 import { Notice } from 'src/notices/interfaces/notice.interface';
@@ -19,7 +19,7 @@ import { AxiosResponse } from 'axios';
 import { IdentifierConstants } from "src/constants/identifiers";
 
 @Injectable()
-export class InhadesignStyleNoticeScraperService extends AbsoluteStyleScraperService {
+export class InhaDesignStyleScraper extends AbsoluteStyleScraper {
     constructor(private readonly configService: ConfigService) {
         super();
         this.configName = 'inhadesignStyles';
@@ -28,7 +28,7 @@ export class InhadesignStyleNoticeScraperService extends AbsoluteStyleScraperSer
             queryUrl: string;
         }> = this.configService.get<Record<string, { baseUrl: string; queryUrl: string }>>(this.configName, {});
 
-        this.logger = new Logger(InhadesignStyleNoticeScraperService.name);
+        this.logger = new Logger(InhaDesignStyleScraper.name);
         this.noticeTypes = Object.keys(noticeConfig);
         this.noticeTypeUrls = this.loadUrls(noticeConfig, 'baseUrl');
         this.noticeTypeQueryUrls = this.loadUrls(noticeConfig, 'queryUrl');

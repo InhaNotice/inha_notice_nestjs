@@ -14,10 +14,9 @@ import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import { GeneralTagSelectors } from 'src/selectors/whole.selector';
-import { AbsoluteStyleScraperService } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
+import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
 import { IdentifierConstants } from 'src/constants/identifiers';
 import { AxiosResponse } from 'axios';
-import * as iconv from 'iconv-lite';
 
 /**
  * 학사 공지사항 크롤링 서비스(전체공지, 장학, 모집/채용)
@@ -32,7 +31,7 @@ import * as iconv from 'iconv-lite';
  * 4. makeUniqueNoticeId() 구현
  */
 @Injectable()
-export class WholeNoticeScraperService extends AbsoluteStyleScraperService {
+export class WholeScraper extends AbsoluteStyleScraper {
     // ========================================
     // 1. 생성자 초기화
     // ========================================

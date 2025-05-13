@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-06
+ * Latest Updated Date: 2025-05-13
  */
 
 import { Injectable, Logger } from '@nestjs/common';
@@ -14,10 +14,9 @@ import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
 import { GeneralTagSelectors } from 'src/selectors/major.selector';
 import { Notice } from 'src/notices/interfaces/notice.interface';
-import { AbsoluteStyleScraperService } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
+import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
 import { IdentifierConstants } from 'src/constants/identifiers';
 import { AxiosResponse } from 'axios';
-import * as iconv from 'iconv-lite';
 
 /**
  * 학과 공지사항 스타일의 (국제처, SW중심대학사업단, 단과대, 대학원) 공지 크롤링 서비스
@@ -32,7 +31,7 @@ import * as iconv from 'iconv-lite';
  * 4. makeUniqueNoticeId() 구현
  */
 @Injectable()
-export class MajorStyleNoticeScraperService extends AbsoluteStyleScraperService {
+export class MajorStyleScraper extends AbsoluteStyleScraper {
     // ========================================
     // 1. 생성자 초기화
     // ========================================
@@ -49,7 +48,7 @@ export class MajorStyleNoticeScraperService extends AbsoluteStyleScraperService 
             queryUrl: string;
         }> = this.configService.get<Record<string, { baseUrl: string; queryUrl: string }>>(this.configName, {});
 
-        this.logger = new Logger(MajorStyleNoticeScraperService.name);
+        this.logger = new Logger(MajorStyleScraper.name);
         this.noticeTypes = Object.keys(noticeConfig);
         this.noticeTypeUrls = this.loadUrls(noticeConfig, 'baseUrl');
         this.noticeTypeQueryUrls = this.loadUrls(noticeConfig, 'queryUrl');

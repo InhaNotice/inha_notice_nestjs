@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-06
+ * Latest Updated Date: 2025-05-13
  */
 
 import { Logger } from '@nestjs/common';
@@ -26,7 +26,7 @@ import { StatusCodeSettings } from 'src/constants/http-status';
  * 2. 추상메서드 선언 (2개)
  * 3. 서비스 로직 구현
  */
-export abstract class AbsoluteStyleScraperService {
+export abstract class AbsoluteStyleScraper {
     // ========================================
     // 1. 필드 선언
     // ========================================
