@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-08
+ * Latest Updated Date: 2025-05-13
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
@@ -16,11 +16,13 @@ import { IdentifierConstants } from 'src/constants/identifiers';
 import { wholeMapping } from 'src/constants/notice/mappings/whole.mapping';
 import { oceanographyStyleMapping } from 'src/constants/notice/mappings/oceanography-style.mapping';
 import { inhadesignStyleMapping } from 'src/constants/notice/mappings/inhadesign-style.mapping';
+import { undergraduateMapping } from 'src/constants/calendar/mappings/undergraduate.mapping';
 
 @Injectable()
 export class FirebaseService {
   private static readonly logger: Logger = new Logger(FirebaseService.name);
-  private static readonly kDefaultNotificationTitle: string = '새로운 공지사항이 있어요!';
+  private static readonly kDefaultNoticeNotificationTitle: string = '새로운 공지사항이 있어요!';
+  private static readonly kDefaultCalendarNotificationTitle: string = '다가오는 일정을 확인하세요!';
 
   constructor(@Inject('FIREBASE_ADMIN') private readonly firebaseAdmin: typeof admin) { }
 
@@ -37,7 +39,7 @@ export class FirebaseService {
     data?: Record<string, string>,
   ): Promise<void> {
     try {
-      const notificationTitle: string = FirebaseService.kDefaultNotificationTitle;
+      const notificationTitle: string = FirebaseService.kDefaultNoticeNotificationTitle;
       const notificationBody: string = noticeTitle;
 
       const message: admin.messaging.Message = {
@@ -55,9 +57,9 @@ export class FirebaseService {
       if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
         await this.firebaseAdmin.messaging().send(message);
 
-        const noticeId: string = data?.id ?? IdentifierConstants.UNKNOWN_ID;
-        const noticeDate: string = data?.date ?? IdentifierConstants.UNKNOWN_DATE;
-        FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: \"${noticeId}\"-${noticeDate}`);
+        const notificationId: string = data?.id ?? IdentifierConstants.UNKNOWN_ID;
+        const notificationDate: string = data?.date ?? IdentifierConstants.UNKNOWN_DATE;
+        FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: \"${notificationId}\"-${notificationDate}`);
       }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
@@ -115,7 +117,7 @@ export class FirebaseService {
     noticeTitle: string,
     data?: Record<string, string>
   ): Promise<void> {
-    const notificationTitle: string = wholeMapping[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationTitle: string = wholeMapping[topic] ?? FirebaseService.kDefaultNoticeNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
@@ -134,7 +136,7 @@ export class FirebaseService {
     noticeTitle: string,
     data?: Record<string, string>
   ): Promise<void> {
-    const notificationTitle: string = majorMapping[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationTitle: string = majorMapping[topic] ?? FirebaseService.kDefaultNoticeNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
@@ -152,7 +154,7 @@ export class FirebaseService {
     noticeTitle: string,
     data?: Record<string, string>
   ): Promise<void> {
-    const notificationTitle: string = majorStyleMapping[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationTitle: string = majorStyleMapping[topic] ?? FirebaseService.kDefaultNoticeNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
@@ -170,7 +172,7 @@ export class FirebaseService {
     noticeTitle: string,
     data?: Record<string, string>
   ): Promise<void> {
-    const notificationTitle: string = oceanographyStyleMapping[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationTitle: string = oceanographyStyleMapping[topic] ?? FirebaseService.kDefaultNoticeNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
@@ -188,7 +190,25 @@ export class FirebaseService {
     noticeTitle: string,
     data?: Record<string, string>
   ): Promise<void> {
-    const notificationTitle: string = inhadesignStyleMapping[topic] ?? FirebaseService.kDefaultNotificationTitle;
+    const notificationTitle: string = inhadesignStyleMapping[topic] ?? FirebaseService.kDefaultNoticeNotificationTitle;
+    const notificationBody: string = noticeTitle;
+
+    return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
+  }
+
+  /**
+   * 캘린더 일정을 보낸다.
+   * @param {string} topic - (ex) 'undergraduate-schedule-d1-notification'
+   * @param {string} noticeTitle 
+   * @param {Record<string, string>} data 
+   * @returns 
+   */
+  async sendCalendarNotification(
+    topic: string,
+    noticeTitle: string,
+    data?: Record<string, string>
+  ): Promise<void> {
+    const notificationTitle: string = undergraduateMapping[topic] ?? FirebaseService.kDefaultCalendarNotificationTitle;
     const notificationBody: string = noticeTitle;
 
     return this.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
