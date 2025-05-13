@@ -10,12 +10,14 @@
 
 import { Injectable, Logger, Scope } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { MajorStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/major-style.scraper';
+import { MajorStyleScraper } from 'src/notices/scrapers/absolute-style/major-style.scraper';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
 import { MajorStyleConstant } from 'src/constants/notice/scheduler/major-style.constant';
-import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
+import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
+import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
+import { MajorStyleState } from 'src/firebase/notifications/states/major-style.state';
 
 /**
  * 학과 스타일(국제처, SW중심대학사업단, 단과대, 대학원) 공지 스캐줄러
@@ -31,23 +33,24 @@ import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/abso
  * 3. sendFirebaseMessaging() 구현
  */
 @Injectable({ scope: Scope.DEFAULT })
-export class MajorStyleNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerService {
+export class MajorStyleScheduler extends AbsoluteStyleScheduler {
     // ========================================
     // 1. 생성자 초기화
     // ========================================
 
     constructor(
         private readonly firebaseService: FirebaseService,
-        private readonly majorStyleNoticesScraperService: MajorStyleNoticeScraperService,
+        private readonly majorStyleNoticesScraperService: MajorStyleScraper,
     ) {
         // 초기화
         super();
-        this.logger = new Logger(MajorStyleNoticeSchedulerService.name);
+        this.logger = new Logger(MajorStyleScheduler.name);
         this.directoryName = 'major_styles';
         this.scraperService = this.majorStyleNoticesScraperService;
         this.databaseDirectory = path.join(process.cwd(), 'database', this.directoryName);
         this.databases = {};
         this.cachedNoticeIds = {};
+        this.context = new FirebaseNotificationContext(new MajorStyleState());
         // 디렉터리 생성
         this.initializeDatabaseDirectory();
         this.initializeDatabases();
@@ -76,17 +79,8 @@ export class MajorStyleNoticeSchedulerService extends AbsoluteStyleNoticeSchedul
      * @param {Notice} notice - 새로운 공지 정보가 담긴 객체
      * @param {string} noticeType - 알림을 보낼 공지 타입
      */
-    async sendFirebaseNoticeMessaging(
-        notice: Notice, noticeType: string
-    ): Promise<void> {
-        return this.firebaseService.sendMajorStyleNotification(
-            noticeType,
-            notice.title,
-            {
-                id: notice.id,
-                link: notice.link,
-                date: notice.date,
-            }
-        );
+    async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
+        const { title, body, data } = this.buildFirebaseMessagePayload(notice, noticeType);
+        return await this.firebaseService.sendNotificationToTopic(noticeType, title, body, data);
     }
 }

@@ -10,12 +10,12 @@
 
 import * as fs from 'fs';
 import { Notice } from 'src/notices/interfaces/notice.interface';
-import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
+import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import * as sqlite3 from 'sqlite3';
 import { IdentifierConstants } from 'src/constants/identifiers';
 import * as dayjs from 'dayjs';
 
-class TestSchedulerService extends AbsoluteStyleNoticeSchedulerService {
+class TestSchedulerService extends AbsoluteStyleScheduler {
     constructor() {
         super();
         this.logger = {
@@ -56,7 +56,7 @@ class TestSchedulerService extends AbsoluteStyleNoticeSchedulerService {
         } as any;
     };
 
-    async sendFirebaseNoticeMessaging(notice: Notice, noticeType: string): Promise<void> {
+    async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
         return;
     }
 }

@@ -13,9 +13,11 @@ import { Cron } from '@nestjs/schedule';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
-import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
+import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import { OceanographyStyleConstant } from 'src/constants/notice/scheduler/oceanography-style.constant';
-import { OceanographyStyleNoticeScraperService } from 'src/notices/scrapers/absolute-style/oceanography-style.scraper';
+import { OceanographyStyleScraper } from 'src/notices/scrapers/absolute-style/oceanography-style.scraper';
+import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
+import { OceanographyStyleState } from 'src/firebase/notifications/states/oceanography-style.state';
 
 /**
  * 해양과학과 스타일 공지 크롤링 스케줄러
@@ -31,23 +33,24 @@ import { OceanographyStyleNoticeScraperService } from 'src/notices/scrapers/abso
  * 3. sendFirebaseMessaging() 구현
  */
 @Injectable({ scope: Scope.DEFAULT })
-export class OceanographyStyleNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerService {
+export class OceanographyStyleScheduler extends AbsoluteStyleScheduler {
     // ========================================
     // 1. 생성자 초기화
     // ========================================
 
     constructor(
         private readonly firebaseService: FirebaseService,
-        private readonly oceanographyStyleNoticeScraperService: OceanographyStyleNoticeScraperService,
+        private readonly oceanographyStyleNoticeScraperService: OceanographyStyleScraper,
     ) {
         // 초기화
         super();
-        this.logger = new Logger(OceanographyStyleNoticeSchedulerService.name);
+        this.logger = new Logger(OceanographyStyleScheduler.name);
         this.directoryName = 'oceanography_styles';
         this.scraperService = this.oceanographyStyleNoticeScraperService;
         this.databaseDirectory = path.join(process.cwd(), 'database', this.directoryName);
         this.databases = {};
         this.cachedNoticeIds = {};
+        this.context = new FirebaseNotificationContext(new OceanographyStyleState());
         // 디렉터리 생성
         this.initializeDatabaseDirectory();
         this.initializeDatabases();
@@ -76,17 +79,8 @@ export class OceanographyStyleNoticeSchedulerService extends AbsoluteStyleNotice
      * @param {Notice} notice - 새로운 공지 정보가 담긴 객체
      * @param {string} noticeType - 알림을 보낼 공지 타입
      */
-    async sendFirebaseNoticeMessaging(
-        notice: Notice, noticeType: string
-    ): Promise<void> {
-        return this.firebaseService.sendOceanographyStyleNotification(
-            noticeType,
-            notice.title,
-            {
-                id: notice.id,
-                link: notice.link,
-                date: notice.date,
-            }
-        );
+    async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
+        const { title, body, data } = this.buildFirebaseMessagePayload(notice, noticeType);
+        return await this.firebaseService.sendNotificationToTopic(noticeType, title, body, data);
     }
 }

@@ -13,9 +13,10 @@ import * as sqlite3 from 'sqlite3';
 import * as fs from 'fs';
 import * as dayjs from 'dayjs';
 import * as path from 'path';
-import { AbsoluteStyleScraperService } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
+import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import { IdentifierConstants } from 'src/constants/identifiers';
+import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 
 /**
  * AbsoluteStyle의 공지사항 크롤링 스케줄러를 제공하는 추상클래스
@@ -32,25 +33,45 @@ import { IdentifierConstants } from 'src/constants/identifiers';
  * 3-2. 서비스 로직 구현 (크롤링, 오래된 공지 삭제)
  * 4. 헬퍼 함수(크롤링, 오래된 공지 삭제 관련)
  */
-export abstract class AbsoluteStyleNoticeSchedulerService {
+export abstract class AbsoluteStyleScheduler {
     // ========================================
     // 1. 필드 선언
     // ========================================
 
     protected logger: Logger;
     protected directoryName: string;
-    protected scraperService: AbsoluteStyleScraperService;
+    protected scraperService: AbsoluteStyleScraper;
     protected databaseDirectory: string;
     protected databases: Record<string, sqlite3.Database>;
     protected cachedNoticeIds: Record<string, Set<string>>;
+    protected context: FirebaseNotificationContext;
 
     // ========================================
     // 2. 추상메서드 선언
     // ========================================
 
-    abstract sendFirebaseNoticeMessaging(
+    abstract sendFirebaseMessaging(
         notice: Notice, noticeType: string
     ): Promise<void>;
+
+    protected buildFirebaseMessagePayload(
+        notice: Notice,
+        noticeType: string,
+    ): {
+        title: string;
+        body: string;
+        data: Record<string, string>;
+    } {
+        const title = this.context.getNotificationTitle(noticeType);
+        const body = notice.title;
+        const data = {
+            id: notice.id,
+            link: notice.link,
+            date: notice.date,
+        };
+
+        return { title, body, data };
+    }
 
     // ========================================
     // 3-1. 서비스 로직 구현 (초기화 관련 메서드)
@@ -168,7 +189,7 @@ export abstract class AbsoluteStyleNoticeSchedulerService {
                 for (const notice of newNotices) {
                     // 배포 환경일 때만 FCM 알림 전송
                     if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
-                        await this.sendFirebaseNoticeMessaging(notice, noticeType);
+                        await this.sendFirebaseMessaging(notice, noticeType);
                     } else {
                         this.logger.debug(`🔕 ${noticeType}의 새로운 공지 - ${notice.title}-${notice.date}`);
                     }

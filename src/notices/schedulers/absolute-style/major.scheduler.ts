@@ -14,8 +14,10 @@ import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
 import { MajorConstant } from 'src/constants/notice/scheduler/major.constant';
-import { MajorNoticeScraperService } from 'src/notices/scrapers/absolute-style/major.scraper';
-import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
+import { MajorScraper } from 'src/notices/scrapers/absolute-style/major.scraper';
+import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
+import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
+import { MajorState } from 'src/firebase/notifications/states/major.state';
 
 /**
  * 모든 학과 공지 스캐줄러
@@ -31,23 +33,24 @@ import { AbsoluteStyleNoticeSchedulerService } from 'src/notices/schedulers/abso
  * 3. sendFirebaseMessaging() 구현
  */
 @Injectable({ scope: Scope.DEFAULT })
-export class MajorNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerService {
+export class MajorNoticeScheduler extends AbsoluteStyleScheduler {
     // ========================================
     // 1. 생성자 초기화
     // ========================================
 
     constructor(
         private readonly firebaseService: FirebaseService,
-        private readonly majorNoticeScraperService: MajorNoticeScraperService,
+        private readonly majorNoticeScraperService: MajorScraper,
     ) {
         // 초기화
         super();
-        this.logger = new Logger(MajorNoticeSchedulerService.name);
+        this.logger = new Logger(MajorNoticeScheduler.name);
         this.directoryName = 'majors';
         this.scraperService = this.majorNoticeScraperService;
         this.databaseDirectory = path.join(process.cwd(), 'database', this.directoryName);
         this.databases = {};
         this.cachedNoticeIds = {};
+        this.context = new FirebaseNotificationContext(new MajorState());
         // 디렉터리 생성
         this.initializeDatabaseDirectory();
         this.initializeDatabases();
@@ -76,17 +79,8 @@ export class MajorNoticeSchedulerService extends AbsoluteStyleNoticeSchedulerSer
     * @param {Notice} notice - 새로운 공지 정보가 담긴 객체
     * @param {string} noticeType - 알림을 보낼 공지 타입
     */
-    async sendFirebaseNoticeMessaging(
-        notice: Notice, noticeType: string
-    ): Promise<void> {
-        return await this.firebaseService.sendMajorNotification(
-            noticeType,
-            notice.title,
-            {
-                id: notice.id,
-                link: notice.link,
-                date: notice.date,
-            }
-        );
+    async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
+        const { title, body, data } = this.buildFirebaseMessagePayload(notice, noticeType);
+        return await this.firebaseService.sendNotificationToTopic(noticeType, title, body, data);
     }
 }
