@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-24
+ * Latest Updated Date: 2025-05-13
  */
 
 export default () => {
@@ -457,11 +457,14 @@ export default () => {
                 queryUrl: process.env.OCEANOGRAPHY_QUERY_URL,
             },
         },
-        inhadesignStyles: {
+        inhaDesignStyles: {
             INHADESIGN: {
                 baseUrl: process.env.INHADESIGN_URL,
                 queryUrl: process.env.INHADESIGN_QUERY_URL,
             }
-        }
+        },
+        calendar: {
+            INHA_CALENDAR: process.env.INHA_CALENDAR,
+        },
     };
 };
