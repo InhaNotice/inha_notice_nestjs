@@ -5,11 +5,11 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-08
+ * Latest Updated Date: 2025-05-16
  */
 
 import { FirebaseService } from 'src/firebase/firebase.service';
-import { IdentifierConstants } from 'src/constants/identifiers';
+import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 
 describe('FirebaseService', () => {
     let service: FirebaseService;
@@ -40,7 +40,7 @@ describe('FirebaseService', () => {
         });
 
         it('배포환경에서 FCM 알림이 전송된다.', async () => {
-            process.env.NODE_ENV = IdentifierConstants.kProduction;
+            process.env.NODE_ENV = IDENTIFIER_CONSTANT.kProduction;
             const dataMock: Record<string, string> = {};
             const expectMessage = {
             }

@@ -5,12 +5,12 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-16
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import { IdentifierConstants } from 'src/constants/identifiers';
+import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 
 @Injectable()
 export class FirebaseService {
@@ -46,10 +46,10 @@ export class FirebaseService {
         },
       };
 
-      const notificationId: string = data?.id ?? IdentifierConstants.UNKNOWN_ID;
-      const notificationDate: string = data?.date ?? IdentifierConstants.UNKNOWN_DATE;
+      const notificationId: string = data?.id ?? IDENTIFIER_CONSTANT.UNKNOWN_ID;
+      const notificationDate: string = data?.date ?? IDENTIFIER_CONSTANT.UNKNOWN_DATE;
 
-      if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
+      if (process.env.NODE_ENV === IDENTIFIER_CONSTANT.kProduction) {
         await this.firebaseAdmin.messaging().send(message);
         FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: \"${notificationId}\"-${notificationDate}`);
       } else {

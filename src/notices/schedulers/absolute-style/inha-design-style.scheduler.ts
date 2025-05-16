@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-16
  */
 
 import { Injectable, Logger, Scope } from "@nestjs/common";
@@ -14,8 +14,8 @@ import { FirebaseService } from "src/firebase/firebase.service";
 import { InhaDesignStyleScraper } from "src/notices/scrapers/absolute-style/inha-design-style.scraper";
 import * as path from 'path';
 import { Cron } from "@nestjs/schedule";
-import { Notice } from 'src/notices/interfaces/notice.interface';
-import { InhaDesignStyleConstant } from "src/constants/notice/scheduler/inha-design-style.constant";
+import { FirebaseMessagePayload, Notice } from 'src/notices/interfaces/notice.interface';
+import { INHA_DESIGN_STYLE_CRON } from "src/constants/crons/inha-design-style.cron.constant";
 import { FirebaseNotificationContext } from "src/firebase/firebase-notification.context";
 import { InhaDesignStyleState } from "src/firebase/notifications/states/inha-design-style.state";
 
@@ -58,14 +58,14 @@ export class InhaDesignStyleScheduler extends AbsoluteStyleScheduler {
     // 2. 스케줄링 메서드 (Cron, 2개)
     // ========================================
 
-    @Cron(InhaDesignStyleConstant.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
+    @Cron(INHA_DESIGN_STYLE_CRON.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
     async handleWeekDays() {
-        await this.executeCrawling(InhaDesignStyleConstant.TASK_WEEKDAYS);
+        await this.executeCrawling(INHA_DESIGN_STYLE_CRON.TASK_WEEKDAYS);
     }
 
-    @Cron(InhaDesignStyleConstant.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
+    @Cron(INHA_DESIGN_STYLE_CRON.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
     async handleDelete() {
-        await this.deleteOldNotices(InhaDesignStyleConstant.TASK_DELETE_OLD);
+        await this.deleteOldNotices(INHA_DESIGN_STYLE_CRON.TASK_DELETE_OLD);
     }
 
     // ========================================
@@ -77,7 +77,7 @@ export class InhaDesignStyleScheduler extends AbsoluteStyleScheduler {
     * @param {string} noticeType - 알림을 보낼 공지 타입
     */
     async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
-        const { title, body, data } = this.buildFirebaseMessagePayload(notice, noticeType);
+        const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(notice, noticeType);
         return await this.firebaseService.sendNotificationToTopic(noticeType, title, body, data);
     }
 }

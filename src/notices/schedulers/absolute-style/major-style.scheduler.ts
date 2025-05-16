@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-16
  */
 
 import { Injectable, Logger, Scope } from '@nestjs/common';
@@ -14,7 +14,7 @@ import { MajorStyleScraper } from 'src/notices/scrapers/absolute-style/major-sty
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
-import { MajorStyleConstant } from 'src/constants/notice/scheduler/major-style.constant';
+import { MAJOR_STYLE_CRON } from 'src/constants/crons/major-style.cron.constant';
 import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { MajorStyleState } from 'src/firebase/notifications/states/major-style.state';
@@ -60,14 +60,14 @@ export class MajorStyleScheduler extends AbsoluteStyleScheduler {
     // 2. 스케줄링 메서드 (Cron, 2개)
     // ========================================
 
-    @Cron(MajorStyleConstant.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
+    @Cron(MAJOR_STYLE_CRON.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
     async handleWeekDays() {
-        await this.executeCrawling(MajorStyleConstant.TASK_WEEKDAYS);
+        await this.executeCrawling(MAJOR_STYLE_CRON.TASK_WEEKDAYS);
     }
 
-    @Cron(MajorStyleConstant.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
+    @Cron(MAJOR_STYLE_CRON.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
     async handleDelete() {
-        await this.deleteOldNotices(MajorStyleConstant.TASK_DELETE_OLD);
+        await this.deleteOldNotices(MAJOR_STYLE_CRON.TASK_DELETE_OLD);
     }
 
     // ========================================

@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-06
+ * Latest Updated Date: 2025-05-16
  */
 
 import { Injectable, Logger } from "@nestjs/common";
@@ -15,7 +15,7 @@ import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import { GeneralTagSelectors } from "src/selectors/oceanography-style.selector";
-import { IdentifierConstants } from "src/constants/identifiers";
+import { IDENTIFIER_CONSTANT } from "src/constants/identifiers/identifier.constant";
 import * as url from 'url';
 import { AxiosResponse } from 'axios';
 import * as iconv from 'iconv-lite';
@@ -135,7 +135,7 @@ export class OceanographyStyleScraper extends AbsoluteStyleScraper {
     private makeUniqueNoticeId(postUrl: string): string {
         // 1. postUrl이 비어 있는 경우 기본값 반환
         if (!postUrl || postUrl.length === 0) {
-            return IdentifierConstants.UNKNOWN_ID;
+            return IDENTIFIER_CONSTANT.UNKNOWN_ID;
         }
 
         // 2. postUrl을 '/' 기준으로 분할
@@ -143,7 +143,7 @@ export class OceanographyStyleScraper extends AbsoluteStyleScraper {
 
         // 3. segments 리스트의 길이가 3보다 작으면 기본값 반환 (정해진 규격을 따르는지 확인)
         if (segments.length < 3) {
-            return IdentifierConstants.UNKNOWN_ID;
+            return IDENTIFIER_CONSTANT.UNKNOWN_ID;
         }
 
         try {
@@ -155,7 +155,7 @@ export class OceanographyStyleScraper extends AbsoluteStyleScraper {
             const postId: string | null = parsedUrl.searchParams.get('idx');
             // 6. postId가 존재하지 않으면 기본값 반환
             if (!postId) {
-                return IdentifierConstants.UNKNOWN_ID;
+                return IDENTIFIER_CONSTANT.UNKNOWN_ID;
             }
 
             // 7. 공급자(provider) 정보와 postId를 조합하여 고유 ID 생성
@@ -163,7 +163,7 @@ export class OceanographyStyleScraper extends AbsoluteStyleScraper {
             return `${provider}-${postId}`;
         } catch (error) {
             // URL 파싱 중 예외가 발생한 경우 기본값 반환
-            return IdentifierConstants.UNKNOWN_ID;
+            return IDENTIFIER_CONSTANT.UNKNOWN_ID;
         }
     }
 

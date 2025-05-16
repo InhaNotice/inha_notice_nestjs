@@ -5,14 +5,14 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-16
  */
 
 import * as fs from 'fs';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import * as sqlite3 from 'sqlite3';
-import { IdentifierConstants } from 'src/constants/identifiers';
+import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 import * as dayjs from 'dayjs';
 
 class TestSchedulerService extends AbsoluteStyleScheduler {
@@ -310,7 +310,7 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
 
         it('배포환경에서 새로운 공지가 있을 때, 정상적으로 알림을 보내고 공지를 저장한다.', async () => {
             const logPrefixMock = '정기 크롤링';
-            process.env.NODE_ENV = IdentifierConstants.kProduction;
+            process.env.NODE_ENV = IDENTIFIER_CONSTANT.kProduction;
             filterNewNoticesMock = jest.spyOn<any, any>(service, 'filterNewNotices').mockReturnValue([
                 {
                     'id': 'KR-1',
@@ -332,7 +332,7 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
 
         it('배포환경에서 새로운 공지가 없으면, 알림을 보내지 않고 공지를 저장하지 않는다.', async () => {
             const logPrefixMock = '정기 크롤링';
-            process.env.NODE_ENV = IdentifierConstants.kProduction;
+            process.env.NODE_ENV = IDENTIFIER_CONSTANT.kProduction;
             filterNewNoticesMock = jest.spyOn<any, any>(service, 'filterNewNotices').mockReturnValue([]);
 
             await service['executeCrawling'](logPrefixMock);
@@ -370,7 +370,7 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
         it('개발환경에서 크롤링 에러 발생시, 이에 맞는 로깅이 실행되어야한다.', async () => {
             const logPrefixMock = '정기 크롤링';
             const errorMessage = '크롤링 에러 발생';
-            process.env.NODE_ENV = IdentifierConstants.kProduction;
+            process.env.NODE_ENV = IDENTIFIER_CONSTANT.kProduction;
             jest.spyOn<any, any>(service['scraperService'], 'fetchAllNotices').mockRejectedValue(
                 new Error(errorMessage)
             );

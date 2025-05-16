@@ -5,14 +5,14 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-16
  */
 
 import { NotificationState } from 'src/firebase/notifications/notification.state';
-import { undergraduateMapping } from 'src/constants/calendar/mappings/undergraduate.mapping';
+import { UNDERGRADUATE_NOTIFICATION_MESSAGES } from 'src/constants/message/undergraduate.notification.message';
 
 export class UndergraudateState implements NotificationState {
     getNotificationTitle(topic: string): string {
-        return undergraduateMapping[topic] ?? '새로운 공지사항이 있어요!';
+        return UNDERGRADUATE_NOTIFICATION_MESSAGES[topic] ?? '새로운 공지사항이 있어요!';
     }
 }

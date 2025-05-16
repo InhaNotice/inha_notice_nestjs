@@ -5,14 +5,14 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-16
  */
 
 import { Logger } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import * as cheerio from 'cheerio';
 import { Notice } from 'src/notices/interfaces/notice.interface';
-import { StatusCodeSettings } from 'src/constants/http-status';
+import { HTTP_STATUS } from 'src/constants/http/http-status.constant';
 
 /**
  * AbsoluteStyle의 공지사항 크롤링을 제공하는 추상클래스
@@ -115,7 +115,7 @@ export abstract class AbsoluteStyleScraper {
                 responseType: 'arraybuffer',
             });
 
-            if (response.status === StatusCodeSettings.STATUS_OKAY) {
+            if (response.status === HTTP_STATUS.STATUS_OKAY) {
                 const $: cheerio.CheerioAPI = await this.parseHTML(response);
                 return {
                     general: this.fetchGeneralNotices($, baseUrl),

@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-16
  */
 
 import { Injectable, Logger } from "@nestjs/common";
@@ -16,7 +16,7 @@ import { AnyNode } from 'domhandler';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import { GeneralTagSelectors } from "src/selectors/inhadesign-style.selector";
 import { AxiosResponse } from 'axios';
-import { IdentifierConstants } from "src/constants/identifiers";
+import { IDENTIFIER_CONSTANT } from "src/constants/identifiers/identifier.constant";
 
 @Injectable()
 export class InhaDesignStyleScraper extends AbsoluteStyleScraper {
@@ -68,8 +68,8 @@ export class InhaDesignStyleScraper extends AbsoluteStyleScraper {
             const originalDate: string = dateTag.text().trim();
             const date: string = this.parseDate(originalDate);
 
-            const writer: string = IdentifierConstants.UNKNOWN_WRITER;
-            const access: string = IdentifierConstants.UNKNOWN_ACCESS;
+            const writer: string = IDENTIFIER_CONSTANT.UNKNOWN_WRITER;
+            const access: string = IDENTIFIER_CONSTANT.UNKNOWN_ACCESS;
 
             results.push({ id, title, link, date, writer, access });
         });

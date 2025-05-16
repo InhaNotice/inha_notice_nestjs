@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-16
  */
 
 import { Injectable, Logger, Scope } from '@nestjs/common';
@@ -14,7 +14,7 @@ import { FirebaseService } from 'src/firebase/firebase.service';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
 import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
-import { OceanographyStyleConstant } from 'src/constants/notice/scheduler/oceanography-style.constant';
+import { OCEANOGRAPHY_STYLE_CRON } from 'src/constants/crons/oceanography-style.cron.constant';
 import { OceanographyStyleScraper } from 'src/notices/scrapers/absolute-style/oceanography-style.scraper';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { OceanographyStyleState } from 'src/firebase/notifications/states/oceanography-style.state';
@@ -60,14 +60,14 @@ export class OceanographyStyleScheduler extends AbsoluteStyleScheduler {
     // 2. 스케줄링 메서드 (Cron, 2개)
     // ========================================
 
-    @Cron(OceanographyStyleConstant.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
+    @Cron(OCEANOGRAPHY_STYLE_CRON.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
     async handleWeekDays() {
-        await this.executeCrawling(OceanographyStyleConstant.TASK_WEEKDAYS);
+        await this.executeCrawling(OCEANOGRAPHY_STYLE_CRON.TASK_WEEKDAYS);
     }
 
-    @Cron(OceanographyStyleConstant.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
+    @Cron(OCEANOGRAPHY_STYLE_CRON.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
     async handleDelete() {
-        await this.deleteOldNotices(OceanographyStyleConstant.TASK_DELETE_OLD);
+        await this.deleteOldNotices(OCEANOGRAPHY_STYLE_CRON.TASK_DELETE_OLD);
     }
 
     // ========================================

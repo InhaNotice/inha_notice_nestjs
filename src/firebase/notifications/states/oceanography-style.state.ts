@@ -5,14 +5,14 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-16
  */
 
 import { NotificationState } from 'src/firebase/notifications/notification.state';
-import { oceanographyStyleMapping } from 'src/constants/notice/mappings/oceanography-style.mapping';
+import { OCEANOGRAPHY_STYLE_MAP } from 'src/constants/department_maps/oceanography-style.map';
 
 export class OceanographyStyleState implements NotificationState {
     getNotificationTitle(topic: string): string {
-        return oceanographyStyleMapping[topic] ?? '새로운 공지사항이 있어요!';
+        return OCEANOGRAPHY_STYLE_MAP[topic] ?? '새로운 공지사항이 있어요!';
     }
 }

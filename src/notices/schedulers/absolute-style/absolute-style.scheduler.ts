@@ -14,8 +14,8 @@ import * as fs from 'fs';
 import * as dayjs from 'dayjs';
 import * as path from 'path';
 import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
-import { Notice } from 'src/notices/interfaces/notice.interface';
-import { IdentifierConstants } from 'src/constants/identifiers';
+import { FirebaseMessagePayload, Notice } from 'src/notices/interfaces/notice.interface';
+import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 
 /**
@@ -57,11 +57,7 @@ export abstract class AbsoluteStyleScheduler {
     protected buildFirebaseMessagePayload(
         notice: Notice,
         noticeType: string,
-    ): {
-        title: string;
-        body: string;
-        data: Record<string, string>;
-    } {
+    ): FirebaseMessagePayload {
         const title = this.context.getNotificationTitle(noticeType);
         const body = notice.title;
         const data = {
@@ -188,7 +184,7 @@ export abstract class AbsoluteStyleScheduler {
 
                 for (const notice of newNotices) {
                     // 배포 환경일 때만 FCM 알림 전송
-                    if (process.env.NODE_ENV === IdentifierConstants.kProduction) {
+                    if (process.env.NODE_ENV === IDENTIFIER_CONSTANT.kProduction) {
                         await this.sendFirebaseMessaging(notice, noticeType);
                     } else {
                         this.logger.debug(`🔕 ${noticeType}의 새로운 공지 - ${notice.title}-${notice.date}`);

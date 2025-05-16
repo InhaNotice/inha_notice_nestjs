@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-16
  */
 
 import { Injectable, Logger } from '@nestjs/common';
@@ -15,7 +15,7 @@ import { AnyNode } from 'domhandler';
 import { GeneralTagSelectors } from 'src/selectors/major.selector';
 import { Notice } from 'src/notices/interfaces/notice.interface';
 import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
-import { IdentifierConstants } from 'src/constants/identifiers';
+import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 import { AxiosResponse } from 'axios';
 
 /**
@@ -121,13 +121,13 @@ export class MajorStyleScraper extends AbsoluteStyleScraper {
      */
     private makeUniqueNoticeId(postUrl: string): string {
         if (postUrl.length === 0) {
-            return IdentifierConstants.UNKNOWN_ID;
+            return IDENTIFIER_CONSTANT.UNKNOWN_ID;
         }
 
         // 공지의 고유 URL을 배열로 변환
         const postUrlList: string[] = postUrl.split('/');
         if (postUrlList.length <= 4) {
-            return IdentifierConstants.UNKNOWN_ID;
+            return IDENTIFIER_CONSTANT.UNKNOWN_ID;
         }
 
         // provider - [provider]

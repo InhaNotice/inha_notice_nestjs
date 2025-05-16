@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-22
+ * Latest Updated Date: 2025-05-16
  */
 
 /**
@@ -19,3 +19,14 @@ export interface Notice {
     writer: string;
     access: string;
 };
+
+
+export interface FirebaseMessagePayload {
+    title: string;
+    body: string;
+    data: {
+        id: string;
+        link: string;
+        date: string;
+    }
+}
