@@ -9,7 +9,7 @@
  */
 
 import { NotificationState } from 'src/firebase/notifications/notification.state';
-import { UNDERGRADUATE_NOTIFICATION_MESSAGES } from 'src/constants/message/undergraduate.notification.message';
+import { UNDERGRADUATE_NOTIFICATION_MESSAGES } from 'src/constants/messages/undergraduate.notification.message';
 
 export class UndergraudateState implements NotificationState {
     getNotificationTitle(topic: string): string {

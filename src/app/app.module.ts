@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-22
+ * Latest Updated Date: 2025-05-16
  */
 
 import { Module } from '@nestjs/common';
@@ -18,6 +18,7 @@ import { NoticeModule } from 'src/notices/notice.module';
 import configuration from 'src/config/configuration';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { CalendarModule } from 'src/calendar/calendar.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     }),
     FirebaseModule,
     NoticeModule,
+    CalendarModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController, FirebaseController],
