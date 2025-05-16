@@ -15,7 +15,7 @@ import { Notice } from 'src/notices/interfaces/notice.interface';
 import * as path from 'path';
 import { WholeScraper } from 'src/notices/scrapers/absolute-style/whole.scraper';
 import { WHOLE_CRON } from 'src/constants/crons/whole.cron.constant';
-import { AbsoluteStyleScheduler } from './absolute-style.scheduler';
+import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { WholeState } from 'src/firebase/notifications/states/whole.state';
 
