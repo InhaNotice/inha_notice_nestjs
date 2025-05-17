@@ -11,6 +11,9 @@
 import { NotificationState } from 'src/firebase/states/notification.state';
 import { INHA_DESIGN_STYEL_MAP } from 'src/constants/department_maps/inha-design-style.map';
 
+/**
+ * Inha Design Style의 공지 알림 상태를 정의한다.
+*/
 export class InhaDesignStyleState implements NotificationState {
     getNotificationTitle(topic: string): string {
         return INHA_DESIGN_STYEL_MAP[topic] ?? '새로운 공지사항이 있어요!';

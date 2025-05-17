@@ -11,6 +11,9 @@
 import { NotificationState } from 'src/firebase/states/notification.state';
 import { MAJOR_MAP } from 'src/constants/department_maps/major.map';
 
+/**
+ * Major의 알림 상태를 정의한다.
+*/
 export class MajorState implements NotificationState {
     getNotificationTitle(topic: string): string {
         return MAJOR_MAP[topic] ?? '새로운 공지사항이 있어요!';

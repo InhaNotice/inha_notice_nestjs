@@ -8,6 +8,10 @@
  * Latest Updated Date: 2025-05-17
  */
 
+
+/**
+ * 알림 상태의 인터페이스를 제공한다.
+ */
 export interface NotificationState {
     getNotificationTitle(topic: string): string;
 }

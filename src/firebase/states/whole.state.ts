@@ -11,6 +11,9 @@
 import { NotificationState } from 'src/firebase/states/notification.state';
 import { WHOLE_MAP } from 'src/constants/department_maps/whole.map';
 
+/**
+ * Whole의 알림 상태를 정의한다.
+*/
 export class WholeState implements NotificationState {
   getNotificationTitle(topic: string): string {
     return WHOLE_MAP[topic] ?? '새로운 공지사항이 있어요!';
