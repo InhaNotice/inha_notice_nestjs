@@ -44,7 +44,7 @@ export class UndergraduateScheduler extends FirebaseNotifiable {
     }
 
     private async handleReminder(targetDate: string, topic: string): Promise<void> {
-        const schedulePath = path.join(__dirname, '../../config/undergraduate_schedule.json');
+        const schedulePath = path.join(process.cwd(), 'assets', 'undergraduate-schedule.json');
         const rawData = fs.readFileSync(schedulePath, 'utf8');
         const schedule: Schedule = JSON.parse(rawData);
 
