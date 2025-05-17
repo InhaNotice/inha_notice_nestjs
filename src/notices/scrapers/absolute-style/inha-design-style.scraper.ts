@@ -22,7 +22,7 @@ import { IDENTIFIER_CONSTANT } from "src/constants/identifiers/identifier.consta
 export class InhaDesignStyleScraper extends AbsoluteStyleScraper {
     constructor(private readonly configService: ConfigService) {
         super();
-        this.configName = 'inhadesignStyles';
+        this.configName = 'inhaDesignStyles';
         const noticeConfig: Record<string, {
             baseUrl: string;
             queryUrl: string;
@@ -99,7 +99,6 @@ export class InhaDesignStyleScraper extends AbsoluteStyleScraper {
         const month: string = parts[0].padStart(2, '0');
         const day: string = parts[1].padStart(2, '0');
         const year: string = parts[2];
-
         return `${year}.${month}.${day}`;
     }
 
