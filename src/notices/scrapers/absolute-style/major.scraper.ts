@@ -8,7 +8,7 @@
  * Latest Updated Date: 2025-05-17
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
@@ -38,6 +38,8 @@ export class MajorScraper extends AbsoluteStyleScraper {
             queryUrl: string
         }> =
             this.configService.get<Record<string, { baseUrl: string; queryUrl: string }>>(this.configName, {});
+
+        this.logger = new Logger(MajorScraper.name);
         this.noticeTypes = Object.keys(noticeConfig);
         this.noticeTypeUrls = this.loadUrls(noticeConfig, 'baseUrl');
         this.noticeTypeQueryUrls = this.loadUrls(noticeConfig, 'queryUrl');
