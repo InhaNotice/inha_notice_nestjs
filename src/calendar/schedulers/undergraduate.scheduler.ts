@@ -43,9 +43,14 @@ export class UndergraduateScheduler extends FirebaseNotifiable {
         await this.handleReminder(targetDate, 'undergraduate-schedule-dd-notification');
     }
 
+    /**
+     * 입력 targetDate와 일치하는 학사일정이 있는 경우, Firebase 메시지를 보낸다.
+     * @param {string} targetDate - 'YYYY-MM-DD'
+     * @param {string} topic - Firebase 토픽
+     */
     private async handleReminder(targetDate: string, topic: string): Promise<void> {
         const schedulePath = path.join(process.cwd(), 'assets', 'undergraduate-schedule.json');
-        const rawData = fs.readFileSync(schedulePath, 'utf8');
+        const rawData = await fs.promises.readFile(schedulePath, 'utf8');
         const schedule: Schedule = JSON.parse(rawData);
 
         for (const events of Object.values(schedule)) {
@@ -66,14 +71,20 @@ export class UndergraduateScheduler extends FirebaseNotifiable {
         }
     }
 
+    /**
+     * 학사일정의 NotificationPayload의 id를 결정하여 반환한다.
+     * @returns {string} - '12345'
+     */
     private getShortTimestampId(): string {
         return new Date().getTime().toString().slice(0, 5);
     }
 
-    // ========================================
-    // sendFirebaseMessaging() 구현
-    // ========================================
-
+    /**
+     * Firebase 메시지를 보낸다.
+     * @param {NotificationPayload} notice - 전처리된 알림 메시지 정보
+     * @param {string} topic - Firebase 토픽
+     * @returns {Promise<void>}
+     */
     async sendFirebaseMessaging(notice: NotificationPayload, topic: string): Promise<void> {
         const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(this.context, notice, topic);
         return await this.firebaseService.sendNotificationToTopic(topic, title, body, data);
