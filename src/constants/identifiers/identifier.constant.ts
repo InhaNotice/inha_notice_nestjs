@@ -17,4 +17,5 @@ export const IDENTIFIER_CONSTANT: Record<string, string> = {
     UNKNOWN_WRITER: 'unknownWriter',
     UNKNOWN_ACCESS: 'unknownAccess',
     kProduction: 'production',
+    kDevelopment: 'development',
 } as const;

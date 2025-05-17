@@ -51,9 +51,9 @@ export class FirebaseService {
 
       if (process.env.NODE_ENV === IDENTIFIER_CONSTANT.kProduction) {
         await this.firebaseAdmin.messaging().send(message);
-        FirebaseService.logger.log(`🔔 푸시알림 보내기 성공: \"${notificationId}\"-${notificationDate}`);
+        FirebaseService.logger.log(`🔔 ${deviceToken}의 새로운 공지: \"${notificationId}\"-${notificationDate}`);
       } else {
-        FirebaseService.logger.debug(`🔕 ${deviceToken}의 새로운 공지 - ${notificationId}-${notificationDate}`);
+        FirebaseService.logger.debug(`🔕 ${deviceToken}의 새로운 공지 - \"${notificationId}\"-${notificationDate}`);
       }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
@@ -87,13 +87,13 @@ export class FirebaseService {
         },
       };
 
-      if (process.env.NODE_ENV == IDENTIFIER_CONSTANT.kProduction) {
-        await this.firebaseAdmin.messaging().send(message);
-        return;
-      }
-
       const notificationDate: string = data?.date ?? IDENTIFIER_CONSTANT.UNKNOWN_DATE;
 
+      if (process.env.NODE_ENV == IDENTIFIER_CONSTANT.kProduction) {
+        await this.firebaseAdmin.messaging().send(message);
+        FirebaseService.logger.log(`🔔 ${topic}의 새로운 공지: \"${notificationTitle}\"-\"${notificationDate}\"`);
+        return;
+      }
       FirebaseService.logger.debug(`🔕 ${topic}의 새로운 공지 - ${notificationBody}-${notificationDate}`);
     } catch (e) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${e.message}`);
