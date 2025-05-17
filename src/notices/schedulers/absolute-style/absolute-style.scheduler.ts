@@ -34,10 +34,6 @@ import { FirebaseNotifiable } from 'src/interfaces/firebase-notificable.interfac
  * 3. 헬퍼 함수(크롤링, 오래된 공지 삭제 관련)
  */
 export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
-    // ========================================
-    // 1. 필드 선언
-    // ========================================
-
     protected logger: Logger;
     protected directoryName: string;
     protected scraperService: AbsoluteStyleScraper;
@@ -45,10 +41,6 @@ export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
     protected databases: Record<string, sqlite3.Database>;
     protected cachedNoticeIds: Record<string, Set<string>>;
     protected context: FirebaseNotificationContext;
-
-    // ========================================
-    // 2-1. 서비스 로직 구현 (초기화 관련 메서드)
-    // ========================================
 
     /**
      * databaseDirectory 디렉터리 존재 확인 및 생성
