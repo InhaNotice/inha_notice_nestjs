@@ -92,7 +92,9 @@ export class FirebaseService {
         return;
       }
 
-      FirebaseService.logger.debug(`🔕 ${topic}의 새로운 공지 - ${notificationBody}-${data?.date || 'NON_DATE'}`);
+      const notificationDate: string = data?.date ?? IDENTIFIER_CONSTANT.UNKNOWN_DATE;
+
+      FirebaseService.logger.debug(`🔕 ${topic}의 새로운 공지 - ${notificationBody}-${notificationDate}`);
     } catch (e) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${e.message}`);
     }
