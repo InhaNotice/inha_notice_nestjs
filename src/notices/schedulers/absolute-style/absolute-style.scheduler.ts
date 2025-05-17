@@ -14,10 +14,10 @@ import * as fs from 'fs';
 import * as dayjs from 'dayjs';
 import * as path from 'path';
 import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
-import { Notice } from 'src/notices/interfaces/notice.interface';
+import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
-import { FirebaseNotifiable } from 'src/firebase/interfaces/firebase-notificable.interface';
+import { FirebaseNotifiable } from 'src/interfaces/firebase-notificable.interface';
 
 /**
  * AbsoluteStyle의 공지사항 크롤링 스케줄러를 제공하는 추상클래스
@@ -149,10 +149,10 @@ export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
         this.logger.log(`📌 ${logPrefix} 크롤링 실행 중...`);
 
         try {
-            const allNotices: Record<string, Notice[]> = await this.scraperService.fetchAllNotices();
+            const allNotices: Record<string, NotificationPayload[]> = await this.scraperService.fetchAllNotices();
 
             for (const noticeType of Object.keys(allNotices)) {
-                const newNotices: Notice[] = this.filterNewNotices(noticeType, allNotices[noticeType]);
+                const newNotices: NotificationPayload[] = this.filterNewNotices(noticeType, allNotices[noticeType]);
 
                 // 새로운 공지사항이 존재하지 않으면 건너뛰기
                 if (newNotices.length === 0) {
@@ -160,13 +160,7 @@ export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
                 }
 
                 for (const notice of newNotices) {
-                    // 배포 환경일 때만 FCM 알림 전송
-                    if (process.env.NODE_ENV === IDENTIFIER_CONSTANT.kProduction) {
-                        await this.sendFirebaseMessaging(notice, noticeType);
-                    } else {
-                        this.logger.debug(`🔕 ${noticeType}의 새로운 공지 - ${notice.title}-${notice.date}`);
-                    }
-
+                    await this.sendFirebaseMessaging(notice, noticeType);
                     // File에 기록
                     this.saveNotice(noticeType, notice);
                     // 캐시에 새로운 공지 Id 추가
@@ -229,18 +223,18 @@ export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
     /**
      * 오늘 날짜의 필터링된 새로운 공지사항 객체 배열 반환
      * @param {string} noticeType - 공지타입
-     * @param {Notice[]} notices - 크롤링한 원본 공지사항 객체 배열
-     * @returns {Promise<Notice[]>} - 오늘 날짜의 필터링된 새로운 공지사항 객체 배열
+     * @param {NotificationPayload[]} notices - 크롤링한 원본 공지사항 객체 배열
+     * @returns {Promise<NotificationPayload[]>} - 오늘 날짜의 필터링된 새로운 공지사항 객체 배열
      */
-    protected filterNewNotices(noticeType: string, notices: Notice[]): Notice[] {
+    protected filterNewNotices(noticeType: string, notices: NotificationPayload[]): NotificationPayload[] {
         // todayDate: YYYY.MM.DD
         const todayDate: string = this.getTodayDate();
         // todayNotices: 오늘 날짜 필터링한 공지사항 객체 배열
-        const todayNotices: Notice[] = notices.filter((notice) => notice.date === todayDate);
+        const todayNotices: NotificationPayload[] = notices.filter((notice) => notice.date === todayDate);
 
         // newNotices: 오늘 날짜의 필터링된 새로운 공지사항 객체 배열
         // 캐싱된 기존의 공지와 비교하여 새로운 공지사항만 선별
-        const newNotices: Notice[] = todayNotices.filter(notice => !this.cachedNoticeIds[noticeType].has(notice.id));
+        const newNotices: NotificationPayload[] = todayNotices.filter(notice => !this.cachedNoticeIds[noticeType].has(notice.id));
 
         return newNotices;
     }
@@ -248,9 +242,9 @@ export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
     /**
      * 새로운 공지를 데이터베이스에 저장
      * @param {string} noticeType - 공지타입
-     * @param {Notice} notice - 새로운 공지사항 객체
+     * @param {NotificationPayload} notice - 새로운 공지사항 객체
      */
-    protected async saveNotice(noticeType: string, notice: Notice): Promise<void> {
+    protected async saveNotice(noticeType: string, notice: NotificationPayload): Promise<void> {
         return new Promise((resolve, reject) => {
             this.databases[noticeType].run(
                 "INSERT OR IGNORE INTO notices (id, title, link, date) VALUES (?, ?, ?, ?)",

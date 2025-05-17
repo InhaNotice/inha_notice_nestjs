@@ -14,11 +14,11 @@ import { FirebaseService } from "src/firebase/firebase.service";
 import { InhaDesignStyleScraper } from "src/notices/scrapers/absolute-style/inha-design-style.scraper";
 import * as path from 'path';
 import { Cron } from "@nestjs/schedule";
-import { Notice } from 'src/notices/interfaces/notice.interface';
+import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { INHA_DESIGN_STYLE_CRON } from "src/constants/crons/inha-design-style.cron.constant";
 import { FirebaseNotificationContext } from "src/firebase/firebase-notification.context";
-import { FirebaseMessagePayload } from "src/firebase/interfaces/firebase-notificable.interface";
-import { InhaDesignStyleState } from "src/firebase/notifications/states/inha-design-style.state";
+import { FirebaseMessagePayload } from "src/interfaces/firebase-notificable.interface";
+import { InhaDesignStyleState } from "src/firebase/states/inha-design-style.state";
 
 /**
  * 디자인융합학과 스타일 공지 크롤링 스케줄러
@@ -72,13 +72,9 @@ export class InhaDesignStyleScheduler extends AbsoluteStyleScheduler {
     // ========================================
     // 3. sendFirebaseMessaging() 구현
     // ========================================
-    /**
-    * 
-    * @param {Notice} notice - 새로운 공지 정보가 담긴 객체
-    * @param {string} noticeType - 알림을 보낼 공지 타입
-    */
-    async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
-        const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(this.context, notice, noticeType);
-        return await this.firebaseService.sendNotificationToTopic(noticeType, title, body, data);
+
+    async sendFirebaseMessaging(notice: NotificationPayload, topic: string): Promise<void> {
+        const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(this.context, notice, topic);
+        return await this.firebaseService.sendNotificationToTopic(topic, title, body, data);
     }
 }

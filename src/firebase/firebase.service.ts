@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-16
+ * Latest Updated Date: 2025-05-17
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
@@ -87,7 +87,12 @@ export class FirebaseService {
         },
       };
 
-      await this.firebaseAdmin.messaging().send(message);
+      if (process.env.NODE_ENV == IDENTIFIER_CONSTANT.kProduction) {
+        await this.firebaseAdmin.messaging().send(message);
+        return;
+      }
+
+      FirebaseService.logger.debug(`🔕 ${topic}의 새로운 공지 - ${notificationBody}-${data?.date || 'NON_DATE'}`);
     } catch (e) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${e.message}`);
     }

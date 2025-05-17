@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-16
+ * Latest Updated Date: 2025-05-17
  */
 
 import { Injectable, Logger } from "@nestjs/common";
@@ -13,7 +13,7 @@ import { ConfigService } from "@nestjs/config";
 import { AbsoluteStyleScraper } from "src/notices/scrapers/absolute-style/absolute-style.scraper";
 import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
-import { Notice } from 'src/notices/interfaces/notice.interface';
+import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { GeneralTagSelectors } from "src/selectors/inhadesign-style.selector";
 import { AxiosResponse } from 'axios';
 import { IDENTIFIER_CONSTANT } from "src/constants/identifiers/identifier.constant";
@@ -39,10 +39,10 @@ export class InhaDesignStyleScraper extends AbsoluteStyleScraper {
      * 주어진 HTML에서 일반 공지사항 목록을 추출하는 함수
      * @param {cheerio.CheerioAPI} $ - Cheerio API 인스턴스
      * @param {string} baseUrl - 공지사항의 표준 링크 (게시물 링크 생성 시 사용)
-     * @returns {Notice[]} - 전처리된 공지사항 객체 배열
+     * @returns {NotificationPayload[]} - 전처리된 공지사항 객체 배열
      */
-    fetchGeneralNotices($: cheerio.CheerioAPI, baseUrl: string): Notice[] {
-        const results: Notice[] = [];
+    fetchGeneralNotices($: cheerio.CheerioAPI, baseUrl: string): NotificationPayload[] {
+        const results: NotificationPayload[] = [];
         const noticeBoard: cheerio.Cheerio<AnyNode> = $(GeneralTagSelectors.NOTICE_BOARD);
 
         if (!noticeBoard.length) return results;

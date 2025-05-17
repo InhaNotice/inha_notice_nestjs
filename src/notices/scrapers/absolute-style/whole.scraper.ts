@@ -5,14 +5,14 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-16
+ * Latest Updated Date: 2025-05-17
  */
 
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
-import { Notice } from 'src/notices/interfaces/notice.interface';
+import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { GeneralTagSelectors } from 'src/selectors/whole.selector';
 import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
 import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
@@ -57,9 +57,9 @@ export class WholeScraper extends AbsoluteStyleScraper {
     // 2. fetchGeneralNotices() 구현
     // ========================================
 
-    fetchGeneralNotices($: cheerio.CheerioAPI, baseUrl: string): Notice[] {
+    fetchGeneralNotices($: cheerio.CheerioAPI, baseUrl: string): NotificationPayload[] {
         const generals: cheerio.Cheerio<AnyNode> = $(GeneralTagSelectors.NOTICE_BOARD);
-        const results: Notice[] = [];
+        const results: NotificationPayload[] = [];
 
         generals.each((_, element) => {
             const titleTag: cheerio.Cheerio<AnyNode> = $(element).find(GeneralTagSelectors.NOTICE_TITLE);

@@ -5,29 +5,30 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-16
+ * Latest Updated Date: 2025-05-17
  */
 
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dayjs from 'dayjs';
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Cron } from '@nestjs/schedule';
 import { UNDERGRADUATE_CRON } from "src/constants/crons/undergraduate.cron.constant";
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
-import { UndergraudateState } from 'src/firebase/notifications/states/undergraduate.state';
+import { UndergraudateState } from 'src/firebase/states/undergraduate.state';
 import { ConfigService } from '@nestjs/config';
+import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
+import { FirebaseMessagePayload, FirebaseNotifiable } from 'src/interfaces/firebase-notificable.interface';
 import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 
 @Injectable()
-export class UndergraduateScheduler {
+export class UndergraduateScheduler extends FirebaseNotifiable {
     private readonly context: FirebaseNotificationContext;
-    private readonly logger: Logger;
 
     constructor(private readonly firebaseService: FirebaseService, private readonly configService: ConfigService) {
+        super();
         this.context = new FirebaseNotificationContext(new UndergraudateState());
-        this.logger = new Logger(UndergraduateScheduler.name);
     }
 
     @Cron(UNDERGRADUATE_CRON.UNDERGRADUATE_DAY_BEFORE_REMINDER, { timeZone: 'Asia/Seoul' })
@@ -50,22 +51,31 @@ export class UndergraduateScheduler {
         for (const events of Object.values(schedule)) {
             for (const event of events) {
                 if (event.startDate === targetDate && event.title.length !== 0) {
-                    const currentTime: Date = new Date();
-                    const notificationTitle: string = this.context.getNotificationTitle(topic);
-                    const notificationBody: string = event.title;
-                    const data: Record<string, string> = {
-                        id: currentTime.getTime().toString(),
+                    const notice: NotificationPayload = {
+                        id: this.getShortTimestampId(),
+                        title: event.title,
                         link: this.configService.get<Record<string, string>>('calendar')?.INHA_CALENDAR || '',
                         date: targetDate,
-                    }
+                        writer: IDENTIFIER_CONSTANT.UNKNOWN_WRITER,
+                        access: IDENTIFIER_CONSTANT.UNKNOWN_ACCESS,
+                    };
 
-                    if (process.env.NODE_ENV === IDENTIFIER_CONSTANT.kProduction) {
-                        await this.firebaseService.sendNotificationToTopic(topic, notificationTitle, notificationBody, data);
-                    } else {
-                        this.logger.debug(`🔕 ${topic}의 새로운 공지 - ${notificationTitle}-${data.targetDate}`);
-                    }
+                    await this.sendFirebaseMessaging(notice, topic);
                 }
             }
         }
+    }
+
+    private getShortTimestampId(): string {
+        return new Date().getTime().toString().slice(0, 5);
+    }
+
+    // ========================================
+    // sendFirebaseMessaging() 구현
+    // ========================================
+
+    async sendFirebaseMessaging(notice: NotificationPayload, topic: string): Promise<void> {
+        const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(this.context, notice, topic);
+        return await this.firebaseService.sendNotificationToTopic(topic, title, body, data);
     }
 }

@@ -9,9 +9,9 @@
  */
 
 /**
- * 공지 타입을 정의
+ * Define notification payload.
  */
-export interface Notice {
+export interface NotificationPayload {
     id: string;
     title: string;
     link: string;

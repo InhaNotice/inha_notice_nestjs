@@ -11,14 +11,14 @@
 import { Injectable, Logger, Scope } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { FirebaseService } from 'src/firebase/firebase.service';
-import { Notice } from 'src/notices/interfaces/notice.interface';
+import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import * as path from 'path';
 import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import { OCEANOGRAPHY_STYLE_CRON } from 'src/constants/crons/oceanography-style.cron.constant';
 import { OceanographyStyleScraper } from 'src/notices/scrapers/absolute-style/oceanography-style.scraper';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
-import { OceanographyStyleState } from 'src/firebase/notifications/states/oceanography-style.state';
-import { FirebaseMessagePayload } from 'src/firebase/interfaces/firebase-notificable.interface';
+import { OceanographyStyleState } from 'src/firebase/states/oceanography-style.state';
+import { FirebaseMessagePayload } from 'src/interfaces/firebase-notificable.interface';
 
 /**
  * 해양과학과 스타일 공지 크롤링 스케줄러
@@ -75,13 +75,8 @@ export class OceanographyStyleScheduler extends AbsoluteStyleScheduler {
     // 3. sendFirebaseMessaging() 구현
     // ========================================
 
-    /**
-     * 
-     * @param {Notice} notice - 새로운 공지 정보가 담긴 객체
-     * @param {string} noticeType - 알림을 보낼 공지 타입
-     */
-    async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
-        const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(this.context, notice, noticeType);
-        return await this.firebaseService.sendNotificationToTopic(noticeType, title, body, data);
+    async sendFirebaseMessaging(notice: NotificationPayload, topic: string): Promise<void> {
+        const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(this.context, notice, topic);
+        return await this.firebaseService.sendNotificationToTopic(topic, title, body, data);
     }
 }

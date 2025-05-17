@@ -7,7 +7,7 @@
  * Author: junho Kim
  * Latest Updated Date: 2025-05-17
  */
-import { Notice } from 'src/notices/interfaces/notice.interface';
+import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 
 export interface FirebaseMessagePayload {
     title: string;
@@ -28,17 +28,17 @@ export abstract class FirebaseNotifiable {
      * @param notice - 전송할 공지사항
      * @param noticeType - 공지사항 유형
      */
-    abstract sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void>;
+    abstract sendFirebaseMessaging(notice: NotificationPayload, noticeType: string): Promise<void>;
 
     /**
      * Firebase 메시지 payload 생성
      */
     protected buildFirebaseMessagePayload(
         context: { getNotificationTitle: (type: string) => string },
-        notice: Notice,
-        noticeType: string,
+        notice: NotificationPayload,
+        topic: string,
     ): FirebaseMessagePayload {
-        const title = context.getNotificationTitle(noticeType);
+        const title = context.getNotificationTitle(topic);
         const body = notice.title;
         const data = {
             id: notice.id,

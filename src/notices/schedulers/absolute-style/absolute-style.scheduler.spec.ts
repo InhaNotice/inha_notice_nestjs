@@ -9,7 +9,7 @@
  */
 
 import * as fs from 'fs';
-import { Notice } from 'src/notices/interfaces/notice.interface';
+import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import * as sqlite3 from 'sqlite3';
 import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
@@ -56,7 +56,7 @@ class TestSchedulerService extends AbsoluteStyleScheduler {
         } as any;
     };
 
-    async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
+    async sendFirebaseMessaging(notice: NotificationPayload, noticeType: string): Promise<void> {
         return;
     }
 }
@@ -487,7 +487,7 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
         });
 
         it('추가된 적 없는 공지를 구별해서 리턴한다.', () => {
-            const noticesMock: Notice[] = [{
+            const noticesMock: NotificationPayload[] = [{
                 id: 'KR-1',
                 title: 'title',
                 link: 'https://example.com',
@@ -520,7 +520,7 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
         });
 
         it('이미 추가된 공지를 구별해서 리턴한다.', () => {
-            const noticesMock: Notice[] = [{
+            const noticesMock: NotificationPayload[] = [{
                 id: 'KR-1',
                 title: 'title',
                 link: 'https://example.com',
@@ -564,7 +564,7 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
         });
 
         it('추가된 적 없는 공지에 대해서, 오늘 날짜를 구별해서 리턴한다.', () => {
-            const noticesMock: Notice[] = [{
+            const noticesMock: NotificationPayload[] = [{
                 id: 'KR-1',
                 title: 'title',
                 link: 'https://example.com',
@@ -612,7 +612,7 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
                 callback(new Error(errorMessage), null);
                 return {} as any;
             });
-            const noticeMock: Notice = {
+            const noticeMock: NotificationPayload = {
                 id: 'KR-1',
                 title: 'title',
                 link: 'https://example.com',
@@ -635,7 +635,7 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
                 callback(null, null);
                 return {} as any;
             });
-            const noticeMock: Notice = {
+            const noticeMock: NotificationPayload = {
                 id: 'KR-1',
                 title: 'title',
                 link: 'https://example.com',

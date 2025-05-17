@@ -5,13 +5,13 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-16
+ * Latest Updated Date: 2025-05-17
  */
 
 import { Logger } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import * as cheerio from 'cheerio';
-import { Notice } from 'src/notices/interfaces/notice.interface';
+import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { HTTP_STATUS } from 'src/constants/http/http-status.constant';
 
 /**
@@ -45,9 +45,9 @@ export abstract class AbsoluteStyleScraper {
      * 응답 받은 HTML을 전처리하는 함수
      * @param {cheerio.CheerioAPI} $ - Cheerio API 인스턴스  
      * @param {string} baseUrl - 공지사항 표준 링크 (이후 게시물 링크 생성)
-     * @return {Notice[]} - 전처리된 공지사항 배열 객체
+     * @return {NotificationPayload[]} - 전처리된 공지사항 배열 객체
      */
-    abstract fetchGeneralNotices($: cheerio.CheerioAPI, baseUrl: string): Notice[];
+    abstract fetchGeneralNotices($: cheerio.CheerioAPI, baseUrl: string): NotificationPayload[];
 
     abstract parseHTML(response: AxiosResponse<ArrayBuffer>): Promise<cheerio.CheerioAPI>;
 
@@ -77,14 +77,14 @@ export abstract class AbsoluteStyleScraper {
 
     /**
      * 모든 공지사항을 크롤링 후 전처리한 공지 반환
-     * @returns {Promise<Record<string, Notice[]>>} 전처리된 모든 공지들 반환
+     * @returns {Promise<Record<string, NotificationPayload[]>>} 전처리된 모든 공지들 반환
      */
-    public async fetchAllNotices(): Promise<Record<string, Notice[]>> {
-        const results: Record<string, Notice[]> = {};
+    public async fetchAllNotices(): Promise<Record<string, NotificationPayload[]>> {
+        const results: Record<string, NotificationPayload[]> = {};
 
         for (const noticeType of this.noticeTypes) {
             try {
-                const notices: { general: Notice[] } = await this.fetchNotices(noticeType, 1);
+                const notices: { general: NotificationPayload[] } = await this.fetchNotices(noticeType, 1);
                 results[noticeType] = notices.general;
             } catch (error) {
                 this.logger.error(`❌ ${noticeType} 공지사항 크롤링 실패:`, error.message);
@@ -98,9 +98,9 @@ export abstract class AbsoluteStyleScraper {
      * 공지타입과 페이지 기반의 일반 공지사항을 크롤링하는 함수
      * @param {string} noticeType - 공지타입
      * @param {number} page - 페이지 번호
-     * @returns {Promise<{general: Notice[]}>} - 공지사항 객체 배열로 반환
+     * @returns {Promise<{general: NotificationPayload[]}>} - 공지사항 객체 배열로 반환
      */
-    protected async fetchNotices(noticeType: string, page: number): Promise<{ general: Notice[] }> {
+    protected async fetchNotices(noticeType: string, page: number): Promise<{ general: NotificationPayload[] }> {
         const baseUrl: string = this.noticeTypeUrls[noticeType];
         const queryUrl: string = this.noticeTypeQueryUrls[noticeType];
 
