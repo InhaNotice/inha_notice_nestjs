@@ -15,7 +15,6 @@ import * as dayjs from 'dayjs';
 import * as path from 'path';
 import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
-import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { FirebaseNotifiable } from 'src/interfaces/firebase-notificable.interface';
 
