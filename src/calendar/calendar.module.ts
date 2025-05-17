@@ -10,8 +10,12 @@
 
 import { Module } from '@nestjs/common';
 import { UndergraduateScheduler } from 'src/calendar/schedulers/undergraduate.scheduler';
+import { FirebaseModule } from 'src/firebase/firebase.module';
 
 @Module({
+    imports: [
+        FirebaseModule,
+    ],
     providers: [
         UndergraduateScheduler,
     ],

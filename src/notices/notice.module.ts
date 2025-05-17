@@ -5,13 +5,12 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-16
+ * Latest Updated Date: 2025-05-17
  */
 
 import { Module } from '@nestjs/common';
 import { MajorScraper as MajorScraper } from 'src/notices/scrapers/absolute-style/major.scraper';
 import { MajorNoticeScheduler as MajorScheduler } from 'src/notices/schedulers/absolute-style/major.scheduler';
-import { FirebaseService } from 'src/firebase/firebase.service';
 import { WholeScraper as WholeScraper } from 'src/notices/scrapers/absolute-style/whole.scraper';
 import { WholeNoticeSchedulerService as WholeScheduler } from 'src/notices/schedulers/absolute-style/whole.scheduler';
 import { MajorStyleScraper as MajorStyleScraper } from 'src/notices/scrapers/absolute-style/major-style.scraper';
@@ -33,7 +32,6 @@ import { InhaDesignStyleScraper as InhaDesignStyleScraper } from 'src/notices/sc
         OceanographyStyleScraper,
         InhadesignStyleScheduler,
         InhaDesignStyleScraper,
-        FirebaseService,
     ],
     exports: [
         WholeScraper,
