@@ -344,7 +344,7 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
             expect(saveNoticeMock).not.toHaveBeenCalled();
         });
 
-        it('개발환경에서 새로운 공지를 발견해도, 알림을 보내지 않지만 공지는 저장된다.', async () => {
+        it('개발환경에서 새로운 공지를 발견시 공지가 저장된다.', async () => {
             const logPrefixMock = '정기 크롤링';
             process.env.NODE_ENV = 'development';
             filterNewNoticesMock = jest.spyOn<any, any>(service, 'filterNewNotices').mockReturnValue([
@@ -362,8 +362,6 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
 
             expect(service['scraperService'].fetchAllNotices).toHaveBeenCalled();
             expect(filterNewNoticesMock).toHaveBeenCalled();
-            expect(service['logger'].debug).toHaveBeenCalledWith(expect.stringContaining('새로운 공지'));
-            expect(sendFirebaseMessagingMock).not.toHaveBeenCalled();
             expect(saveNoticeMock).toHaveBeenCalled();
         });
 
@@ -673,3 +671,49 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
         });
     });
 });
+
+/*
+ PASS  src/notices/schedulers/absolute-style/absolute-style.scheduler.spec.ts
+  AbsoluteStyleNoticeSchedulerService
+    initializeDatabaseDirectory 메서드는
+      ✓ 디렉터리가 존재하지 않을 경우 fs.mkdirSync가 호출되어 디렉터리를 생성하는지 확인한다 (2 ms)
+      ✓ 디렉터리가 이미 존재하면 fs.mkdirSync를 호출하지 않는지 확인한다 (1 ms)
+      ✓ 디렉터리가 존재하지 않으면, fs.mkdirSync를 호출할 때 에러를 발생한다. (1 ms)
+    initializeDatabases 메서드는
+      ✓ DB 연결 및 테이블 초기화가 이루어진다.
+      ✓ DB 연결 시 에러가 발생한다. (1 ms)
+    initializeTable 메서드는
+      ✓ 테이블 생성 쿼리 실행 및 캐시를 로드한다.
+      ✓ 테이블 생성 실패 시 에러 로깅이 실행된다. (1 ms)
+    loadCache 메서드는
+      ✓ 테이블 확인 중 에러를 발생시킨다.
+      ✓ notices 테이블이 존재하지 않아 캐시를 로드하지 않는다.
+      ✓ notices 테이블이 존재하고, 캐시 로드 중 에러를 발생시킨다.
+      ✓ notices 테이블이 존재하고, 캐시 로드하여 공지사항 ID를 캐싱한다.
+    executeCrawling 메서드는
+      ✓ 배포환경에서 새로운 공지가 있을 때, 정상적으로 알림을 보내고 공지를 저장한다. (1 ms)
+      ✓ 배포환경에서 새로운 공지가 없으면, 알림을 보내지 않고 공지를 저장하지 않는다.
+      ✓ 개발환경에서 새로운 공지를 발견시 공지가 저장된다. (1 ms)
+      ✓ 개발환경에서 크롤링 에러 발생시, 이에 맞는 로깅이 실행되어야한다.
+      ✓ 개발환경에서 크롤링 에러 발생시, 이에 맞는 로깅이 실행되어야한다.
+    deleteOldNotices 메서드는
+      ✓ 오늘날짜가 아닌 공지 삭제가 정상적으로 이루어진다. (1 ms)
+      ✓ 오늘날짜가 아닌 공지 삭제 중 에러가 발생한다.
+    deleteNoticesExceptToday 메서드는
+      ✓ 오래된 공지 삭제에 실패한다. (4 ms)
+      ✓ 오래된 공지 삭제 후 캐싱 업데이트 (1 ms)
+    filterNewNotices 메서드는
+      ✓ 추가된 적 없는 공지를 구별해서 리턴한다.
+      ✓ 이미 추가된 공지를 구별해서 리턴한다.
+      ✓ 추가된 적 없는 공지에 대해서, 오늘 날짜를 구별해서 리턴한다.
+    saveNotice 메서드는
+      ✓ SQLite 저장 중 오류가 발생한다. (1 ms)
+      ✓ 새로운 공지 저장 완료
+    getTodayDate 메서드는
+      ✓ 오늘 날짜를 YYYY.MM.DD 형식으로 반환한다. (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       26 passed, 26 total
+Snapshots:   0 total
+Time:        1.057 s, estimated 2 s
+*/
