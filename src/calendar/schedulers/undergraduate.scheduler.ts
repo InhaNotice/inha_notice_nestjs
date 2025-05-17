@@ -33,13 +33,13 @@ export class UndergraduateScheduler extends FirebaseNotifiable {
 
     @Cron(UNDERGRADUATE_CRON.UNDERGRADUATE_DAY_BEFORE_REMINDER, { timeZone: 'Asia/Seoul' })
     async handleDayBeforeReminder() {
-        const targetDate = dayjs().add(1, 'day').format('YYYY-MM-DD');
+        const targetDate: string = dayjs().add(1, 'day').format('YYYY-MM-DD');
         await this.handleReminder(targetDate, 'undergraduate-schedule-d1-notification');
     }
 
     @Cron(UNDERGRADUATE_CRON.UNDERGRADUATE_TODAY_REMINDER, { timeZone: 'Asia/Seoul' })
     async handleTodayReminder() {
-        const targetDate = dayjs().format('YYYY-MM-DD');
+        const targetDate: string = dayjs().format('YYYY-MM-DD');
         await this.handleReminder(targetDate, 'undergraduate-schedule-dd-notification');
     }
 
@@ -49,8 +49,8 @@ export class UndergraduateScheduler extends FirebaseNotifiable {
      * @param {string} topic - Firebase 토픽
      */
     async handleReminder(targetDate: string, topic: string): Promise<void> {
-        const schedulePath = path.join(process.cwd(), 'assets', 'undergraduate-schedule.json');
-        const rawData = await fs.promises.readFile(schedulePath, 'utf8');
+        const schedulePath: string = path.join(process.cwd(), 'assets', 'undergraduate-schedule.json');
+        const rawData: string = await fs.promises.readFile(schedulePath, 'utf8');
         const schedule: Schedule = JSON.parse(rawData);
 
         for (const events of Object.values(schedule)) {
