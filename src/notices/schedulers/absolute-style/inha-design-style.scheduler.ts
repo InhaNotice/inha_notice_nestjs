@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-16
+ * Latest Updated Date: 2025-05-17
  */
 
 import { Injectable, Logger, Scope } from "@nestjs/common";
@@ -14,9 +14,10 @@ import { FirebaseService } from "src/firebase/firebase.service";
 import { InhaDesignStyleScraper } from "src/notices/scrapers/absolute-style/inha-design-style.scraper";
 import * as path from 'path';
 import { Cron } from "@nestjs/schedule";
-import { FirebaseMessagePayload, Notice } from 'src/notices/interfaces/notice.interface';
+import { Notice } from 'src/notices/interfaces/notice.interface';
 import { INHA_DESIGN_STYLE_CRON } from "src/constants/crons/inha-design-style.cron.constant";
 import { FirebaseNotificationContext } from "src/firebase/firebase-notification.context";
+import { FirebaseMessagePayload } from "src/firebase/interfaces/firebase-notificable.interface";
 import { InhaDesignStyleState } from "src/firebase/notifications/states/inha-design-style.state";
 
 /**
@@ -77,7 +78,7 @@ export class InhaDesignStyleScheduler extends AbsoluteStyleScheduler {
     * @param {string} noticeType - 알림을 보낼 공지 타입
     */
     async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
-        const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(notice, noticeType);
+        const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(this.context, notice, noticeType);
         return await this.firebaseService.sendNotificationToTopic(noticeType, title, body, data);
     }
 }

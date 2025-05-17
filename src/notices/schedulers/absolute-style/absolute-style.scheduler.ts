@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-17
  */
 
 import { Logger } from '@nestjs/common';
@@ -14,9 +14,10 @@ import * as fs from 'fs';
 import * as dayjs from 'dayjs';
 import * as path from 'path';
 import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
-import { FirebaseMessagePayload, Notice } from 'src/notices/interfaces/notice.interface';
+import { Notice } from 'src/notices/interfaces/notice.interface';
 import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
+import { FirebaseNotifiable } from 'src/firebase/interfaces/firebase-notificable.interface';
 
 /**
  * AbsoluteStyle의 공지사항 크롤링 스케줄러를 제공하는 추상클래스
@@ -28,12 +29,11 @@ import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.
  * 
  * ### 목차:
  * 1. 필드 선언
- * 2. 추상메서드 선언
- * 3-1. 서비스 로직 구현 (초기화 관련 메서드)
- * 3-2. 서비스 로직 구현 (크롤링, 오래된 공지 삭제)
- * 4. 헬퍼 함수(크롤링, 오래된 공지 삭제 관련)
+ * 2-1. 서비스 로직 구현 (초기화 관련 메서드)
+ * 2-2. 서비스 로직 구현 (크롤링, 오래된 공지 삭제)
+ * 3. 헬퍼 함수(크롤링, 오래된 공지 삭제 관련)
  */
-export abstract class AbsoluteStyleScheduler {
+export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
     // ========================================
     // 1. 필드 선언
     // ========================================
@@ -47,30 +47,7 @@ export abstract class AbsoluteStyleScheduler {
     protected context: FirebaseNotificationContext;
 
     // ========================================
-    // 2. 추상메서드 선언
-    // ========================================
-
-    abstract sendFirebaseMessaging(
-        notice: Notice, noticeType: string
-    ): Promise<void>;
-
-    protected buildFirebaseMessagePayload(
-        notice: Notice,
-        noticeType: string,
-    ): FirebaseMessagePayload {
-        const title = this.context.getNotificationTitle(noticeType);
-        const body = notice.title;
-        const data = {
-            id: notice.id,
-            link: notice.link,
-            date: notice.date,
-        };
-
-        return { title, body, data };
-    }
-
-    // ========================================
-    // 3-1. 서비스 로직 구현 (초기화 관련 메서드)
+    // 2-1. 서비스 로직 구현 (초기화 관련 메서드)
     // ========================================
 
     /**
@@ -161,7 +138,7 @@ export abstract class AbsoluteStyleScheduler {
     }
 
     // ========================================
-    // 3-2. 서비스 로직 구현 (크롤링, 오래된 공지 삭제)
+    // 2-2. 서비스 로직 구현 (크롤링, 오래된 공지 삭제)
     // ========================================
 
     /**
@@ -221,7 +198,7 @@ export abstract class AbsoluteStyleScheduler {
     }
 
     // ========================================
-    // 4. 헬퍼 함수(크롤링, 오래된 공지 삭제 관련)
+    // 3. 헬퍼 함수(크롤링, 오래된 공지 삭제 관련)
     // ========================================
 
     /**

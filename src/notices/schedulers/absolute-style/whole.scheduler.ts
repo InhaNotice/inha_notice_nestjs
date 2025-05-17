@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-16
+ * Latest Updated Date: 2025-05-17
  */
 
 import { Injectable, Logger, Scope } from '@nestjs/common';
@@ -18,6 +18,7 @@ import { WHOLE_CRON } from 'src/constants/crons/whole.cron.constant';
 import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { WholeState } from 'src/firebase/notifications/states/whole.state';
+import { FirebaseMessagePayload } from 'src/firebase/interfaces/firebase-notificable.interface';
 
 /**
  * 학사 공지(전체공지, 장학, 모집/채용) 스캐줄러
@@ -90,7 +91,7 @@ export class WholeNoticeSchedulerService extends AbsoluteStyleScheduler {
      * @param {string} noticeType - 알림을 보낼 공지 타입
      */
     async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
-        const { title, body, data } = this.buildFirebaseMessagePayload(notice, noticeType);
+        const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(this.context, notice, noticeType);
         return await this.firebaseService.sendNotificationToTopic(noticeType, title, body, data);
     }
 }

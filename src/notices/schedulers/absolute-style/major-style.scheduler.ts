@@ -18,6 +18,7 @@ import { MAJOR_STYLE_CRON } from 'src/constants/crons/major-style.cron.constant'
 import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { MajorStyleState } from 'src/firebase/notifications/states/major-style.state';
+import { FirebaseMessagePayload } from 'src/firebase/interfaces/firebase-notificable.interface';
 
 /**
  * 학과 스타일(국제처, SW중심대학사업단, 단과대, 대학원) 공지 스캐줄러
@@ -80,7 +81,7 @@ export class MajorStyleScheduler extends AbsoluteStyleScheduler {
      * @param {string} noticeType - 알림을 보낼 공지 타입
      */
     async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
-        const { title, body, data } = this.buildFirebaseMessagePayload(notice, noticeType);
+        const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(this.context, notice, noticeType);
         return await this.firebaseService.sendNotificationToTopic(noticeType, title, body, data);
     }
 }

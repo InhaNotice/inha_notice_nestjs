@@ -18,6 +18,7 @@ import { MajorScraper } from 'src/notices/scrapers/absolute-style/major.scraper'
 import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { MajorState } from 'src/firebase/notifications/states/major.state';
+import { FirebaseMessagePayload } from 'src/firebase/interfaces/firebase-notificable.interface';
 
 /**
  * 모든 학과 공지 스캐줄러
@@ -80,7 +81,7 @@ export class MajorNoticeScheduler extends AbsoluteStyleScheduler {
     * @param {string} noticeType - 알림을 보낼 공지 타입
     */
     async sendFirebaseMessaging(notice: Notice, noticeType: string): Promise<void> {
-        const { title, body, data } = this.buildFirebaseMessagePayload(notice, noticeType);
+        const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(this.context, notice, noticeType);
         return await this.firebaseService.sendNotificationToTopic(noticeType, title, body, data);
     }
 }
