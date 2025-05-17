@@ -20,26 +20,13 @@ import { HTTP_STATUS } from 'src/constants/http/http-status.constant';
  * ### 주요 기능:
  * - noticeType 별 공지사항 크롤링
  * - uniqueNoticeId 생성
- * 
- * ### 목차:
- * 1. 필드 선언
- * 2. 추상메서드 선언 (2개)
- * 3. 서비스 로직 구현
  */
 export abstract class AbsoluteStyleScraper {
-    // ========================================
-    // 1. 필드 선언
-    // ========================================
-
     protected logger: Logger;
     protected configName: string;
     protected noticeTypes: string[];
     protected noticeTypeUrls: Record<string, string>;
     protected noticeTypeQueryUrls: Record<string, string>;
-
-    // ========================================
-    // 2. 추상메서드 선언 (2개)
-    // ========================================
 
     /**
      * 응답 받은 HTML을 전처리하는 함수
@@ -50,10 +37,6 @@ export abstract class AbsoluteStyleScraper {
     abstract fetchGeneralNotices($: cheerio.CheerioAPI, baseUrl: string): NotificationPayload[];
 
     abstract parseHTML(response: AxiosResponse<ArrayBuffer>): Promise<cheerio.CheerioAPI>;
-
-    // ========================================
-    // 3. 서비스 로직 구현
-    // ========================================
 
     /**
      * 공지사항 크롤링 URL(기본 URL 또는 조회 URL)을 초기화하는 함수

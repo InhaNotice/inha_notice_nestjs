@@ -23,19 +23,9 @@ import { AxiosResponse } from 'axios';
  * 
  * ### 주요 기능:
  * - 입력 받은 페이지 기반의 일반 공지사항을 크롤링하여 공지사항 객체 배열로 반환 
- * 
- * ### 목차:
- * 1. 생성자 초기화
- * 2. fetchGeneralNotices() 구현
- * 3. parseHTML() 구현
- * 4. makeUniqueNoticeId() 구현
  */
 @Injectable()
 export class WholeScraper extends AbsoluteStyleScraper {
-    // ========================================
-    // 1. 생성자 초기화
-    // ========================================
-
     /**
      * WholeNoticeScraperService 생성자
      * @param {ConfigService} configService - 학사 공지사항 공지 URL 초기화
@@ -52,10 +42,6 @@ export class WholeScraper extends AbsoluteStyleScraper {
         this.noticeTypeUrls = this.loadUrls(noticeConfig, 'baseUrl');
         this.noticeTypeQueryUrls = this.loadUrls(noticeConfig, 'queryUrl');
     }
-
-    // ========================================
-    // 2. fetchGeneralNotices() 구현
-    // ========================================
 
     fetchGeneralNotices($: cheerio.CheerioAPI, baseUrl: string): NotificationPayload[] {
         const generals: cheerio.Cheerio<AnyNode> = $(GeneralTagSelectors.NOTICE_BOARD);
@@ -94,10 +80,6 @@ export class WholeScraper extends AbsoluteStyleScraper {
         return results;
     }
 
-    // ========================================
-    // 3. parseHTML() 구현
-    // ========================================
-
     /**
      * HTML을 parse하여 반환합니다.
      * @param {AxiosResponse<ArrayBuffer>} response - 서버로 응답 받은 원본 HTML
@@ -108,10 +90,6 @@ export class WholeScraper extends AbsoluteStyleScraper {
 
         return cheerio.load(decodedHtml);
     }
-
-    // ========================================
-    // 4. makeUniqueNoticeId() 구현
-    // ========================================
 
     /**
      * 식별 가능한 공지 id를 반환

@@ -25,12 +25,6 @@ import * as iconv from 'iconv-lite';
  * 
  * ### 주요 기능:
  * - 입력 받은 공지타입과 페이지 기반의 일반 공지사항을 크롤링하여 공지사항 객체 배열로 반환
- * 
- * ### 목차:
- * 1. 생성자 초기화
- * 2. fetchGeneralNotices() 구현
- * 3. parseHTML() 구현
- * 4. 유틸리티 함수 구현
  */
 @Injectable()
 export class OceanographyStyleScraper extends AbsoluteStyleScraper {
@@ -105,10 +99,6 @@ export class OceanographyStyleScraper extends AbsoluteStyleScraper {
         return results;
     }
 
-    // ========================================
-    // 3. parseHTML() 구현
-    // ========================================
-
     /**
      * HTML을 parse하여 반환합니다.
      * @param {AxiosResponse<ArrayBuffer>} response - 서버로 응답 받은 원본 HTML
@@ -121,11 +111,6 @@ export class OceanographyStyleScraper extends AbsoluteStyleScraper {
         // 2. Cheerio를 사용하여 HTML 파싱
         return cheerio.load(decodedHtml);
     }
-
-
-    // ========================================
-    // 4. 유틸리티 함수 구현
-    // ========================================
 
     /**
      * 공지사항 URL을 기반으로 고유한 ID를 생성하는 함수

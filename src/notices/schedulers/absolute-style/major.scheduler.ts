@@ -27,18 +27,9 @@ import { FirebaseMessagePayload } from 'src/interfaces/firebase-notificable.inte
  * - 모든 학과를 크롤링하여 새로운 공지가 존재시 FCM 알림 전송
  * - 오래된 공지사항을 주기적으로 삭제 진행
  * - 캐싱 전략을 사용한 효율적인 연산
- * 
- * ### 목차:
- * 1. 생성자 초기화
- * 2. 스케줄링 메서드 (Cron, 2개)
- * 3. sendFirebaseMessaging() 구현
  */
 @Injectable({ scope: Scope.DEFAULT })
 export class MajorNoticeScheduler extends AbsoluteStyleScheduler {
-    // ========================================
-    // 1. 생성자 초기화
-    // ========================================
-
     constructor(
         private readonly firebaseService: FirebaseService,
         private readonly majorNoticeScraperService: MajorScraper,
@@ -57,10 +48,6 @@ export class MajorNoticeScheduler extends AbsoluteStyleScheduler {
         this.initializeDatabases();
     }
 
-    // ========================================
-    // 2. 스케줄링 메서드 (Cron, 2개)
-    // ========================================
-
     @Cron(MAJOR_CRON.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
     async handleWeekDays() {
         await this.executeCrawling(MAJOR_CRON.TASK_WEEKDAYS);
@@ -70,10 +57,6 @@ export class MajorNoticeScheduler extends AbsoluteStyleScheduler {
     async handleDelete() {
         await this.deleteOldNotices(MAJOR_CRON.TASK_DELETE_OLD);
     }
-
-    // ========================================
-    // 3. sendFirebaseMessaging() 구현
-    // ========================================
 
     async sendFirebaseMessaging(notice: NotificationPayload, topic: string): Promise<void> {
         const { title, body, data }: FirebaseMessagePayload = this.buildFirebaseMessagePayload(this.context, notice, topic);

@@ -34,7 +34,6 @@ export class InhaDesignStyleScraper extends AbsoluteStyleScraper {
         this.noticeTypeQueryUrls = this.loadUrls(noticeConfig, 'queryUrl');
     }
 
-
     /**
      * 주어진 HTML에서 일반 공지사항 목록을 추출하는 함수
      * @param {cheerio.CheerioAPI} $ - Cheerio API 인스턴스
@@ -76,10 +75,6 @@ export class InhaDesignStyleScraper extends AbsoluteStyleScraper {
 
         return results;
     }
-
-    // ========================================
-    // 3. parseHTML() 구현
-    // ========================================
 
     /**
      * HTML을 parse하여 반환합니다.

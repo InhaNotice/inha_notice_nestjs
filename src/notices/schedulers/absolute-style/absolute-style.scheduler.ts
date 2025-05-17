@@ -26,12 +26,6 @@ import { FirebaseNotifiable } from 'src/interfaces/firebase-notificable.interfac
  * - 데이터베이스 생성
  * - 크롤링, 오래된 공지 삭제 등 스케줄러 동작 정의
  * - 기타 헬퍼 함수 정의
- * 
- * ### 목차:
- * 1. 필드 선언
- * 2-1. 서비스 로직 구현 (초기화 관련 메서드)
- * 2-2. 서비스 로직 구현 (크롤링, 오래된 공지 삭제)
- * 3. 헬퍼 함수(크롤링, 오래된 공지 삭제 관련)
  */
 export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
     protected logger: Logger;
@@ -129,10 +123,6 @@ export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
         });
     }
 
-    // ========================================
-    // 2-2. 서비스 로직 구현 (크롤링, 오래된 공지 삭제)
-    // ========================================
-
     /**
      * 크롤링
      * @param {string} logPrefix - 로그 식별용 접두사
@@ -182,10 +172,6 @@ export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
             this.logger.error(`❌ ${logPrefix} 오래된 공지사항 삭제 중 오류 발생: ${error.message}`);
         }
     }
-
-    // ========================================
-    // 3. 헬퍼 함수(크롤링, 오래된 공지 삭제 관련)
-    // ========================================
 
     /**
      * 오늘 날짜를 제외한 모든 공지사항 삭제
