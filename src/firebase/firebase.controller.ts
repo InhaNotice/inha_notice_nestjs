@@ -5,16 +5,14 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-03-08
+ * Latest Updated Date: 2025-05-17
  */
 
 import { Controller, Post, Body } from '@nestjs/common';
 import { FirebaseService } from 'src/firebase/firebase.service';
 
 /**
- * FirebaseController
- *
- * 이 컨트롤러는 Firebase를 통한 알림 전송 관련 API 엔드포인트를 제공합니다.
+ * 이 컨트롤러는 Firebase를 통한 알림 전송 관련 API 엔드포인트를 제공한다.
  * 
  * ### 주요 기능:
  * - POST /send-to-device

@@ -10,6 +10,9 @@
 
 import { NotificationState } from 'src/firebase/states/notification.state';
 
+/**
+ * Firebase 알림의 제목 생성을 담당하는 컨텍스트 클래스.
+ */
 export class FirebaseNotificationContext {
     private state: NotificationState;
 
