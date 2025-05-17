@@ -9,6 +9,9 @@
  */
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 
+/**
+ * Firebase Message Payload 인터페이스를 정의한다.
+ */
 export interface FirebaseMessagePayload {
     title: string;
     body: string;
@@ -20,7 +23,7 @@ export interface FirebaseMessagePayload {
 }
 
 /**
- * Firebase 알림 전송을 위한 인터페이스
+ * Firebase 알림 전송을 위한 인터페이스를 정의한다.
  */
 export abstract class FirebaseNotifiable {
     /**

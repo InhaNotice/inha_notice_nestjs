@@ -9,7 +9,7 @@
  */
 
 /**
- * Define notification payload.
+ * 공지알림, 학사알림 등 알림 형식에 대한 인터페이스를 정의한다.
  */
 export interface NotificationPayload {
     id: string;
