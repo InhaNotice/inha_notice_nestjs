@@ -5,9 +5,12 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-16
+ * Latest Updated Date: 2025-05-17
  */
 
+/**
+ * Inha Design Style 공지 스케줄러의 Cron 상수를 정의한다.
+ */
 export const INHA_DESIGN_STYLE_CRON: Record<string, string> = {
     // 평일(월~금) 9시~16시 59분까지, 10분 간격으로 공지 크롤링
     CRON_WEEKDAYS: '0 */10 9-16 * * 1-5',

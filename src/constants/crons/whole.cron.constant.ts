@@ -5,9 +5,12 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-16
+ * Latest Updated Date: 2025-05-17
  */
 
+/**
+ * Whole 공지 스케줄러의 Cron 상수를 정의한다.
+ */
 export const WHOLE_CRON: Record<string, string> = {
     /**
      * 평일(월~금) 9시~16시 59분까지, 10분 간격으로 학사 공지 크롤링
