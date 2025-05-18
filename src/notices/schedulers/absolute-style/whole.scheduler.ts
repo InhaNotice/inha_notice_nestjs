@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-05-18
  */
 
 import { Injectable, Logger, Scope } from '@nestjs/common';
@@ -29,14 +29,14 @@ import { FirebaseMessagePayload } from 'src/interfaces/firebase-notificable.inte
  * - 캐싱 전략을 사용한 효율적인 연산
  */
 @Injectable({ scope: Scope.DEFAULT })
-export class WholeNoticeSchedulerService extends AbsoluteStyleScheduler {
+export class WholeScheduler extends AbsoluteStyleScheduler {
     constructor(
         private readonly firebaseService: FirebaseService,
         private readonly wholeNoticeScraperService: WholeScraper,
     ) {
         // 초기화
         super();
-        this.logger = new Logger(WholeNoticeSchedulerService.name);
+        this.logger = new Logger(WholeScheduler.name);
         this.directoryName = 'wholes';
         this.scraperService = this.wholeNoticeScraperService;
         this.databaseDirectory = path.join(process.cwd(), 'database', this.directoryName);

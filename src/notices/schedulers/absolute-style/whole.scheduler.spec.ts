@@ -9,9 +9,9 @@
  */
 
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
-import { WholeNoticeSchedulerService } from './whole.scheduler';
+import { WholeScheduler } from './whole.scheduler';
 
-class TestSchedulerService extends WholeNoticeSchedulerService {
+class TestSchedulerService extends WholeScheduler {
     constructor() {
         const mockFirebaseService = {
             sendNotificationToTopic: jest.fn(),
