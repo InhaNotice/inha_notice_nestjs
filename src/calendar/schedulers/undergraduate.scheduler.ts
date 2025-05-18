@@ -5,13 +5,13 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-05-19
  */
 
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dayjs from 'dayjs';
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Cron } from '@nestjs/schedule';
 import { UNDERGRADUATE_CRON } from "src/constants/crons/undergraduate.cron.constant";
 import { FirebaseService } from 'src/firebase/firebase.service';
@@ -25,22 +25,24 @@ import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.consta
 @Injectable()
 export class UndergraduateScheduler extends FirebaseNotifiable {
     private readonly context: FirebaseNotificationContext;
+    protected logger: Logger;
 
     constructor(private readonly firebaseService: FirebaseService, private readonly configService: ConfigService) {
         super();
         this.context = new FirebaseNotificationContext(new UndergraudateState());
+        this.logger = new Logger(UndergraduateScheduler.name);
     }
 
     @Cron(UNDERGRADUATE_CRON.UNDERGRADUATE_DAY_BEFORE_REMINDER, { timeZone: 'Asia/Seoul' })
     async handleDayBeforeReminder() {
         const targetDate: string = dayjs().add(1, 'day').format('YYYY-MM-DD');
-        await this.handleReminder(targetDate, 'undergraduate-schedule-d1-notification');
+        await this.handleReminder(UNDERGRADUATE_CRON.TASK_DAY_BEFORE, targetDate, 'undergraduate-schedule-d1-notification');
     }
 
     @Cron(UNDERGRADUATE_CRON.UNDERGRADUATE_TODAY_REMINDER, { timeZone: 'Asia/Seoul' })
     async handleTodayReminder() {
         const targetDate: string = dayjs().format('YYYY-MM-DD');
-        await this.handleReminder(targetDate, 'undergraduate-schedule-dd-notification');
+        await this.handleReminder(UNDERGRADUATE_CRON.TASK_TODAY, targetDate, 'undergraduate-schedule-dd-notification');
     }
 
     /**
@@ -48,26 +50,33 @@ export class UndergraduateScheduler extends FirebaseNotifiable {
      * @param {string} targetDate - 'YYYY-MM-DD'
      * @param {string} topic - Firebase 토픽
      */
-    async handleReminder(targetDate: string, topic: string): Promise<void> {
-        const schedulePath: string = path.join(process.cwd(), 'assets', 'undergraduate-schedule.json');
-        const rawData: string = await fs.promises.readFile(schedulePath, 'utf8');
-        const schedule: Schedule = JSON.parse(rawData);
+    async handleReminder(logPrefix: string, targetDate: string, topic: string): Promise<void> {
+        this.logger.log(`📌${logPrefix} 크롤링 실행 중...`);
 
-        for (const events of Object.values(schedule)) {
-            for (const event of events) {
-                if (event.startDate === targetDate && event.title.length !== 0) {
-                    const notice: NotificationPayload = {
-                        id: this.getShortTimestampId(),
-                        title: event.title,
-                        link: this.configService.get<Record<string, string>>('calendar')?.INHA_CALENDAR || '',
-                        date: targetDate,
-                        writer: IDENTIFIER_CONSTANT.UNKNOWN_WRITER,
-                        access: IDENTIFIER_CONSTANT.UNKNOWN_ACCESS,
-                    };
+        try {
+            const schedulePath: string = path.join(process.cwd(), 'assets', 'undergraduate-schedule.json');
+            const rawData: string = await fs.promises.readFile(schedulePath, 'utf8');
+            const schedule: Schedule = JSON.parse(rawData);
 
-                    await this.sendFirebaseMessaging(notice, topic);
+            for (const events of Object.values(schedule)) {
+                for (const event of events) {
+                    if (event.startDate === targetDate && event.title.length !== 0) {
+                        const notice: NotificationPayload = {
+                            id: this.getShortTimestampId(),
+                            title: event.title,
+                            link: this.configService.get<Record<string, string>>('calendar')?.INHA_CALENDAR || '',
+                            date: targetDate,
+                            writer: IDENTIFIER_CONSTANT.UNKNOWN_WRITER,
+                            access: IDENTIFIER_CONSTANT.UNKNOWN_ACCESS,
+                        };
+
+                        await this.sendFirebaseMessaging(notice, topic);
+                    }
                 }
             }
+            this.logger.log(`🏁 ${logPrefix} 정기 크롤링 끝!`);
+        } catch (error) {
+            this.logger.error(`❌ ${logPrefix} 크롤링 중 오류 발생:, ${error.message}`);
         }
     }
 

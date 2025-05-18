@@ -57,7 +57,7 @@ describe('FirebaseService', () => {
 
             expect(firebaseAdminMock.messaging).toHaveBeenCalled();
             expect(messagingMock.send).toHaveBeenCalledWith(expectMessage);
-            expect(FirebaseService['logger'].log).toHaveBeenCalledWith(expect.stringContaining(`🔔 ${tokenMock}의 새로운 공지`));
+            expect(FirebaseService['logger'].log).toHaveBeenCalledWith(expect.stringContaining(`🔔 ${tokenMock}`));
         });
 
         it('개발환경에서 FCM 알림이 전송되지 않는다.', async () => {
@@ -68,7 +68,7 @@ describe('FirebaseService', () => {
 
             expect(firebaseAdminMock.messaging).not.toHaveBeenCalled();
             expect(messagingMock.send).not.toHaveBeenCalled();
-            expect(FirebaseService['logger'].debug).toHaveBeenCalledWith(expect.stringContaining(`🔕 ${tokenMock}의 새로운 공지`))
+            expect(FirebaseService['logger'].debug).toHaveBeenCalledWith(expect.stringContaining(`🔕 ${tokenMock}`))
         });
     });
 
@@ -116,7 +116,7 @@ describe('FirebaseService', () => {
             expect(firebaseAdminMock.messaging).toHaveBeenCalled();
             expect(messagingMock.send).toHaveBeenCalledWith(expectedMessage);
             expect(FirebaseService['logger'].log).toHaveBeenCalledWith(
-                expect.stringContaining(`🔔 ${topicMock}의 새로운 공지`)
+                expect.stringContaining(`🔔 ${topicMock}`)
             );
         });
 
@@ -128,7 +128,7 @@ describe('FirebaseService', () => {
             expect(firebaseAdminMock.messaging).not.toHaveBeenCalled();
             expect(messagingMock.send).not.toHaveBeenCalled();
             expect(FirebaseService['logger'].debug).toHaveBeenCalledWith(
-                expect.stringContaining(`🔕 ${topicMock}의 새로운 공지`)
+                expect.stringContaining(`🔕 ${topicMock}`)
             );
         });
     });

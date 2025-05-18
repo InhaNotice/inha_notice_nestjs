@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-05-19
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
@@ -46,14 +46,13 @@ export class FirebaseService {
         },
       };
 
-      const notificationId: string = data?.id ?? IDENTIFIER_CONSTANT.UNKNOWN_ID;
       const notificationDate: string = data?.date ?? IDENTIFIER_CONSTANT.UNKNOWN_DATE;
 
       if (process.env.NODE_ENV === IDENTIFIER_CONSTANT.kProduction) {
         await this.firebaseAdmin.messaging().send(message);
-        FirebaseService.logger.log(`🔔 ${deviceToken}의 새로운 공지: \"${notificationId}\"-${notificationDate}`);
+        FirebaseService.logger.log(`🔔 ${deviceToken}:\"${notificationBody}\" - \"${notificationDate}\"`);
       } else {
-        FirebaseService.logger.debug(`🔕 ${deviceToken}의 새로운 공지 - \"${notificationId}\"-${notificationDate}`);
+        FirebaseService.logger.debug(`🔕 ${deviceToken}:\"${notificationBody}\"-\"${notificationDate}\"`);
       }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
@@ -91,10 +90,10 @@ export class FirebaseService {
 
       if (process.env.NODE_ENV == IDENTIFIER_CONSTANT.kProduction) {
         await this.firebaseAdmin.messaging().send(message);
-        FirebaseService.logger.log(`🔔 ${topic}의 새로운 공지: \"${notificationBody}\"-\"${notificationDate}\"`);
+        FirebaseService.logger.log(`🔔 ${topic}:\"${notificationBody}\" - \"${notificationDate}\"`);
         return;
       }
-      FirebaseService.logger.debug(`🔕 ${topic}의 새로운 공지 - ${notificationBody}-${notificationTitle}`);
+      FirebaseService.logger.debug(`🔕 ${topic}:\"${notificationBody}\" - \"${notificationDate}\"`);
     } catch (e) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${e.message}`);
     }
