@@ -10,51 +10,43 @@
 
 import { Injectable, Logger, Scope } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { MajorStyleScraper } from 'src/notices/scrapers/absolute-style/major-style.scraper';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import * as path from 'path';
-import { MAJOR_STYLE_CRON } from 'src/constants/crons/major-style.cron.constant';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
-import { MajorStyleState } from 'src/firebase/states/major-style.state';
 import { FirebaseMessagePayload } from 'src/interfaces/firebase-notificable.interface';
-import { BaseScheduler } from 'src/notices/schedulers/base.scheduler';
-/**
- * 학과 스타일(국제처, SW중심대학사업단, 단과대, 대학원) 공지 스캐줄러
- * 
- * 주요 기능
- * - 학과 스타일의 공지를 크롤링하여 새로운 공지가 존재시 FCM 알림 전송
- * - 오래된 공지사항을 주기적으로 삭제 진행
- * - 캐싱 전략을 사용한 효율적인 연산
- */
+import { BaseScheduler } from '../base.scheduler';
+import { LibraryStyleScraper } from 'src/notices/scrapers/relative-style/library-style.scraper';
+import { LibraryStyleState } from 'src/firebase/states/library-style.state';
+import { LIBRARY_STYLE_CRON } from 'src/constants/crons/library-style.cron.constant';
+
 @Injectable({ scope: Scope.DEFAULT })
-export class MajorStyleScheduler extends BaseScheduler {
+export class LibraryStyleScheduler extends BaseScheduler {
     constructor(
         private readonly firebaseService: FirebaseService,
-        private readonly majorStyleNoticesScraperService: MajorStyleScraper,
+        private readonly libraryStyleScraper: LibraryStyleScraper
     ) {
-        // 초기화
         super();
-        this.logger = new Logger(MajorStyleScheduler.name);
-        this.directoryName = 'major_styles';
-        this.scraperService = this.majorStyleNoticesScraperService;
+        this.logger = new Logger(LibraryStyleScraper.name);
+        this.directoryName = 'library_styles';
+        this.scraperService = this.libraryStyleScraper;
         this.databaseDirectory = path.join(process.cwd(), 'database', this.directoryName);
         this.databases = {};
         this.cachedNoticeIds = {};
-        this.context = new FirebaseNotificationContext(new MajorStyleState());
+        this.context = new FirebaseNotificationContext(new LibraryStyleState());
         // 디렉터리 생성
         this.initializeDatabaseDirectory();
         this.initializeDatabases();
     }
 
-    @Cron(MAJOR_STYLE_CRON.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
+    @Cron(LIBRARY_STYLE_CRON.CRON_WEEKDAYS, { timeZone: 'Asia/Seoul' })
     async handleWeekDays() {
-        await this.executeCrawling(MAJOR_STYLE_CRON.TASK_WEEKDAYS);
+        await this.executeCrawling(LIBRARY_STYLE_CRON.TASK_WEEKDAYS);
     }
 
-    @Cron(MAJOR_STYLE_CRON.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
+    @Cron(LIBRARY_STYLE_CRON.CRON_DELETE_OLD, { timeZone: 'Asia/Seoul' })
     async handleDelete() {
-        await this.deleteOldNotices(MAJOR_STYLE_CRON.TASK_DELETE_OLD);
+        await this.deleteOldNotices(LIBRARY_STYLE_CRON.TASK_DELETE_OLD);
     }
 
     async sendFirebaseMessaging(notice: NotificationPayload, topic: string): Promise<void> {

@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-05-18
  */
 
 import { Injectable, Logger, Scope } from '@nestjs/common';
@@ -13,12 +13,12 @@ import { Cron } from '@nestjs/schedule';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import * as path from 'path';
-import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import { OCEANOGRAPHY_STYLE_CRON } from 'src/constants/crons/oceanography-style.cron.constant';
 import { OceanographyStyleScraper } from 'src/notices/scrapers/absolute-style/oceanography-style.scraper';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { OceanographyStyleState } from 'src/firebase/states/oceanography-style.state';
 import { FirebaseMessagePayload } from 'src/interfaces/firebase-notificable.interface';
+import { BaseScheduler } from 'src/notices/schedulers/base.scheduler';
 
 /**
  * 해양과학과 스타일 공지 크롤링 스케줄러
@@ -29,7 +29,7 @@ import { FirebaseMessagePayload } from 'src/interfaces/firebase-notificable.inte
  * - 캐싱 전략을 사용한 효율적인 연산
  */
 @Injectable({ scope: Scope.DEFAULT })
-export class OceanographyStyleScheduler extends AbsoluteStyleScheduler {
+export class OceanographyStyleScheduler extends BaseScheduler {
     constructor(
         private readonly firebaseService: FirebaseService,
         private readonly oceanographyStyleNoticeScraperService: OceanographyStyleScraper,

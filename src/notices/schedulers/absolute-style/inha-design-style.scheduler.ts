@@ -5,11 +5,10 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-05-18
  */
 
 import { Injectable, Logger, Scope } from "@nestjs/common";
-import { AbsoluteStyleScheduler } from "src/notices/schedulers/absolute-style/absolute-style.scheduler";
 import { FirebaseService } from "src/firebase/firebase.service";
 import { InhaDesignStyleScraper } from "src/notices/scrapers/absolute-style/inha-design-style.scraper";
 import * as path from 'path';
@@ -19,6 +18,7 @@ import { INHA_DESIGN_STYLE_CRON } from "src/constants/crons/inha-design-style.cr
 import { FirebaseNotificationContext } from "src/firebase/firebase-notification.context";
 import { FirebaseMessagePayload } from "src/interfaces/firebase-notificable.interface";
 import { InhaDesignStyleState } from "src/firebase/states/inha-design-style.state";
+import { BaseScheduler } from 'src/notices/schedulers/base.scheduler';
 
 /**
  * 디자인융합학과 스타일 공지 크롤링 스케줄러
@@ -29,7 +29,7 @@ import { InhaDesignStyleState } from "src/firebase/states/inha-design-style.stat
  * - 캐싱 전략을 사용한 효율적인 연산
  */
 @Injectable({ scope: Scope.DEFAULT })
-export class InhaDesignStyleScheduler extends AbsoluteStyleScheduler {
+export class InhaDesignStyleScheduler extends BaseScheduler {
     constructor(
         private readonly firebaseService: FirebaseService,
         private readonly inhadesignStyleNoticeScraperService: InhaDesignStyleScraper

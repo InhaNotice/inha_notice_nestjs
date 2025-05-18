@@ -5,17 +5,17 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-05-18
  */
 
 import * as fs from 'fs';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
-import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import * as sqlite3 from 'sqlite3';
 import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 import * as dayjs from 'dayjs';
+import { BaseScheduler } from 'src/notices/schedulers/base.scheduler';
 
-class TestSchedulerService extends AbsoluteStyleScheduler {
+class TestSchedulerService extends BaseScheduler {
     constructor() {
         super();
         this.logger = {
@@ -669,6 +669,11 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
             expect(service['getTodayDate']()).toEqual('2025.01.01');
             expect(dayjsMock).toHaveBeenCalledWith('YYYY.MM.DD');
         });
+
+        it('정상적으로 배포환경의 리턴값 포맷을 가진다.', () => {
+            const result = service['getTodayDate']();
+            expect(result).toMatch(/^\d{4}\.\d{2}\.\d{2}$/);
+        })
     });
 });
 

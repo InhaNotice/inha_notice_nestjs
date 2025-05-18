@@ -9,9 +9,9 @@
  */
 
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
-import { WholeScheduler } from './whole.scheduler';
+import { LibraryStyleScheduler } from './library-style.scheduler';
 
-class TestSchedulerService extends WholeScheduler {
+class TestSchedulerService extends LibraryStyleScheduler {
     constructor() {
         const mockFirebaseService = {
             sendNotificationToTopic: jest.fn(),
@@ -29,20 +29,16 @@ class TestSchedulerService extends WholeScheduler {
     protected initializeDatabases(): void { }
 }
 
-describe('WholeNoticeSchedulerService', () => {
+describe('MajorNoticeScheduler', () => {
     let service: TestSchedulerService;
 
-    describe.each([
-        ['handleWeekDays', 'executeCrawling'],
-        ['handleEvening', 'executeCrawling'],
-        ['handleWeekend', 'executeCrawling'],
-    ])('%s 메서드는', (method, spyTarget) => {
+    describe('handleWeekDays 메서드는', () => {
         let executeCrawlingMock: jest.SpyInstance;
 
         beforeEach(() => {
             service = new TestSchedulerService();
             executeCrawlingMock = jest
-                .spyOn<any, any>(service, spyTarget)
+                .spyOn<any, any>(service, 'executeCrawling')
                 .mockImplementation();
         });
 
@@ -50,8 +46,8 @@ describe('WholeNoticeSchedulerService', () => {
             jest.restoreAllMocks();
         });
 
-        it(`정상적으로 ${spyTarget} 메서드를 호출한다.`, async () => {
-            await (service as any)[method]();
+        it('정상적으로 executeCrawling 메서드를 호출한다.', async () => {
+            await service['handleWeekDays']();
             expect(executeCrawlingMock).toHaveBeenCalled();
         });
     });

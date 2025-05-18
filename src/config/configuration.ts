@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-13
+ * Latest Updated Date: 2025-05-18
  */
 
 export default () => {
@@ -463,8 +463,17 @@ export default () => {
                 queryUrl: process.env.INHADESIGN_QUERY_URL,
             }
         },
+        // 연도별 학사일정
         calendar: {
             INHA_CALENDAR: process.env.INHA_CALENDAR,
+        },
+
+        // 정석
+        libraryStyle: {
+            LIBRARY: {
+                baseUrl: process.env.LIBRARY_URL,
+                queryUrl: process.env.LIBRARY_QUERY_URL,
+            },
         },
     };
 };

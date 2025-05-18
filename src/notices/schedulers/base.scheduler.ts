@@ -5,31 +5,33 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-05-18
  */
 
 import { Logger } from '@nestjs/common';
 import * as sqlite3 from 'sqlite3';
 import * as fs from 'fs';
-import * as dayjs from 'dayjs';
 import * as path from 'path';
-import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { FirebaseNotifiable } from 'src/interfaces/firebase-notificable.interface';
+import { BaseScraper } from '../scrapers/base.scraper';
+import * as dayjs from 'dayjs';
 
 /**
- * AbsoluteStyle의 공지사항 크롤링 스케줄러를 제공하는 추상클래스
+ * 공지사항 크롤링 스케줄러를 제공하는 추상클래스이다.
+ * 
+ * AbsoluteStyle, RelativeStyle 모두 지원한다.
  * 
  * ### 주요 기능:
  * - 데이터베이스 생성
  * - 크롤링, 오래된 공지 삭제 등 스케줄러 동작 정의
  * - 기타 헬퍼 함수 정의
  */
-export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
+export abstract class BaseScheduler extends FirebaseNotifiable {
     protected logger: Logger;
     protected directoryName: string;
-    protected scraperService: AbsoluteStyleScraper;
+    protected scraperService: BaseScraper;
     protected databaseDirectory: string;
     protected databases: Record<string, sqlite3.Database>;
     protected cachedNoticeIds: Record<string, Set<string>>;
@@ -122,10 +124,6 @@ export abstract class AbsoluteStyleScheduler extends FirebaseNotifiable {
         });
     }
 
-    /**
-     * 크롤링
-     * @param {string} logPrefix - 로그 식별용 접두사
-     */
     protected async executeCrawling(logPrefix: string): Promise<void> {
         this.logger.log(`📌 ${logPrefix} 크롤링 실행 중...`);
 

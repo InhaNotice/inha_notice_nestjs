@@ -12,13 +12,15 @@ import { Module } from '@nestjs/common';
 import { MajorScraper as MajorScraper } from 'src/notices/scrapers/absolute-style/major.scraper';
 import { MajorNoticeScheduler as MajorScheduler } from 'src/notices/schedulers/absolute-style/major.scheduler';
 import { WholeScraper as WholeScraper } from 'src/notices/scrapers/absolute-style/whole.scraper';
-import { WholeNoticeSchedulerService as WholeScheduler } from 'src/notices/schedulers/absolute-style/whole.scheduler';
+import { WholeScheduler as WholeScheduler } from 'src/notices/schedulers/absolute-style/whole.scheduler';
 import { MajorStyleScraper as MajorStyleScraper } from 'src/notices/scrapers/absolute-style/major-style.scraper';
 import { MajorStyleScheduler as MajorStyleScheduler } from 'src/notices/schedulers/absolute-style/major-style.scheduler';
 import { OceanographyStyleScheduler as OceanographyStyleScheduler } from 'src/notices/schedulers/absolute-style/oceanography-style.scheduler';
 import { OceanographyStyleScraper as OceanographyStyleScraper } from 'src/notices/scrapers/absolute-style/oceanography-style.scraper';
 import { InhaDesignStyleScheduler as InhadesignStyleScheduler } from 'src/notices/schedulers/absolute-style/inha-design-style.scheduler';
 import { InhaDesignStyleScraper as InhaDesignStyleScraper } from 'src/notices/scrapers/absolute-style/inha-design-style.scraper';
+import { LibraryStyleScheduler } from './schedulers/relative-style/library-style.scheduler';
+import { LibraryStyleScraper } from './scrapers/relative-style/library-style.scraper';
 
 @Module({
     providers: [
@@ -32,6 +34,8 @@ import { InhaDesignStyleScraper as InhaDesignStyleScraper } from 'src/notices/sc
         OceanographyStyleScraper,
         InhadesignStyleScheduler,
         InhaDesignStyleScraper,
+        LibraryStyleScheduler,
+        LibraryStyleScraper,
     ],
     exports: [
         WholeScraper,
@@ -44,6 +48,8 @@ import { InhaDesignStyleScraper as InhaDesignStyleScraper } from 'src/notices/sc
         OceanographyStyleScraper,
         InhadesignStyleScheduler,
         InhaDesignStyleScraper,
+        LibraryStyleScheduler,
+        LibraryStyleScraper,
     ],
 })
 export class NoticeModule { }
