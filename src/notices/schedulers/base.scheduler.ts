@@ -11,12 +11,12 @@
 import { Logger } from '@nestjs/common';
 import * as sqlite3 from 'sqlite3';
 import * as fs from 'fs';
-import * as dayjs from 'dayjs';
 import * as path from 'path';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { FirebaseNotifiable } from 'src/interfaces/firebase-notificable.interface';
 import { BaseScraper } from '../scrapers/base.scraper';
+import dayjs from 'dayjs';
 
 
 export abstract class BaseScheduler extends FirebaseNotifiable {
@@ -233,6 +233,6 @@ export abstract class BaseScheduler extends FirebaseNotifiable {
      * @returns {string} 오늘 날짜
      */
     protected getTodayDate(): string {
-        return '2025.05.16';
+        return dayjs().format('YYYY.MM.DD');
     }
 }
