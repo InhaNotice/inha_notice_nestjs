@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-05-18
  */
 
 import { Injectable, Logger, Scope } from '@nestjs/common';
@@ -15,10 +15,10 @@ import { NotificationPayload } from 'src/interfaces/notification-payload.interfa
 import * as path from 'path';
 import { MAJOR_CRON } from 'src/constants/crons/major.cron.constant';
 import { MajorScraper } from 'src/notices/scrapers/absolute-style/major.scraper';
-import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { MajorState } from 'src/firebase/states/major.state';
 import { FirebaseMessagePayload } from 'src/interfaces/firebase-notificable.interface';
+import { BaseScheduler } from 'src/notices/schedulers/base.scheduler';
 
 /**
  * 모든 학과 공지 스캐줄러
@@ -29,7 +29,7 @@ import { FirebaseMessagePayload } from 'src/interfaces/firebase-notificable.inte
  * - 캐싱 전략을 사용한 효율적인 연산
  */
 @Injectable({ scope: Scope.DEFAULT })
-export class MajorNoticeScheduler extends AbsoluteStyleScheduler {
+export class MajorNoticeScheduler extends BaseScheduler {
     constructor(
         private readonly firebaseService: FirebaseService,
         private readonly majorNoticeScraperService: MajorScraper,

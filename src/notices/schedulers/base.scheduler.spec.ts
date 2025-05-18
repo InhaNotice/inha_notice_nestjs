@@ -5,17 +5,17 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-05-18
  */
 
 import * as fs from 'fs';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
-import { AbsoluteStyleScheduler } from 'src/notices/schedulers/absolute-style/absolute-style.scheduler';
 import * as sqlite3 from 'sqlite3';
 import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 import * as dayjs from 'dayjs';
+import { BaseScheduler } from 'src/notices/schedulers/base.scheduler';
 
-class TestSchedulerService extends AbsoluteStyleScheduler {
+class TestSchedulerService extends BaseScheduler {
     constructor() {
         super();
         this.logger = {

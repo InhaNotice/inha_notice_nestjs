@@ -16,9 +16,18 @@ import { NotificationPayload } from 'src/interfaces/notification-payload.interfa
 import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.context';
 import { FirebaseNotifiable } from 'src/interfaces/firebase-notificable.interface';
 import { BaseScraper } from '../scrapers/base.scraper';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
-
+/**
+ * 공지사항 크롤링 스케줄러를 제공하는 추상클래스이다.
+ * 
+ * AbsoluteStyle, RelativeStyle 모두 지원한다.
+ * 
+ * ### 주요 기능:
+ * - 데이터베이스 생성
+ * - 크롤링, 오래된 공지 삭제 등 스케줄러 동작 정의
+ * - 기타 헬퍼 함수 정의
+ */
 export abstract class BaseScheduler extends FirebaseNotifiable {
     protected logger: Logger;
     protected directoryName: string;
