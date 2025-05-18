@@ -12,7 +12,7 @@ import { Module } from '@nestjs/common';
 import { MajorScraper as MajorScraper } from 'src/notices/scrapers/absolute-style/major.scraper';
 import { MajorNoticeScheduler as MajorScheduler } from 'src/notices/schedulers/absolute-style/major.scheduler';
 import { WholeScraper as WholeScraper } from 'src/notices/scrapers/absolute-style/whole.scraper';
-import { WholeNoticeSchedulerService as WholeScheduler } from 'src/notices/schedulers/absolute-style/whole.scheduler';
+import { WholeScheduler as WholeScheduler } from 'src/notices/schedulers/absolute-style/whole.scheduler';
 import { MajorStyleScraper as MajorStyleScraper } from 'src/notices/scrapers/absolute-style/major-style.scraper';
 import { MajorStyleScheduler as MajorStyleScheduler } from 'src/notices/schedulers/absolute-style/major-style.scheduler';
 import { OceanographyStyleScheduler as OceanographyStyleScheduler } from 'src/notices/schedulers/absolute-style/oceanography-style.scheduler';
