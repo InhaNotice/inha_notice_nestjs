@@ -50,9 +50,9 @@ export class FirebaseService {
 
       if (process.env.NODE_ENV === IDENTIFIER_CONSTANT.kProduction) {
         await this.firebaseAdmin.messaging().send(message);
-        FirebaseService.logger.log(`🔔 ${deviceToken}:\"${notificationBody}\" - \"${notificationDate}\"`);
+        FirebaseService.logger.log(`🔔 ${deviceToken}: \"${notificationBody}\"-\"${notificationDate}\"`);
       } else {
-        FirebaseService.logger.debug(`🔕 ${deviceToken}:\"${notificationBody}\"-\"${notificationDate}\"`);
+        FirebaseService.logger.debug(`🔕 ${deviceToken}: \"${notificationBody}\"-\"${notificationDate}\"`);
       }
     } catch (error) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${error.message}`);
@@ -90,10 +90,10 @@ export class FirebaseService {
 
       if (process.env.NODE_ENV == IDENTIFIER_CONSTANT.kProduction) {
         await this.firebaseAdmin.messaging().send(message);
-        FirebaseService.logger.log(`🔔 ${topic}:\"${notificationBody}\" - \"${notificationDate}\"`);
+        FirebaseService.logger.log(`🔔 ${topic}: \"${notificationBody}\"-\"${notificationDate}\"`);
         return;
       }
-      FirebaseService.logger.debug(`🔕 ${topic}:\"${notificationBody}\" - \"${notificationDate}\"`);
+      FirebaseService.logger.debug(`🔕 ${topic}: \"${notificationBody}\"-\"${notificationDate}\"`);
     } catch (e) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${e.message}`);
     }
