@@ -12,8 +12,9 @@ import { Logger } from "@nestjs/common";
 import axios, { AxiosResponse } from 'axios';
 import { HTTP_STATUS } from "src/constants/http/http-status.constant";
 import { NotificationPayload } from "src/interfaces/notification-payload.interface";
+import { BaseScraper } from "../base.scraper";
 
-export abstract class RelativeStyleScraper {
+export abstract class RelativeStyleScraper extends BaseScraper {
     protected logger: Logger;
     protected configName: string;
     protected noticeTypes: string[];
@@ -36,7 +37,7 @@ export abstract class RelativeStyleScraper {
         return results;
     }
 
-    protected async fetchAllNotices(): Promise<Record<string, NotificationPayload[]>> {
+    async fetchAllNotices(): Promise<Record<string, NotificationPayload[]>> {
         const results: Record<string, NotificationPayload[]> = {};
 
         for (const noticeType of this.noticeTypes) {
@@ -52,7 +53,7 @@ export abstract class RelativeStyleScraper {
     }
 
 
-    protected async fetchNotices(noticeType: string): Promise<{ general: NotificationPayload[] }> {
+    async fetchNotices(noticeType: string): Promise<{ general: NotificationPayload[] }> {
         const baseUrl = this.noticeTypeUrls[noticeType];
         const queryUrl = this.noticeTypeQueryUrls[noticeType];
 

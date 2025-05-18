@@ -19,31 +19,37 @@ import { OceanographyStyleScheduler as OceanographyStyleScheduler } from 'src/no
 import { OceanographyStyleScraper as OceanographyStyleScraper } from 'src/notices/scrapers/absolute-style/oceanography-style.scraper';
 import { InhaDesignStyleScheduler as InhadesignStyleScheduler } from 'src/notices/schedulers/absolute-style/inha-design-style.scheduler';
 import { InhaDesignStyleScraper as InhaDesignStyleScraper } from 'src/notices/scrapers/absolute-style/inha-design-style.scraper';
+import { LibraryStyleScheduler } from './schedulers/relative-style/library-style.scheduler';
+import { LibraryStyleScraper } from './scrapers/relative-style/library-style.scraper';
 
 @Module({
     providers: [
-        WholeScraper,
-        WholeScheduler,
-        MajorScraper,
-        MajorScheduler,
-        MajorStyleScraper,
-        MajorStyleScheduler,
-        OceanographyStyleScheduler,
-        OceanographyStyleScraper,
-        InhadesignStyleScheduler,
-        InhaDesignStyleScraper,
+        // WholeScraper,
+        // WholeScheduler,
+        // MajorScraper,
+        // MajorScheduler,
+        // MajorStyleScraper,
+        // MajorStyleScheduler,
+        // OceanographyStyleScheduler,
+        // OceanographyStyleScraper,
+        // InhadesignStyleScheduler,
+        // InhaDesignStyleScraper,
+        LibraryStyleScheduler,
+        LibraryStyleScraper,
     ],
     exports: [
-        WholeScraper,
-        WholeScheduler,
-        MajorScraper,
-        MajorScheduler,
-        MajorStyleScraper,
-        MajorStyleScheduler,
-        OceanographyStyleScheduler,
-        OceanographyStyleScraper,
-        InhadesignStyleScheduler,
-        InhaDesignStyleScraper,
+        // WholeScraper,
+        // WholeScheduler,
+        // MajorScraper,
+        // MajorScheduler,
+        // MajorStyleScraper,
+        // MajorStyleScheduler,
+        // OceanographyStyleScheduler,
+        // OceanographyStyleScraper,
+        // InhadesignStyleScheduler,
+        // InhaDesignStyleScraper,
+        LibraryStyleScheduler,
+        LibraryStyleScraper,
     ],
 })
 export class NoticeModule { }

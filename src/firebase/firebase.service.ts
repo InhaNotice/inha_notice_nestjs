@@ -91,10 +91,10 @@ export class FirebaseService {
 
       if (process.env.NODE_ENV == IDENTIFIER_CONSTANT.kProduction) {
         await this.firebaseAdmin.messaging().send(message);
-        FirebaseService.logger.log(`🔔 ${topic}의 새로운 공지: \"${notificationTitle}\"-\"${notificationDate}\"`);
+        FirebaseService.logger.log(`🔔 ${topic}의 새로운 공지: \"${notificationBody}\"-\"${notificationDate}\"`);
         return;
       }
-      FirebaseService.logger.debug(`🔕 ${topic}의 새로운 공지 - ${notificationBody}-${notificationDate}`);
+      FirebaseService.logger.debug(`🔕 ${topic}의 새로운 공지 - ${notificationBody}-${notificationTitle}`);
     } catch (e) {
       FirebaseService.logger.error(`🚨 푸시알림 보내기 실패: ${e.message}`);
     }

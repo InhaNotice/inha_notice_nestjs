@@ -13,7 +13,7 @@
  */
 export const LIBRARY_STYLE_CRON: Record<string, string> = {
     // 평일(월~금) 9시~16시 59분까지, 10분 간격으로 공지 크롤링
-    CRON_WEEKDAYS: '*/5 * * * * *',
+    CRON_WEEKDAYS: '0 */10 9-16 * * 1-5',
     TASK_WEEKDAYS: '정기(9~17시)',
 
     /**

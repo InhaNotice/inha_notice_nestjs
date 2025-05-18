@@ -13,6 +13,7 @@ import axios, { AxiosResponse } from 'axios';
 import * as cheerio from 'cheerio';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { HTTP_STATUS } from 'src/constants/http/http-status.constant';
+import { BaseScraper } from '../base.scraper';
 
 /**
  * AbsoluteStyle의 공지사항 크롤링을 제공하는 추상클래스
@@ -21,7 +22,7 @@ import { HTTP_STATUS } from 'src/constants/http/http-status.constant';
  * - noticeType 별 공지사항 크롤링
  * - uniqueNoticeId 생성
  */
-export abstract class AbsoluteStyleScraper {
+export abstract class AbsoluteStyleScraper extends BaseScraper {
     protected logger: Logger;
     protected configName: string;
     protected noticeTypes: string[];
@@ -62,7 +63,7 @@ export abstract class AbsoluteStyleScraper {
      * 모든 공지사항을 크롤링 후 전처리한 공지 반환
      * @returns {Promise<Record<string, NotificationPayload[]>>} 전처리된 모든 공지들 반환
      */
-    public async fetchAllNotices(): Promise<Record<string, NotificationPayload[]>> {
+    async fetchAllNotices(): Promise<Record<string, NotificationPayload[]>> {
         const results: Record<string, NotificationPayload[]> = {};
 
         for (const noticeType of this.noticeTypes) {
@@ -83,7 +84,7 @@ export abstract class AbsoluteStyleScraper {
      * @param {number} page - 페이지 번호
      * @returns {Promise<{general: NotificationPayload[]}>} - 공지사항 객체 배열로 반환
      */
-    protected async fetchNotices(noticeType: string, page: number): Promise<{ general: NotificationPayload[] }> {
+    async fetchNotices(noticeType: string, page: number): Promise<{ general: NotificationPayload[] }> {
         const baseUrl: string = this.noticeTypeUrls[noticeType];
         const queryUrl: string = this.noticeTypeQueryUrls[noticeType];
 
@@ -115,7 +116,7 @@ export abstract class AbsoluteStyleScraper {
     * noticeTypes의 접근자
     * @returns {string[]} - 공지 타입 리스트 반환
     */
-    public getAllNoticeTypes(): string[] {
+    getAllNoticeTypes(): string[] {
         return this.noticeTypes;
     }
 }
