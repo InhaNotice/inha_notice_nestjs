@@ -669,6 +669,11 @@ describe('AbsoluteStyleNoticeSchedulerService', () => {
             expect(service['getTodayDate']()).toEqual('2025.01.01');
             expect(dayjsMock).toHaveBeenCalledWith('YYYY.MM.DD');
         });
+
+        it('정상적으로 배포환경의 리턴값 포맷을 가진다.', () => {
+            const result = service['getTodayDate']();
+            expect(result).toMatch(/^\d{4}\.\d{2}\.\d{2}$/);
+        })
     });
 });
 
