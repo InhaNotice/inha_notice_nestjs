@@ -33,13 +33,13 @@ export class UndergraduateScheduler extends FirebaseNotifiable {
         this.logger = new Logger(UndergraduateScheduler.name);
     }
 
-    @Cron(UNDERGRADUATE_CRON.UNDERGRADUATE_DAY_BEFORE_REMINDER, { timeZone: 'Asia/Seoul' })
+    @Cron(UNDERGRADUATE_CRON.CRON_DAY_BEFORE, { timeZone: 'Asia/Seoul' })
     async handleDayBeforeReminder() {
         const targetDate: string = dayjs().add(1, 'day').format('YYYY-MM-DD');
         await this.handleReminder(UNDERGRADUATE_CRON.TASK_DAY_BEFORE, targetDate, 'undergraduate-schedule-d1-notification');
     }
 
-    @Cron(UNDERGRADUATE_CRON.UNDERGRADUATE_TODAY_REMINDER, { timeZone: 'Asia/Seoul' })
+    @Cron(UNDERGRADUATE_CRON.CRON_TODAY, { timeZone: 'Asia/Seoul' })
     async handleTodayReminder() {
         const targetDate: string = dayjs().format('YYYY-MM-DD');
         await this.handleReminder(UNDERGRADUATE_CRON.TASK_TODAY, targetDate, 'undergraduate-schedule-dd-notification');
