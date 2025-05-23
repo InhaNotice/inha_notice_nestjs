@@ -100,6 +100,11 @@ export default () => {
                 baseUrl: process.env.SSE_URL,
                 queryUrl: process.env.SSE_QUERY_URL,
             },
+            // 이차전지융합학과(25.05.19)
+            IBATTERY: {
+                baseUrl: process.env.IBATTERY_URL,
+                queryUrl: process.env.IBATTERY_QUERY_URL,
+            },
 
             // 자연과학대학
             MATH: {
