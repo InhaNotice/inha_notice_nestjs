@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-05-19
  */
 
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
@@ -23,6 +23,12 @@ class TestSchedulerService extends UndergraduateScheduler {
         } as any;
 
         super(mockFirebaseService, mockConfigService);
+        this.logger = {
+            log: jest.fn(),
+            error: jest.fn(),
+            warn: jest.fn(),
+            debug: jest.fn(),
+        } as any;
     }
 
     protected initializeDatabaseDirectory(): void { }
@@ -103,10 +109,11 @@ describe('UndergraduateScheduler', () => {
         });
 
         it('일치하는 일정이 있는 경우 sendFirebaseMessaging을 호출한다.', async () => {
+            const logPrefixMock = 'logPrefixMock';
             const targetDate = '2025-05-18';
             const topic = 'undergraduate-schedule-d1-notification';
 
-            await service['handleReminder'](targetDate, topic);
+            await service['handleReminder'](logPrefixMock, targetDate, topic);
 
             expect(sendFirebaseMessagingMock).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -119,7 +126,12 @@ describe('UndergraduateScheduler', () => {
         });
 
         it('일치하는 일정이 없는 경우 sendFirebaseMessaging을 호출하지 않는다.', async () => {
-            await service['handleReminder']('2025-05-19', 'undergraduate-schedule-d1-notification');
+            const logPrefixMock = 'logPrefixMock';
+            const targetDate = '2025-05-19';
+            const topic = 'undergraduate-schedule-d1-notification';
+
+            await service['handleReminder'](logPrefixMock, targetDate, topic);
+
             expect(sendFirebaseMessagingMock).not.toHaveBeenCalled();
         });
     });

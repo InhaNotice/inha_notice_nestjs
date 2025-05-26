@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-05-19
  */
 
 import { Module } from '@nestjs/common';
@@ -19,8 +19,8 @@ import { OceanographyStyleScheduler as OceanographyStyleScheduler } from 'src/no
 import { OceanographyStyleScraper as OceanographyStyleScraper } from 'src/notices/scrapers/absolute-style/oceanography-style.scraper';
 import { InhaDesignStyleScheduler as InhadesignStyleScheduler } from 'src/notices/schedulers/absolute-style/inha-design-style.scheduler';
 import { InhaDesignStyleScraper as InhaDesignStyleScraper } from 'src/notices/scrapers/absolute-style/inha-design-style.scraper';
-import { LibraryStyleScheduler } from './schedulers/relative-style/library-style.scheduler';
-import { LibraryStyleScraper } from './scrapers/relative-style/library-style.scraper';
+import { LibraryStyleScheduler } from 'src/notices/schedulers/relative-style/library-style.scheduler';
+import { LibraryStyleScraper } from 'src/notices/scrapers/relative-style/library-style.scraper';
 
 @Module({
     providers: [
