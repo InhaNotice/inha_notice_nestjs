@@ -44,6 +44,7 @@ export abstract class AbsoluteStyleScraper extends BaseScraper {
             const connectUrl: string = `${queryUrl}${page}`;
             const response: AxiosResponse<ArrayBuffer> = await axios.get(connectUrl, {
                 responseType: 'arraybuffer',
+                timeout: 10000,
             });
 
             if (response.status === HTTP_STATUS.STATUS_OKAY) {
@@ -55,6 +56,9 @@ export abstract class AbsoluteStyleScraper extends BaseScraper {
                 throw new Error(`❌ 인하대 서버 응답 오류: ${response.status}`);
             }
         } catch (error) {
+            if (error.code === 'ECONNABORTED') {
+                this.logger.error(`⏰ ${noticeType} 요청 타임아웃 발생`);
+            }
             throw new Error(`❌ ${noticeType}의 공지사항 크롤링 실패: ${error.message}`);
         }
     }
