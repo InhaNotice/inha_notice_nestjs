@@ -5,16 +5,17 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-06-05
  */
 
 /**
- * 학과 스타일(국제처, SWUNIV, 단과대, 대학원)의 영문 학과명에서 국문 학과명으로 번역하는 상수를 정의한다.
+ * 학과 스타일(국제처, SWUNIV, 기후위기대응사업단, 단과대, 대학원)의 영문 학과명에서 국문 학과명으로 번역하는 상수를 정의한다.
  */
 export const MAJOR_STYLE_MAP: Record<string, string> = {
     // 국제처, SWUNIV
     INTERNATIONAL: '국제처',
     SWUNIV: 'SW중심대학사업단',
+    INHAHUSS: '기후위기대응사업단',
     // 단과대
     ENGCOLLEAGE: '공과대학',
     NSCOLLEAGE: '자연과학대학',
