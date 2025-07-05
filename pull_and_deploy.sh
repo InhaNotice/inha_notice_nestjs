@@ -1,11 +1,14 @@
-echo "Get the latest version from GitHub."
-git pull
+echo "Getting the latest version from GitHub..."
+git pull || { echo "Git pull failed. Deployment aborted."; exit 1; }
 
-echo "Kill all currently running servers."
+echo "Installing required packages..."
+npm i
+
+echo "Killing all currently running servers..."
 npx pm2 kill
 
-echo "Run the NestJS server in the deployment environment."
+echo "Running the NestJS server in the deployment environment..."
 npm run start:prod
 
-echo "Print the logs of the currently running servers."
+echo "Displaying logs of the currently running servers..."
 npx pm2 logs
