@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-02-22
+ * Latest Updated Date: 2025-07-05
  */
 
 import { HttpStatus, Injectable } from '@nestjs/common';
@@ -15,21 +15,21 @@ export class AppService {
   constructor() { }
 
   /**
-   * HTTP 메인 페이지 제공
-   * @returns {string} - HTTP 메인 페이지 정의(문자열 반환)
+   * Provides the HTTP main page
+   * @returns {string} - Returns a string representing the HTTP main page
    */
   getHome(): string {
     return "Hello World!";
   }
 
   /**
-   * 로드밸런서 Health check 서비스를 제공
-   * @returns {status: number; message: string} - 상태코드와 메시지를 JSON으로 반환
+   * Provides the health check service for the load balancer
+   * @returns {{ status: number; message: string }} - Returns the status code and message as JSON
    */
   healthCheck(): { status: number; message: string } {
     return {
       status: HttpStatus.OK,
-      message: 'health check에 성공하였습니다.'
+      message: 'Successfully Health Check!'
     };
   }
 }
