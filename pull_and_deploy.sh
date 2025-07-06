@@ -1,5 +1,5 @@
 echo "Getting the latest version from GitHub..."
-git pull || { echo "Git pull failed. Deployment aborted."; exit 1; }
+git pull
 
 echo "Installing required packages..."
 npm i
