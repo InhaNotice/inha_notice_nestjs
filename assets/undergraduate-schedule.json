@@ -201,7 +201,13 @@
       "color": "#b9f3b9"
     },
     {
-      "title": "우선수강신청",
+      "title": "강의시간표 공시",
+      "startDate": "2025-07-18",
+      "note": null,
+      "color": "#b9f3b9"
+    },
+    {
+      "title": "우선수강신청 (전체학생)",
       "startDate": "2025-07-23",
       "note": null,
       "color": "#f3b9e6"
@@ -227,19 +233,31 @@
       "color": "#b9f3c6"
     },
     {
+      "title": "우선수강신청 (다중전공 합격자, 유급 신청자)",
+      "startDate": "2025-08-05",
+      "note": null,
+      "color": "#b9f3c6"
+    },
+    {
       "title": "우선수강신청 결과 발표",
       "startDate": "2025-08-08",
       "note": null,
       "color": "#f3b9d6"
     },
     {
-      "title": "본수강신청 (전공/교양필수)",
+      "title": "본수강신청 (공과대학, 소프트웨어융합대학, 바이오시스템융합학부, 프런티어창의대학 소속 학생)",
       "startDate": "2025-08-13",
       "note": null,
       "color": "#b9f3e6"
     },
     {
-      "title": "본수강신청 (일반)",
+      "title": "본수강신청 (전체 학생)",
+      "startDate": "2025-08-14",
+      "note": null,
+      "color": "#b9f3e6"
+    },
+    {
+      "title": "본수강신청 (전체 학생)",
       "startDate": "2025-08-20",
       "note": null,
       "color": "#e6b9f3"
@@ -259,6 +277,12 @@
     {
       "title": "2월 조기졸업 신청",
       "startDate": "2025-08-27",
+      "note": null,
+      "color": "#b9f3d6"
+    },
+    {
+      "title": "본수강신청 (수강신청 미신청(0학점) 학생)",
+      "startDate": "2025-08-29",
       "note": null,
       "color": "#b9f3d6"
     }
@@ -282,14 +306,15 @@
       "note": "(수업일수 1/4선)",
       "color": "#d6f3b9"
     }
-  ],
-  "2025-10": [
+    ,
     {
-      "title": "수강포기",
+      "title": "수강포기 기간",
       "startDate": "2025-09-29",
       "note": null,
-      "color": "#b9eaf3"
-    },
+      "color": "#d6f3b9"
+    }
+  ],
+  "2025-10": [
     {
       "title": "중간고사",
       "startDate": "2025-10-20",
