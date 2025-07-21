@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2025-07-21
  */
 
 /**
@@ -30,6 +30,7 @@ export const MAJOR_MAP: Record<string, string> = {
     ICE: '정보통신공학과',
     EEE: '전기전자공학부',
     SSE: '반도체시스템공학과',
+    IBATTERY: '이차전지융합학과',
     // 자연과학대학
     MATH: '수학과',
     STATISTICS: '통계학과',
