@@ -1,0 +1,27 @@
+# This is file of the project INGONG
+# Licensed under the MIT License.
+# Copyright (c) 2025 INGONG
+# For full license text, see the LICENSE file in the root directory or at
+# https://opensource.org/license/mit
+# Author: junho Kim
+# Latest Updated Date: 2025-07-24
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inhanotice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inhanotice
+  template:
+    metadata:
+      labels:
+        app: inhanotice
+    spec:
+      containers:
+        - name: inhanotice-container
+          image: your-dockerhub-id/nest-app
+          ports:
+            - containerPort: 3000
