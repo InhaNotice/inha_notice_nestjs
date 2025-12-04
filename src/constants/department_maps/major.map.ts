@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-07-21
+ * Latest Updated Date: 2025-12-04
  */
 
 /**
@@ -36,8 +36,8 @@ export const MAJOR_MAP: Record<string, string> = {
     STATISTICS: '통계학과',
     PHYSICS: '물리학과',
     CHEMISTRY: '화학과',
-    FOODNUTRI: '식품영양학과',
     OCEANOGRAPHY: '해양과학과',
+    FOODNUTRI: '식품영양학과',
     // 경영대학
     BIZ: '경영학과',
     GFIBA: '파이낸스경영학과',

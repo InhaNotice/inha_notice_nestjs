@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-18
+ * Latest Updated Date: 2025-12-04
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -20,8 +20,6 @@ import { MajorScraper } from './scrapers/absolute-style/major.scraper';
 import { MajorNoticeScheduler as MajorScheduler } from './schedulers/absolute-style/major.scheduler';
 import { MajorStyleScraper } from './scrapers/absolute-style/major-style.scraper';
 import { MajorStyleScheduler } from './schedulers/absolute-style/major-style.scheduler';
-import { OceanographyStyleScheduler } from './schedulers/absolute-style/oceanography-style.scheduler';
-import { OceanographyStyleScraper } from './scrapers/absolute-style/oceanography-style.scraper';
 import { InhaDesignStyleScheduler } from './schedulers/absolute-style/inha-design-style.scheduler';
 import { InhaDesignStyleScraper } from './scrapers/absolute-style/inha-design-style.scraper';
 
@@ -45,8 +43,6 @@ describe('NoticeModule은', () => {
         const majorScheduler = module.get<MajorScheduler>(MajorScheduler);
         const majorStyleScraper = module.get<MajorStyleScraper>(MajorStyleScraper);
         const majorStyleScheduler = module.get<MajorStyleScheduler>(MajorStyleScheduler);
-        const oceanographyStyleScheduler = module.get<OceanographyStyleScheduler>(OceanographyStyleScheduler);
-        const oceanographyStyleScraper = module.get<OceanographyStyleScraper>(OceanographyStyleScraper);
         const inhadesignStyleScheduler = module.get<InhaDesignStyleScheduler>(InhaDesignStyleScheduler);
         const inhadesignStyleScraper = module.get<InhaDesignStyleScraper>(InhaDesignStyleScraper);
         const libraryStyleScheduler = module.get<LibraryStyleScheduler>(LibraryStyleScheduler);
@@ -58,8 +54,6 @@ describe('NoticeModule은', () => {
         expect(majorScheduler).toBeDefined();
         expect(majorStyleScraper).toBeDefined();
         expect(majorStyleScheduler).toBeDefined();
-        expect(oceanographyStyleScheduler).toBeDefined();
-        expect(oceanographyStyleScraper).toBeDefined();
         expect(inhadesignStyleScheduler).toBeDefined();
         expect(inhadesignStyleScraper).toBeDefined();
         expect(libraryStyleScheduler).toBeDefined();
