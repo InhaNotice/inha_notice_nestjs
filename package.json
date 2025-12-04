@@ -32,7 +32,7 @@
     "dayjs": "^1.11.13",
     "firebase-admin": "^13.4.0",
     "morgan": "^1.10.0",
-    "pm2": "^6.0.6",
+    "pm2": "^6.0.14",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "sqlite3": "^5.1.7"
