@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-23
+ * Latest Updated Date: 2025-12-04
  */
 
 export default () => {
@@ -123,11 +123,15 @@ export default () => {
                 baseUrl: process.env.CHEMISTRY_URL,
                 queryUrl: process.env.CHEMISTRY_QUERY_URL,
             },
+            // 해양과학과
+            OCEANOGRAPHY: {
+                baseUrl: process.env.OCEANOGRAPHY_URL,
+                queryUrl: process.env.OCEANOGRAPHY_QUERY_URL,
+            },
             FOODNUTRI: {
                 baseUrl: process.env.FOODNUTRI_URL,
                 queryUrl: process.env.FOODNUTRI_QUERY_URL,
             },
-            // 해양과학과
 
             // 경영대학
             BIZ: {
@@ -459,12 +463,6 @@ export default () => {
                 baseUrl: process.env.IMIS_URL,
                 queryUrl: process.env.IMIS_QUERY_URL,
             }
-        },
-        oceanographyStyles: {
-            OCEANOGRAPHY: {
-                baseUrl: process.env.OCEANOGRAPHY_URL,
-                queryUrl: process.env.OCEANOGRAPHY_QUERY_URL,
-            },
         },
         inhaDesignStyles: {
             INHADESIGN: {
