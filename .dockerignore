@@ -1,17 +1,65 @@
-.env
-.env.*
-*.pen
-*.key
-firebase-service-account.json
+# This is file of the project INGONG
+# Licensed under the MIT License.
+# Copyright (c) 2025 INGONG
+# For full license text, see the LICENSE file in the root directory or at
+# https://opensource.org/license/mit
+# Author: Junho Kim
+# Latest Updated Date: 2025-12-18
 
+# Metadata & OS
 .git
 .gitignore
+.DS_Store
+.github
+
+# Build & Dependencies
 node_modules
 dist
-Dockerfile*
-docker-compose*.yml
-npm-debug.log
+build
 coverage
-tmp
+.nyc_output
+tmp/
+temp/
+.temp/
+.tmp/
+
+# IDE & Local Development Settings
+.idea
 .vscode
-.DS_Store
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Security & Sensitive Files
+*.pen
+*.key
+secrets/
+src/config/firebase-service-account.json
+firebase-service-account.json
+.env
+.env.*
+env/
+
+# Logs & Runtime Data
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+pids
+*.pid
+*.seed
+*.pid.lock
+report.[0-9]*
+
+# Docker Configuration Files
+Dockerfile*
+docker-compose.yaml
+
+# Databases & Docs
+database/
+*.db
+docs/

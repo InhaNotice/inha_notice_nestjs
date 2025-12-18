@@ -3,31 +3,45 @@
 # Copyright (c) 2025 INGONG
 # For full license text, see the LICENSE file in the root directory or at
 # https://opensource.org/license/mit
-# Author: junho Kim
-# Latest Updated Date: 2025-07-24
+# Author: Junho Kim
+# Latest Updated Date: 2025-12-18
 
-# Fix Node.js Image Version
-FROM node:23.1.0
-
-# Set working directory
+# 1) deps: install dependencies
+FROM node:24.12.0-slim AS deps
 WORKDIR /app
-
-# Install System Packages (Minimum Installation)
-RUN apt-get update && apt-get install -y --no-install-recommends vim \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
-# Copy only package.json and lock files for npm cache optimization
 COPY package.json package-lock.json ./
+RUN npm ci
 
-# Install Dependencies
-RUN npm install
+# 2) build: compile NestJS
+FROM node:24.12.0-slim AS build
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run prebuild && npm run build
 
-# Copy application code
-COPY ./ ./
+# 3) runner: actual execution environment
+FROM node:24.12.0-slim AS runner
+WORKDIR /app
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+    tzdata \
+    locales \
+    && locale-gen ko_KR.UTF-8 \
+    && update-locale LANG=ko_KR.UTF-8 \
+    && ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
+    && echo "Asia/Seoul" > /etc/timezone \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Container Port Number
+ENV LANG=ko_KR.UTF-8 \
+    LANGUAGE=ko_KR.UTF-8 \
+    LC_ALL=ko_KR.UTF-8 \
+    TZ=Asia/Seoul \
+    NODE_ENV=production
+
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+COPY --from=build /app/dist ./dist
+
 EXPOSE 3000
-
-# Automatically execute the following commands when the container is executed
-CMD ["npm", "run", "start:dev"]
+CMD ["node", "dist/src/main.js"]
