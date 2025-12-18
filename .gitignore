@@ -1,26 +1,28 @@
-# compiled output
-/dist
-/node_modules
-/build
+# This is file of the project INGONG
+# Licensed under the MIT License.
+# Copyright (c) 2025 INGONG
+# For full license text, see the LICENSE file in the root directory or at
+# https://opensource.org/license/mit
+# Author: Junho Kim
+# Latest Updated Date: 2025-12-18
 
-# Logs
-logs
-*.log
-npm-debug.log*
-pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-
-# OS
+# Metadata & OS
 .DS_Store
+Thumbs.db
 
-# Tests
-/coverage
-/.nyc_output
+# Build & Dependencies
+node_modules/
+dist/
+build/
+coverage/
+.nyc_output/
+tmp/
+temp/
+.temp/
+.tmp/
 
-# IDEs and editors
-/.idea
+# IDE & Local Development Settings
+.idea/
 .project
 .classpath
 .c9/
@@ -28,36 +30,36 @@ lerna-debug.log*
 .settings/
 *.sublime-workspace
 
-# IDE - VSCode
+# IDE - VSCode (Keep shared settings if necessary)
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# temp directory
-.temp
-.tmp
+# Security & Sensitive Files
+*.pen
+*.key
+secrets/
+src/config/firebase-service-account.json
+firebase-service-account.json
+.env
+*.env
+env/
 
-# Runtime data
+# Logs & Runtime Data
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
 pids
 *.pid
 *.seed
 *.pid.lock
+report.[0-9]*
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
-# config
-firebase-service-account.json
-
-# 환경변수
-env/
-*.env
-
-# 데이터베이스
+# Databases & Docs
 database/
 *.db
-
-# 문서화
 docs/
