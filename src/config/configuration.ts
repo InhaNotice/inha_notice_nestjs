@@ -353,6 +353,11 @@ export default () => {
                 baseUrl: process.env.NCS_URL,
                 queryUrl: process.env.NCS_QUERY_URL,
             },
+            // 경영융합학부 추가 (2025.12.22)
+            CVGBA: {
+                baseUrl: process.env.CVGBA_URL,
+                queryUrl: process.env.CVGBA_QUERY_URL,
+            },
             CVGSOSCI: {
                 baseUrl: process.env.CVGSOSCI_URL,
                 queryUrl: process.env.CVGSOSCI_QUERY_URL,
