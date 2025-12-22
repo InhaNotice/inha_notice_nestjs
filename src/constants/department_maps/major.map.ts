@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-12-04
+ * Latest Updated Date: 2025-12-22
  */
 
 /**
@@ -64,10 +64,8 @@ export const MAJOR_MAP: Record<string, string> = {
     PHILOSOPHY: '철학과',
     CHINESE: '중국학과',
     JAPAN: '일본언어문화학과',
-    ENGLISH: '영어영문학과',
-    FRANCE: '프랑스어문화학과',
-    CULTURECM: '문화콘텐츠문화경영학과',
     EES: '영미유럽인문융합학부',
+    CULTURECM: '문화콘텐츠문화경영학과',
     // 의과대학
     MEDICINE: '의예과',
     // 간호대학
