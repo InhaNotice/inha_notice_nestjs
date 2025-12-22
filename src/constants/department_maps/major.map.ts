@@ -100,6 +100,7 @@ export const MAJOR_MAP: Record<string, string> = {
     LAS: '자유전공융합학부',
     ECS: '공학융합학부',
     NCS: '자연과학융합학부',
+    CVGBA: '경영융합학부',
     CVGSOSCI: '사회과학융합학부',
     CVGHUMAN: '인문융합학부',
 } as const;
