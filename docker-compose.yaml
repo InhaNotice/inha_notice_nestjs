@@ -22,3 +22,4 @@ services:
     environment:
       - NODE_ENV=production
       - TZ=Asia/Seoul
+      - PORT=3000
