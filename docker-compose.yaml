@@ -23,8 +23,3 @@ services:
       - NODE_ENV=production
       - TZ=Asia/Seoul
       - PORT=3000
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 1024M
