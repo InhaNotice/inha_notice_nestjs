@@ -17,6 +17,7 @@ FROM node:24.12.0-slim AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN mkdir -p src/config && echo '{}' > src/config/firebase-service-account.json
 RUN npm run prebuild && npm run build
 
 # 3) runner: actual execution environment
