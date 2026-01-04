@@ -4,7 +4,7 @@
 # For full license text, see the LICENSE file in the root directory or at
 # https://opensource.org/license/mit
 # Author: Junho Kim
-# Latest Updated Date: 2025-12-18
+# Latest Updated Date: 2026-01-04
 
 # 1) deps: install dependencies
 FROM node:24.12.0-slim AS deps
@@ -27,7 +27,6 @@ RUN apt-get update && apt-get install -y \
     tzdata \
     locales \
     && locale-gen ko_KR.UTF-8 \
-    && update-locale LANG=ko_KR.UTF-8 \
     && ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
     && echo "Asia/Seoul" > /etc/timezone \
     && apt-get clean && rm -rf /var/lib/apt/lists/*

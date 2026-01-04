@@ -4,7 +4,7 @@
 # For full license text, see the LICENSE file in the root directory or at
 # https://opensource.org/license/mit
 # Author: Junho Kim
-# Latest Updated Date: 2025-12-18
+# Latest Updated Date: 2026-01-04
 
 # Metadata & OS
 .git
@@ -59,7 +59,5 @@ report.[0-9]*
 Dockerfile*
 docker-compose.yaml
 
-# Databases & Docs
-database/
-*.db
+# Docs
 docs/
