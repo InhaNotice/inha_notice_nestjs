@@ -40,7 +40,7 @@ ENV LANG=ko_KR.UTF-8 \
 
 COPY --from=deps /app/package.json /app/package-lock.json ./
 COPY --from=deps /app/node_modules ./node_modules
-RUN npm prune --production && npm cache clean --force
+RUN npm prune --production 
 
 COPY --from=build /app/assets ./assets
 COPY --from=build /app/dist ./dist
