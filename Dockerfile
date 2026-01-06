@@ -41,6 +41,7 @@ ENV LANG=ko_KR.UTF-8 \
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
+COPY --from=build /app/assets ./assets
 COPY --from=build /app/dist ./dist
 
 EXPOSE 3000
