@@ -38,8 +38,9 @@ ENV LANG=ko_KR.UTF-8 \
     TZ=Asia/Seoul \
     NODE_ENV=production
 
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+COPY --from=deps /app/package.json /app/package-lock.json ./
+COPY --from=deps /app/node_modules ./node_modules
+RUN npm prune --production && npm cache clean --force
 
 COPY --from=build /app/assets ./assets
 COPY --from=build /app/dist ./dist
