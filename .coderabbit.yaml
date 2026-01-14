@@ -13,20 +13,19 @@ reviews:
       - "Draft"
       - "[Draft]"
 
-  tools:
-    ast_grep:
-      enabled: true
-    github_checks:
-      enabled: true
-
-chat:
-  auto_reply: true 
-
-filter:
-  changed_files:
+  path_filters:
     - "!dist/**"
     - "!node_modules/**"
     - "!package-lock.json"
     - "!yarn.lock"
     - "!**/*.spec.ts" 
     - "!coverage/**"
+
+  tools:
+    ast-grep:
+      enabled: true
+    github-checks:
+      enabled: true
+
+chat:
+  auto_reply: true 
