@@ -25,6 +25,12 @@
       "color": "#f3b9d6"
     },
     {
+      "title": "강의시간표 공시 (15:00 예정)",
+      "startDate": "2026-01-16",
+      "note": null,
+      "color": "#f3b9d6"
+    },
+    {
       "title": "전과합격자 발표",
       "startDate": "2026-01-20",
       "note": null,
@@ -201,6 +207,12 @@
     {
       "title": "2026-1학기 다중전공포기",
       "startDate": "2026-07-08",
+      "note": null,
+      "color": "#f3b9d6"
+    },
+    {
+      "title": "강의시간표 공시 (15:00 예정)",
+      "startDate": "2026-07-17",
       "note": null,
       "color": "#f3b9d6"
     },
