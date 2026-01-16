@@ -4,7 +4,7 @@
 # For full license text, see the LICENSE file in the root directory or at
 # https://opensource.org/license/mit
 # Author: Junho Kim
-# Latest Updated Date: 2026-01-04
+# Latest Updated Date: 2026-01-17
 
 # 1) deps: install dependencies
 FROM node:24.12.0-slim AS deps
@@ -38,9 +38,8 @@ ENV LANG=ko_KR.UTF-8 \
     TZ=Asia/Seoul \
     NODE_ENV=production
 
-COPY --from=deps /app/package.json /app/package-lock.json ./
-COPY --from=deps /app/node_modules ./node_modules
-RUN npm prune --production 
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=build /app/assets ./assets
 COPY --from=build /app/dist ./dist
