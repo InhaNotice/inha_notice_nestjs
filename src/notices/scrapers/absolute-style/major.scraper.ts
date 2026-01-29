@@ -5,14 +5,14 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2026-01-29
  */
 
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
-import { GeneralTagSelectors } from 'src/selectors/major.selector';
+import { GeneralTagSelectors } from 'src/notices/scrapers/selectors/major.selector';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
 import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';

@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2026-01-29
  */
 
 import { Injectable, Logger } from "@nestjs/common";
@@ -14,7 +14,7 @@ import { AbsoluteStyleScraper } from "src/notices/scrapers/absolute-style/absolu
 import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
-import { GeneralTagSelectors } from "src/selectors/inhadesign-style.selector";
+import { GeneralTagSelectors } from "src/notices/scrapers/selectors/inhadesign-style.selector";
 import { AxiosResponse } from 'axios';
 import { IDENTIFIER_CONSTANT } from "src/constants/identifiers/identifier.constant";
 
