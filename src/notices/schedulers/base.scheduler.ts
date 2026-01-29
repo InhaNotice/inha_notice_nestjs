@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-18
+ * Latest Updated Date: 2026-01-29
  */
 
 import { Logger } from '@nestjs/common';
@@ -17,6 +17,7 @@ import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.
 import { FirebaseNotifiable } from 'src/interfaces/firebase-notificable.interface';
 import { BaseScraper } from '../scrapers/base.scraper';
 import * as dayjs from 'dayjs';
+import { GlobalDBMonitor } from 'src/common/utils/db-monitor';
 
 /**
  * 공지사항 크롤링 스케줄러를 제공하는 추상클래스이다.
@@ -55,6 +56,7 @@ export abstract class BaseScheduler extends FirebaseNotifiable {
      */
     protected initializeDatabases(): void {
         const noticeTypes: string[] = this.scraperService.getAllNoticeTypes();
+        GlobalDBMonitor.registerScheduler(noticeTypes.length);
         for (const noticeType of noticeTypes) {
             const dbPath: string = path.join(this.databaseDirectory, `${noticeType}.db`);
             this.databases[noticeType] = new sqlite3.Database(dbPath, (err) => {
@@ -62,6 +64,7 @@ export abstract class BaseScheduler extends FirebaseNotifiable {
                     this.logger.error(`❌ ${noticeType} 데이터베이스 연결 실패: ${err.message}`);
                 } else {
                     this.initializeTable(noticeType);
+                    GlobalDBMonitor.reportSuccess();
                 }
             });
         }
