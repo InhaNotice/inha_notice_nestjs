@@ -4,7 +4,7 @@
 # For full license text, see the LICENSE file in the root directory or at
 # https://opensource.org/license/mit
 # Author: Junho Kim
-# Latest Updated Date: 2026-01-04
+# Latest Updated Date: 2026-01-30
 
 services:
   app-prod:
@@ -18,7 +18,7 @@ services:
       - .env
     volumes:
       - ./src/config/firebase-service-account.json:/app/dist/src/config/firebase-service-account.json:ro
-      - ./database:/app/database
+      - ./data:/app/data
     environment:
       - NODE_ENV=production
       - TZ=Asia/Seoul
