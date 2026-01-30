@@ -5,720 +5,173 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-18
+ * Latest Updated Date: 2026-01-30
  */
 
-import * as fs from 'fs';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
-import * as sqlite3 from 'sqlite3';
-import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
-import * as dayjs from 'dayjs';
+import { NoticeRepository } from 'src/database/notice.repository';
 import { BaseScheduler } from 'src/notices/schedulers/base.scheduler';
+import { Test, TestingModule } from '@nestjs/testing';
 
 class TestSchedulerService extends BaseScheduler {
-    constructor() {
+    constructor(
+        noticeRepository: NoticeRepository,
+    ) {
         super();
+        this['noticeRepository'] = noticeRepository;
         this.logger = {
             log: jest.fn(),
             error: jest.fn(),
             warn: jest.fn(),
             debug: jest.fn(),
         } as any;
-        this.databaseDirectory = 'test_databases';
-        this.databases = {
-            'TEST1': {
-                run: jest.fn(),
-                get: jest.fn(),
-                all: jest.fn(),
-            } as any,
-        };
-        this.cachedNoticeIds = {};
+
         this.scraperService = {
-            getAllNoticeTypes: jest.fn().mockReturnValue(['TEST1', 'TEST2']),
-            fetchAllNotices: jest.fn().mockResolvedValue({
-                'TEST1': [{
-                    id: 'KR-1',
-                    title: 'noticeTitle1',
-                    link: 'https://test.com/1',
-                    date: '2025.01.01',
-                    writer: 'writer1',
-                    access: '1',
-                }],
-                'TEST2': [{
-                    id: 'KR-2',
-                    title: 'noticeTitle2',
-                    link: 'https://test.com/2',
-                    date: '2025.01.02',
-                    writer: 'writer2',
-                    access: '2',
-                }],
-            }),
+            fetchAllNotices: jest.fn(),
         } as any;
     };
-
     async sendFirebaseMessaging(notice: NotificationPayload, noticeType: string): Promise<void> {
         return;
     }
 }
 
 
-describe('AbsoluteStyleNoticeSchedulerService', () => {
+describe('BaseScheduler', () => {
     let service: TestSchedulerService;
+    let noticeRepository: NoticeRepository;
 
-    describe('initializeDatabaseDirectory 메서드는', () => {
-        beforeEach(async () => {
-            service = new TestSchedulerService();
-        });
+    const mockNoticeRepository = {
+        save: jest.fn(),
+        deleteNoticesExcludingDate: jest.fn(),
+    };
 
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            providers: [
+                {
+                    provide: NoticeRepository,
+                    useValue: mockNoticeRepository,
+                },
+            ],
+        }).compile();
 
-        it('디렉터리가 존재하지 않을 경우 fs.mkdirSync가 호출되어 디렉터리를 생성하는지 확인한다', () => {
-            const existsSyncMock = jest.spyOn(fs, 'existsSync').mockReturnValue(false);
-            const mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync').mockImplementation();
-
-            service['initializeDatabaseDirectory']();
-
-            expect(existsSyncMock).toHaveBeenCalledWith(service['databaseDirectory']);
-            expect(mkdirSyncSpy).toHaveBeenCalledWith(service['databaseDirectory'], { recursive: true });
-        });
-
-        it('디렉터리가 이미 존재하면 fs.mkdirSync를 호출하지 않는지 확인한다', () => {
-            const existsSyncMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-            const mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync').mockImplementation();
-
-            service['initializeDatabaseDirectory']();
-
-            expect(existsSyncMock).toHaveBeenCalledWith(service['databaseDirectory']);
-            expect(mkdirSyncSpy).not.toHaveBeenCalledWith(service['databaseDirectory'], { recursive: true });
-        });
-
-        it('디렉터리가 존재하지 않으면, fs.mkdirSync를 호출할 때 에러를 발생한다.', () => {
-            const existsSyncMock = jest.spyOn(fs, 'existsSync').mockReturnValue(false);
-
-            const errorMessage = 'fs.mkdirSync 호출 중 에러 발생';
-            const mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {
-                throw new Error(errorMessage);
-            });
-
-            service['initializeDatabaseDirectory']();
-
-            expect(existsSyncMock).toHaveBeenCalledWith(service['databaseDirectory']);
-            expect(mkdirSyncSpy).toHaveBeenCalled();
-            expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining(`${errorMessage}`));
-        });
+        noticeRepository = module.get<NoticeRepository>(NoticeRepository);
+        service = new TestSchedulerService(noticeRepository);
     });
 
-    describe('initializeDatabases 메서드는', () => {
-        let initializeTableMock: jest.SpyInstance;
-
-        beforeEach(async () => {
-            service = new TestSchedulerService();
-            initializeTableMock = jest.spyOn<any, any>(service, 'initializeTable').mockImplementation();
-        });
-
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        it('DB 연결 및 테이블 초기화가 이루어진다.', () => {
-            const sqliteMock = jest.spyOn(sqlite3, 'Database').mockImplementation((_: any, callback: any) => {
-                callback(null);
-                return {} as any;
-            });
-            const initializeTableMock = jest.spyOn<any, any>(service, 'initializeTable').mockImplementation();
-
-            service['initializeDatabases']();
-
-            expect(service['scraperService'].getAllNoticeTypes).toHaveBeenCalled();
-            expect(sqliteMock).toHaveBeenCalled();
-            // toBe는 참조값 비교이므로, toEqual를 사용해야함
-            expect(service['databases']['TEST1']).toEqual({});
-            expect(initializeTableMock).toHaveBeenCalledWith('TEST1');
-            expect(service['databases']['TEST2']).toEqual({});
-            expect(initializeTableMock).toHaveBeenCalledWith('TEST2');
-        });
-
-        it('DB 연결 시 에러가 발생한다.', () => {
-            const errorMessage = 'DB 연결 실패';
-            const sqliteMock = jest.spyOn(sqlite3, 'Database').mockImplementation((_: any, callback: any) => {
-                callback(new Error(errorMessage));
-                return {} as any;
-            });
-
-            service['initializeDatabases']();
-
-            expect(service['scraperService'].getAllNoticeTypes).toHaveBeenCalled();
-            expect(sqliteMock).toHaveBeenCalled();
-            expect(initializeTableMock).not.toHaveBeenCalledWith('TEST1');
-            expect(initializeTableMock).not.toHaveBeenCalledWith('TEST2');
-            expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining(`${errorMessage}`));
-        });
-    });
-
-    describe('initializeTable 메서드는', () => {
-        let loadCacheMock: jest.SpyInstance;
-
-        beforeEach(async () => {
-            service = new TestSchedulerService();
-            loadCacheMock = jest.spyOn<any, any>(service, 'loadCache').mockImplementation();
-        });
-
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        it('테이블 생성 쿼리 실행 및 캐시를 로드한다.', () => {
-            const runMock = jest.spyOn(service['databases']['TEST1'], 'run').mockImplementation((_: any, callback: any) => {
-                callback(null);
-                return {} as any;
-            });
-
-            service['initializeTable']('TEST1');
-
-            expect(runMock).toHaveBeenCalledWith(expect.stringContaining('CREATE TABLE IF NOT EXISTS notices'), expect.any(Function));
-            expect(loadCacheMock).toHaveBeenCalledWith('TEST1');
-        });
-
-        it('테이블 생성 실패 시 에러 로깅이 실행된다.', () => {
-            const errorMessage = '테이블 생성 실패';
-            const runMock = jest.spyOn(service['databases']['TEST1'], 'run').mockImplementation((_: any, callback: any) => {
-                callback(new Error(errorMessage));
-                return {} as any;
-            });
-
-            service['initializeTable']('TEST1');
-
-            expect(runMock).toHaveBeenCalled();
-            expect(loadCacheMock).not.toHaveBeenCalled();
-            expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining(`${errorMessage}`));
-        });
-    });
-
-
-    describe('loadCache 메서드는', () => {
-        beforeEach(async () => {
-            service = new TestSchedulerService();
-        });
-
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        it('테이블 확인 중 에러를 발생시킨다.', () => {
-            const errorMessage = 'SQLite 테이블 확인 중 에러 발생';
-            const getMock = jest.spyOn(service['databases']['TEST1'], 'get').mockImplementation((_: any, callback: any) => {
-                callback(new Error(errorMessage), null);
-                return {} as any;
-            });
-
-            service['loadCache']('TEST1');
-
-            expect(getMock).toHaveBeenCalledWith(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='notices'",
-                expect.any(Function)
-            );
-            expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
-        });
-
-        it('notices 테이블이 존재하지 않아 캐시를 로드하지 않는다.', () => {
-            const getMock = jest.spyOn(service['databases']['TEST1'], 'get').mockImplementation((_: any, callback: any) => {
-                callback(null, null);
-                return {} as any;
-            });
-
-            service['loadCache']('TEST1');
-
-            expect(getMock).toHaveBeenCalledWith(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='notices'",
-                expect.any(Function)
-            )
-            expect(service['logger'].warn).toHaveBeenCalledWith(expect.stringContaining('notices 테이블이 존재하지 않아 캐시를 로드하지 않습니다.'));
-        });
-
-        it('notices 테이블이 존재하고, 캐시 로드 중 에러를 발생시킨다.', () => {
-            const getMock = jest.spyOn(service['databases']['TEST1'], 'get').mockImplementation((_: any, callback: any) => {
-                callback(null, {});
-                return {} as any;
-            });
-            const errorMessage = '캐시 로드 중 에러 발생';
-            const allMock = jest.spyOn(service['databases']['TEST1'], 'all').mockImplementation((_: any, _params: any, callback: any) => {
-                callback(new Error(errorMessage), null);
-                return {} as any;
-            });
-
-            service['loadCache']('TEST1');
-
-            expect(getMock).toHaveBeenCalledWith(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='notices'",
-                expect.any(Function)
-            );
-            expect(allMock).toHaveBeenCalledWith(
-                "SELECT id FROM notices",
-                [],
-                expect.any(Function)
-            );
-            expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
-        });
-
-        it('notices 테이블이 존재하고, 캐시 로드하여 공지사항 ID를 캐싱한다.', () => {
-            const getMock = jest.spyOn(service['databases']['TEST1'], 'get').mockImplementation((_: any, callback: any) => {
-                callback(null, {});
-                return {} as any;
-            });
-            const allMock = jest.spyOn(service['databases']['TEST1'], 'all').mockImplementation((_: any, _params: any, callback: any) => {
-                callback(null, [
-                    {
-                        id: 'KR-1'
-                    }
-                ]);
-                return {} as any;
-            });
-
-            service['loadCache']('TEST1');
-
-            expect(getMock).toHaveBeenCalledWith(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='notices'",
-                expect.any(Function)
-            );
-            expect(allMock).toHaveBeenCalledWith(
-                "SELECT id FROM notices",
-                [],
-                expect.any(Function)
-            );
-            expect(service['cachedNoticeIds']['TEST1'].has('KR-1')).toBe(true);
-            expect(service['cachedNoticeIds']['TEST1']).toEqual(new Set().add('KR-1'))
-        });
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     describe('executeCrawling 메서드는', () => {
-        let filterNewNoticesMock: jest.SpyInstance;
         let sendFirebaseMessagingMock: jest.SpyInstance;
-        let saveNoticeMock: jest.SpyInstance;
+        let getTodayDateMock: jest.SpyInstance;
 
-        beforeEach(async () => {
-            service = new TestSchedulerService();
-
-            sendFirebaseMessagingMock = jest.spyOn<any, any>(service, 'sendFirebaseMessaging').mockImplementation();
-            saveNoticeMock = jest.spyOn<any, any>(service, 'saveNotice').mockImplementation();
+        beforeEach(() => {
+            sendFirebaseMessagingMock = jest.spyOn<any, any>(service, 'sendFirebaseMessaging');
+            // 날짜 고정 (2025.01.01)
+            getTodayDateMock = jest.spyOn<any, any>(service, 'getTodayDate').mockReturnValue('2025.01.01');
         });
 
-        afterEach(() => {
-            jest.restoreAllMocks();
+        it('오늘 날짜의 새로운 공지가 들어오면, 저장하고 알림을 보낸다.', async () => {
+            // Arrange
+            const notices: NotificationPayload[] = [{
+                id: 'KR-1',
+                title: 'New Notice',
+                link: 'http://test.com',
+                date: '2025.01.01', // 오늘 날짜
+            }];
+
+            jest.spyOn(service['scraperService'], 'fetchAllNotices').mockResolvedValue({
+                'TEST': notices
+            });
+            // DB 저장 성공 (신규)
+            mockNoticeRepository.save.mockResolvedValue(true);
+
+            // Act
+            await service['executeCrawling']('TEST_PREFIX');
+
+            // Assert
+            expect(mockNoticeRepository.save).toHaveBeenCalledWith('TEST', notices[0]);
+            expect(sendFirebaseMessagingMock).toHaveBeenCalledWith(notices[0], 'TEST');
         });
 
-        it('배포환경에서 새로운 공지가 있을 때, 정상적으로 알림을 보내고 공지를 저장한다.', async () => {
-            const logPrefixMock = '정기 크롤링';
-            process.env.NODE_ENV = IDENTIFIER_CONSTANT.kProduction;
-            filterNewNoticesMock = jest.spyOn<any, any>(service, 'filterNewNotices').mockReturnValue([
-                {
-                    'id': 'KR-1',
-                    'title': 'noticeTitle1',
-                    'link': 'https://test.com/1',
-                    'date': '2025.01.01',
-                    'writer': 'writer1',
-                    'access': '1',
-                }
-            ]);
+        it('오늘 날짜지만 이미 DB에 있는 공지라면, 저장 시도하고 알림은 보내지 않는다.', async () => {
+            // Arrange
+            const notices: NotificationPayload[] = [{
+                id: 'KR-1',
+                title: 'Duplicate Notice',
+                link: 'http://test.com',
+                date: '2025.01.01', // 오늘 날짜
+            }];
 
-            await service['executeCrawling'](logPrefixMock);
+            jest.spyOn(service['scraperService'], 'fetchAllNotices').mockResolvedValue({
+                'TEST': notices
+            });
+            // DB 저장 실패 (중복 -> false)
+            mockNoticeRepository.save.mockResolvedValue(false);
 
-            expect(service['scraperService'].fetchAllNotices).toHaveBeenCalled();
-            expect(filterNewNoticesMock).toHaveBeenCalled();
-            expect(sendFirebaseMessagingMock).toHaveBeenCalled();
-            expect(saveNoticeMock).toHaveBeenCalled();
+            // Act
+            await service['executeCrawling']('TEST_PREFIX');
+
+            // Assert
+            expect(mockNoticeRepository.save).toHaveBeenCalled();
+            expect(sendFirebaseMessagingMock).not.toHaveBeenCalled(); // 알림 전송 X
         });
 
-        it('배포환경에서 새로운 공지가 없으면, 알림을 보내지 않고 공지를 저장하지 않는다.', async () => {
-            const logPrefixMock = '정기 크롤링';
-            process.env.NODE_ENV = IDENTIFIER_CONSTANT.kProduction;
-            filterNewNoticesMock = jest.spyOn<any, any>(service, 'filterNewNotices').mockReturnValue([]);
+        it('오늘 날짜가 아닌 공지는 DB 저장 시도조차 하지 않는다 (Memory Filter).', async () => {
+            // Arrange
+            const notices: NotificationPayload[] = [{
+                id: 'KR-Old',
+                title: 'Old Notice',
+                link: 'http://test.com',
+                date: '2024.12.31', // 어제 날짜
+            }];
 
-            await service['executeCrawling'](logPrefixMock);
+            jest.spyOn(service['scraperService'], 'fetchAllNotices').mockResolvedValue({
+                'TEST': notices
+            });
 
-            expect(service['scraperService'].fetchAllNotices).toHaveBeenCalled();
-            expect(filterNewNoticesMock).toHaveBeenCalled();
-            expect(service['logger'].log).not.toHaveBeenCalledWith(expect.stringContaining('새로운 공지 발견'));
+            // Act
+            await service['executeCrawling']('TEST_PREFIX');
+
+            // Assert
+            expect(mockNoticeRepository.save).not.toHaveBeenCalled(); // 저장 로직 호출 X
             expect(sendFirebaseMessagingMock).not.toHaveBeenCalled();
-            expect(saveNoticeMock).not.toHaveBeenCalled();
         });
 
-        it('개발환경에서 새로운 공지를 발견시 공지가 저장된다.', async () => {
-            const logPrefixMock = '정기 크롤링';
-            process.env.NODE_ENV = 'development';
-            filterNewNoticesMock = jest.spyOn<any, any>(service, 'filterNewNotices').mockReturnValue([
-                {
-                    'id': 'KR-1',
-                    'title': 'noticeTitle1',
-                    'link': 'https://test.com/1',
-                    'date': '2025.01.01',
-                    'writer': 'writer1',
-                    'access': '1',
-                }
-            ]);
+        it('크롤링 중 에러 발생 시 로그를 남기고 종료한다 (프로세스 죽지 않음).', async () => {
+            // Arrange
+            const error = new Error('Scraping Failed');
+            jest.spyOn(service['scraperService'], 'fetchAllNotices').mockRejectedValue(error);
 
-            await service['executeCrawling'](logPrefixMock);
+            // Act
+            await service['executeCrawling']('TEST_PREFIX');
 
-            expect(service['scraperService'].fetchAllNotices).toHaveBeenCalled();
-            expect(filterNewNoticesMock).toHaveBeenCalled();
-            expect(saveNoticeMock).toHaveBeenCalled();
-        });
-
-        it('개발환경에서 크롤링 에러 발생시, 이에 맞는 로깅이 실행되어야한다.', async () => {
-            const logPrefixMock = '정기 크롤링';
-            const errorMessage = '크롤링 에러 발생';
-            process.env.NODE_ENV = IDENTIFIER_CONSTANT.kProduction;
-            jest.spyOn<any, any>(service['scraperService'], 'fetchAllNotices').mockRejectedValue(
-                new Error(errorMessage)
-            );
-
-            await service['executeCrawling'](logPrefixMock);
-
-            expect(service['scraperService'].fetchAllNotices).toHaveBeenCalled();
-            expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
-        });
-
-        it('개발환경에서 크롤링 에러 발생시, 이에 맞는 로깅이 실행되어야한다.', async () => {
-            const logPrefixMock = '정기 크롤링';
-            const errorMessage = '크롤링 에러 발생';
-            process.env.NODE_ENV = 'production';
-            jest.spyOn<any, any>(service['scraperService'], 'fetchAllNotices').mockRejectedValue(
-                new Error(errorMessage)
-            );
-
-            await service['executeCrawling'](logPrefixMock);
-
-            expect(service['scraperService'].fetchAllNotices).toHaveBeenCalled();
-            expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
+            // Assert
+            expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining('Scraping Failed'));
         });
     });
 
     describe('deleteOldNotices 메서드는', () => {
-        let getTodayDateMock: jest.SpyInstance;
-        let deleteNoticesExceptTodayMock: jest.SpyInstance;
+        it('Repository를 통해 오늘 날짜를 제외한 공지를 삭제한다.', async () => {
+            // Arrange
+            jest.spyOn<any, any>(service, 'getTodayDate').mockReturnValue('2025.01.01');
+            mockNoticeRepository.deleteNoticesExcludingDate.mockResolvedValue(5); // 5개 삭제됨
 
-        beforeEach(async () => {
-            service = new TestSchedulerService();
+            // Act
+            await service['deleteOldNotices']('TEST_PREFIX');
 
-            getTodayDateMock = jest.spyOn<any, any>(service, 'getTodayDate').mockReturnValue('2025.01.01');
-        });
-
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        it('오늘날짜가 아닌 공지 삭제가 정상적으로 이루어진다.', async () => {
-            const logPrefixMock = '정기 삭제';
-            deleteNoticesExceptTodayMock = jest.spyOn<any, any>(service, 'deleteNoticesExceptToday').mockImplementation();
-
-            await service['deleteOldNotices'](logPrefixMock);
-
-            expect(getTodayDateMock).toHaveBeenCalled();
-            expect(deleteNoticesExceptTodayMock).toHaveBeenCalledWith('TEST1', '2025.01.01');
-            expect(service['logger'].log).toHaveBeenCalledWith(expect.stringContaining('삭제 완료'));
-        })
-
-        it('오늘날짜가 아닌 공지 삭제 중 에러가 발생한다.', async () => {
-            const logPrefixMock = '정기 삭제';
-            const errorMessage = '삭제 실패';
-            deleteNoticesExceptTodayMock = jest.spyOn<any, any>(service, 'deleteNoticesExceptToday').mockRejectedValue(
-                new Error(errorMessage)
-            );
-
-            await service['deleteOldNotices'](logPrefixMock);
-
-            expect(getTodayDateMock).toHaveBeenCalled();
-            expect(deleteNoticesExceptTodayMock).toHaveBeenCalled();
-            expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
-        });
-    });
-
-    describe('deleteNoticesExceptToday 메서드는', () => {
-        let loadCacheMock: jest.SpyInstance;
-
-        beforeEach(async () => {
-            service = new TestSchedulerService();
-            loadCacheMock = jest.spyOn<any, any>(service, 'loadCache').mockImplementation();
-        });
-
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        it('오래된 공지 삭제에 실패한다.', async () => {
-            const errorMessage = '공지 삭제 실패';
-            const runMock = jest.spyOn(service['databases']['TEST1'], 'run').mockImplementation((_: any, _params: any, callback: any) => {
-                callback(new Error(errorMessage), null);
-                return {} as any;
-            });
-
-            await expect(service['deleteNoticesExceptToday']('TEST1', '2025.01.01')).rejects.toThrow(errorMessage);
-
-            expect(runMock).toHaveBeenCalledWith(`DELETE FROM notices WHERE date != ?`, ['2025.01.01'], expect.any(Function));
-            expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
-        });
-
-        it('오래된 공지 삭제 후 캐싱 업데이트', async () => {
-            const runMock = jest.spyOn(service['databases']['TEST1'], 'run').mockImplementation((_: any, _params: any, callback: any) => {
-                callback(null, null);
-                return {} as any;
-            });
-
-            await service['deleteNoticesExceptToday']('TEST1', '2025.01.01');
-
-            expect(runMock).toHaveBeenCalledWith(`DELETE FROM notices WHERE date != ?`, ['2025.01.01'], expect.any(Function));
-            expect(service['logger'].log).toHaveBeenCalledWith(expect.stringContaining('공지사항 삭제 완료'));
-            expect(loadCacheMock).toHaveBeenCalled();
-        });
-    });
-
-    describe('filterNewNotices 메서드는', () => {
-        let getTodayDateMock: jest.SpyInstance;
-
-        beforeEach(async () => {
-            service = new TestSchedulerService();
-        });
-
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        it('추가된 적 없는 공지를 구별해서 리턴한다.', () => {
-            const noticesMock: NotificationPayload[] = [{
-                id: 'KR-1',
-                title: 'title',
-                link: 'https://example.com',
-                date: '2025.01.01',
-                writer: 'writer',
-                access: 'access',
-            },
-            {
-                id: 'KR-2',
-                title: 'title',
-                link: 'https://example.com',
-                date: '2025.01.01',
-                writer: 'writer',
-                access: 'access',
-            },
-            {
-                id: 'KR-3',
-                title: 'title',
-                link: 'https://example.com',
-                date: '2025.01.01',
-                writer: 'writer',
-                access: 'access',
-            }];
-            getTodayDateMock = jest.spyOn<any, any>(service, 'getTodayDate').mockReturnValue('2025.01.01');
-
-            service['cachedNoticeIds']['TEST1'] = new Set();
-
-            expect(service['filterNewNotices']('TEST1', noticesMock)).toEqual(noticesMock);
-            expect(getTodayDateMock).toHaveBeenCalled();
-        });
-
-        it('이미 추가된 공지를 구별해서 리턴한다.', () => {
-            const noticesMock: NotificationPayload[] = [{
-                id: 'KR-1',
-                title: 'title',
-                link: 'https://example.com',
-                date: '2025.01.01',
-                writer: 'writer',
-                access: 'access',
-            },
-            {
-                id: 'KR-2',
-                title: 'title',
-                link: 'https://example.com',
-                date: '2025.01.01',
-                writer: 'writer',
-                access: 'access',
-            },
-            {
-                id: 'KR-3',
-                title: 'title',
-                link: 'https://example.com',
-                date: '2025.01.01',
-                writer: 'writer',
-                access: 'access',
-            }];
-            getTodayDateMock = jest.spyOn<any, any>(service, 'getTodayDate').mockReturnValue('2025.01.01');
-
-            service['cachedNoticeIds']['TEST1'] = new Set();
-            service['cachedNoticeIds']['TEST1'].add('KR-1');
-            service['cachedNoticeIds']['TEST1'].add('KR-2');
-
-            expect(service['filterNewNotices']('TEST1', noticesMock)).toEqual([
-                {
-                    id: 'KR-3',
-                    title: 'title',
-                    link: 'https://example.com',
-                    date: '2025.01.01',
-                    writer: 'writer',
-                    access: 'access',
-                }
-            ]);
-            expect(getTodayDateMock).toHaveBeenCalled();
-        });
-
-        it('추가된 적 없는 공지에 대해서, 오늘 날짜를 구별해서 리턴한다.', () => {
-            const noticesMock: NotificationPayload[] = [{
-                id: 'KR-1',
-                title: 'title',
-                link: 'https://example.com',
-                date: '2025.01.01',
-                writer: 'writer',
-                access: 'access',
-            },
-            {
-                id: 'KR-2',
-                title: 'title',
-                link: 'https://example.com',
-                date: '2025.01.01',
-                writer: 'writer',
-                access: 'access',
-            },
-            {
-                id: 'KR-3',
-                title: 'title',
-                link: 'https://example.com',
-                date: '2025.01.01',
-                writer: 'writer',
-                access: 'access',
-            }];
-            getTodayDateMock = jest.spyOn<any, any>(service, 'getTodayDate').mockReturnValue('2025.01.02');
-
-            service['cachedNoticeIds']['TEST1'] = new Set();
-
-            expect(service['filterNewNotices']('TEST1', noticesMock)).toEqual([]);
-            expect(getTodayDateMock).toHaveBeenCalled();
-        });
-    });
-
-    describe('saveNotice 메서드는', () => {
-        beforeEach(async () => {
-            service = new TestSchedulerService();
-        });
-
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        it('SQLite 저장 중 오류가 발생한다.', async () => {
-            const errorMessage = 'SQLite 저장 실패';
-            const runMock = jest.spyOn(service['databases']['TEST1'], 'run').mockImplementation((_: any, _params: any, callback: any) => {
-                callback(new Error(errorMessage), null);
-                return {} as any;
-            });
-            const noticeMock: NotificationPayload = {
-                id: 'KR-1',
-                title: 'title',
-                link: 'https://example.com',
-                date: '2025.01.01',
-                writer: 'writer',
-                access: 'access',
-            };
-
-            await expect(service['saveNotice']('TEST1', noticeMock)).rejects.toThrow(errorMessage);
-
-            expect(runMock).toHaveBeenCalledWith(
-                "INSERT OR IGNORE INTO notices (id, title, link, date) VALUES (?, ?, ?, ?)",
-                [noticeMock.id, noticeMock.title, noticeMock.link, noticeMock.date],
-                expect.any(Function));
-            expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
-        });
-
-        it('새로운 공지 저장 완료', async () => {
-            const runMock = jest.spyOn(service['databases']['TEST1'], 'run').mockImplementation((_: any, _params: any, callback: any) => {
-                callback(null, null);
-                return {} as any;
-            });
-            const noticeMock: NotificationPayload = {
-                id: 'KR-1',
-                title: 'title',
-                link: 'https://example.com',
-                date: '2025.01.01',
-                writer: 'writer',
-                access: 'access',
-            };
-
-            await service['saveNotice']('TEST1', noticeMock);
-
-            expect(runMock).toHaveBeenCalledWith(
-                "INSERT OR IGNORE INTO notices (id, title, link, date) VALUES (?, ?, ?, ?)",
-                [noticeMock.id, noticeMock.title, noticeMock.link, noticeMock.date],
-                expect.any(Function));
-            expect(service['logger'].log).toHaveBeenCalledWith(expect.stringContaining('새로운 공지사항 ID 저장 완료'));
+            // Assert
+            expect(mockNoticeRepository.deleteNoticesExcludingDate).toHaveBeenCalledWith('2025.01.01');
+            expect(service['logger'].log).toHaveBeenCalledWith(expect.stringContaining('5건 삭제 완료'));
         });
     });
 
     describe('getTodayDate 메서드는', () => {
-        let dayjsMock: jest.SpyInstance;
-
-        beforeEach(async () => {
-            service = new TestSchedulerService();
+        it('YYYY.MM.DD 형식을 반환한다.', () => {
+            const date = service['getTodayDate']();
+            expect(date).toMatch(/^\d{4}\.\d{2}\.\d{2}$/);
         });
-
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        it('오늘 날짜를 YYYY.MM.DD 형식으로 반환한다.', () => {
-            dayjsMock = jest.spyOn(dayjs.prototype, 'format').mockReturnValue('2025.01.01');
-
-            expect(service['getTodayDate']()).toEqual('2025.01.01');
-            expect(dayjsMock).toHaveBeenCalledWith('YYYY.MM.DD');
-        });
-
-        it('정상적으로 배포환경의 리턴값 포맷을 가진다.', () => {
-            const result = service['getTodayDate']();
-            expect(result).toMatch(/^\d{4}\.\d{2}\.\d{2}$/);
-        })
     });
 });
-
-/*
- PASS  src/notices/schedulers/absolute-style/absolute-style.scheduler.spec.ts
-  AbsoluteStyleNoticeSchedulerService
-    initializeDatabaseDirectory 메서드는
-      ✓ 디렉터리가 존재하지 않을 경우 fs.mkdirSync가 호출되어 디렉터리를 생성하는지 확인한다 (2 ms)
-      ✓ 디렉터리가 이미 존재하면 fs.mkdirSync를 호출하지 않는지 확인한다 (1 ms)
-      ✓ 디렉터리가 존재하지 않으면, fs.mkdirSync를 호출할 때 에러를 발생한다. (1 ms)
-    initializeDatabases 메서드는
-      ✓ DB 연결 및 테이블 초기화가 이루어진다.
-      ✓ DB 연결 시 에러가 발생한다. (1 ms)
-    initializeTable 메서드는
-      ✓ 테이블 생성 쿼리 실행 및 캐시를 로드한다.
-      ✓ 테이블 생성 실패 시 에러 로깅이 실행된다. (1 ms)
-    loadCache 메서드는
-      ✓ 테이블 확인 중 에러를 발생시킨다.
-      ✓ notices 테이블이 존재하지 않아 캐시를 로드하지 않는다.
-      ✓ notices 테이블이 존재하고, 캐시 로드 중 에러를 발생시킨다.
-      ✓ notices 테이블이 존재하고, 캐시 로드하여 공지사항 ID를 캐싱한다.
-    executeCrawling 메서드는
-      ✓ 배포환경에서 새로운 공지가 있을 때, 정상적으로 알림을 보내고 공지를 저장한다. (1 ms)
-      ✓ 배포환경에서 새로운 공지가 없으면, 알림을 보내지 않고 공지를 저장하지 않는다.
-      ✓ 개발환경에서 새로운 공지를 발견시 공지가 저장된다. (1 ms)
-      ✓ 개발환경에서 크롤링 에러 발생시, 이에 맞는 로깅이 실행되어야한다.
-      ✓ 개발환경에서 크롤링 에러 발생시, 이에 맞는 로깅이 실행되어야한다.
-    deleteOldNotices 메서드는
-      ✓ 오늘날짜가 아닌 공지 삭제가 정상적으로 이루어진다. (1 ms)
-      ✓ 오늘날짜가 아닌 공지 삭제 중 에러가 발생한다.
-    deleteNoticesExceptToday 메서드는
-      ✓ 오래된 공지 삭제에 실패한다. (4 ms)
-      ✓ 오래된 공지 삭제 후 캐싱 업데이트 (1 ms)
-    filterNewNotices 메서드는
-      ✓ 추가된 적 없는 공지를 구별해서 리턴한다.
-      ✓ 이미 추가된 공지를 구별해서 리턴한다.
-      ✓ 추가된 적 없는 공지에 대해서, 오늘 날짜를 구별해서 리턴한다.
-    saveNotice 메서드는
-      ✓ SQLite 저장 중 오류가 발생한다. (1 ms)
-      ✓ 새로운 공지 저장 완료
-    getTodayDate 메서드는
-      ✓ 오늘 날짜를 YYYY.MM.DD 형식으로 반환한다. (1 ms)
-
-Test Suites: 1 passed, 1 total
-Tests:       26 passed, 26 total
-Snapshots:   0 total
-Time:        1.057 s, estimated 2 s
-*/

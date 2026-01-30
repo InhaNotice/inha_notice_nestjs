@@ -5,15 +5,16 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2026-01-29
+ * Latest Updated Date: 2026-01-30
  */
 
 /**
- * 학사 일반 공지사항 태그 선택자
+ * 학과 스타일의 일반 공지사항 태그 선택자
  */
 export abstract class GeneralTagSelectors {
     static readonly NOTICE_BOARD: string = '.artclTable tr:not(.headline)';
-    static readonly NOTICE_TITLE: string = '._artclTdTitle .artclLinkView';
+    static readonly NOTICE_TITLE_LINK: string = '._artclTdTitle .artclLinkView';
+    static readonly NOTICE_TITLE_STRONG: string = '._artclTdTitle .artclLinkView strong';
     static readonly NOTICE_DATE: string = '._artclTdRdate';
     static readonly NOTICE_WRITER: string = '._artclTdWriter';
     static readonly NOTICE_ACCESS: string = '._artclTdAccess';

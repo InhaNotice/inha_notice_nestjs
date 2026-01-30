@@ -5,11 +5,11 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-18
+ * Latest Updated Date: 2026-01-30
  */
 
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
-import { WholeScheduler } from './whole.scheduler';
+import { WholeScheduler } from 'src/notices/schedulers/absolute-style/whole.scheduler';
 
 class TestSchedulerService extends WholeScheduler {
     constructor() {
@@ -108,8 +108,6 @@ describe('WholeNoticeSchedulerService', () => {
                 title: '공지 제목',
                 link: 'https://example.com',
                 date: '2025-01-01',
-                writer: '관리자',
-                access: '공개',
             };
 
             await service.sendFirebaseMessaging(noticeMock, 'TEST_TOPIC');

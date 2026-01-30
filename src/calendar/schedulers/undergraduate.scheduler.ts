@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-19
+ * Latest Updated Date: 2026-01-30
  */
 
 import * as fs from 'fs';
@@ -20,7 +20,6 @@ import { UndergraudateState } from 'src/firebase/states/undergraduate.state';
 import { ConfigService } from '@nestjs/config';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { FirebaseMessagePayload, FirebaseNotifiable } from 'src/interfaces/firebase-notificable.interface';
-import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
 
 @Injectable()
 export class UndergraduateScheduler extends FirebaseNotifiable {
@@ -66,8 +65,6 @@ export class UndergraduateScheduler extends FirebaseNotifiable {
                             title: event.title,
                             link: this.configService.get<Record<string, string>>('calendar')?.INHA_CALENDAR || '',
                             date: targetDate,
-                            writer: IDENTIFIER_CONSTANT.UNKNOWN_WRITER,
-                            access: IDENTIFIER_CONSTANT.UNKNOWN_ACCESS,
                         };
 
                         await this.sendFirebaseMessaging(notice, topic);

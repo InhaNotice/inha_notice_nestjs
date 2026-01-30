@@ -5,14 +5,14 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2026-01-29
+ * Latest Updated Date: 2026-01-30
  */
 
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as cheerio from 'cheerio';
 import { AnyNode } from 'domhandler';
-import { GeneralTagSelectors } from 'src/notices/scrapers/selectors/major.selector';
+import { GeneralTagSelectors } from 'src/notices/selectors/major.selector';
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { AbsoluteStyleScraper } from 'src/notices/scrapers/absolute-style/absolute-style.scraper';
 import { IDENTIFIER_CONSTANT } from 'src/constants/identifiers/identifier.constant';
@@ -73,9 +73,7 @@ export class MajorStyleScraper extends AbsoluteStyleScraper {
             const title: string = titleStrongTag.text().trim();
             const link: string = baseUrl + postUrl;
             const date: string = dateTag.text().trim();
-            const writer: string = writerTag.text().trim();
-            const access: string = accessTag.text().trim();
-            results.push({ id, title, link, date, writer, access });
+            results.push({ id, title, link, date });
         });
 
         return results;

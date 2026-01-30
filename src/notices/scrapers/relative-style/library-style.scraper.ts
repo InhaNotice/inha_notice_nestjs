@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-18
+ * Latest Updated Date: 2026-01-30
  */
 
 import { Injectable, Logger } from "@nestjs/common";
@@ -44,10 +44,8 @@ export class LibraryStyleScraper extends RelativeStyleScraper {
                 `${parsedDate.getFullYear()}.` +
                 `${String(parsedDate.getMonth() + 1).padStart(2, '0')}.` +
                 `${String(parsedDate.getDate()).padStart(2, '0')}`;
-            const writer: string = String(notice.writer);
-            const access: string = String(notice.hitCnt);
 
-            results.push({ id, title, link, date, writer, access });
+            results.push({ id, title, link, date });
         }
         return results;
     }
