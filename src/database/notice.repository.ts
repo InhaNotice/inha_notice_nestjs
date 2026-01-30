@@ -26,11 +26,12 @@ export class NoticeRepository implements OnModuleInit {
         this.db.serialize(() => {
             this.db.run(`
                 CREATE TABLE IF NOT EXISTS notices (
-                    id TEXT PRIMARY KEY,
+                    id TEXT,
                     type TEXT NOT NULL,
                     title TEXT,
                     link TEXT,
-                    date TEXT
+                    date TEXT,
+                    PRIMARY KEY (id, type)
                 )
             `, (err) => {
                 if (err) NoticeRepository.logger.error(`Failed to create table: ${err.message}`);
