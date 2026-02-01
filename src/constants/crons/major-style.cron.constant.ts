@@ -5,15 +5,16 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-17
+ * Latest Updated Date: 2026-02-01
  */
 
 /**
  * Major Style 공지 스케줄러의 Cron 상수를 정의한다.
  */
 export const MAJOR_STYLE_CRON: Record<string, string> = {
-    // 평일(월~금) 9시~16시 59분까지, 10분 간격으로 학과 스타일 공지 크롤링
-    CRON_WEEKDAYS: '0 */10 9-16 * * 1-5',
+    // 평일(월~금) 9시~16시 59분까지, 1분 오프셋 간격으로 학과 스타일 공지 크롤링
+    // 예: 09:01, 09:11, 09:11, ...
+    CRON_WEEKDAYS: '0 1-59/10 9-16 * * 1-5',
     TASK_WEEKDAYS: '정기(9~17시)',
 
     /**
