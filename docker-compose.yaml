@@ -4,7 +4,7 @@
 # For full license text, see the LICENSE file in the root directory or at
 # https://opensource.org/license/mit
 # Author: Junho Kim
-# Latest Updated Date: 2026-01-30
+# Latest Updated Date: 2026-02-01
 
 services:
   app-prod:
@@ -23,3 +23,8 @@ services:
       - NODE_ENV=production
       - TZ=Asia/Seoul
       - PORT=3000
+
+networks:
+  inha_notice_network:
+    external: true
+    name: inha_notice_network
