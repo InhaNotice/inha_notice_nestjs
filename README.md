@@ -6,6 +6,8 @@
 
 This project was developed and tested in the following environment.
 
+- nestjs v11.0.16
+
 - npm v11.7.0
 
 - node v24.2.0
