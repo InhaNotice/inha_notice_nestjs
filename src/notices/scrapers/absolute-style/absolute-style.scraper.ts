@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-05-18
+ * Latest Updated Date: 2026-02-01
  */
 
 import axios, { AxiosResponse } from 'axios';
@@ -40,11 +40,20 @@ export abstract class AbsoluteStyleScraper extends BaseScraper {
             return { general: [] };
         }
 
+        const minDelay: number = 500;
+        const maxDelay: number = 1500;
+        const randomDelay: number = Math.floor(Math.random() * (maxDelay - minDelay + 1) + minDelay);
+        await new Promise(resolve => setTimeout(resolve, randomDelay));
+
         try {
             const connectUrl: string = `${queryUrl}${page}`;
             const response: AxiosResponse<ArrayBuffer> = await axios.get(connectUrl, {
                 responseType: 'arraybuffer',
                 timeout: 10000,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                }
             });
 
             if (response.status === HTTP_STATUS.STATUS_OKAY) {
