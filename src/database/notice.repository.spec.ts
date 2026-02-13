@@ -1,11 +1,11 @@
 /*
  * This is file of the project INGONG
  * Licensed under the MIT License.
- * Copyright (c) 2025 INGONG
+ * Copyright (c) 2025-2026 INGONG
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2026-01-30
+ * Latest Updated Date: 2026-02-13
  */
 
 import { NoticeRepository } from 'src/database/notice.repository';
@@ -44,54 +44,47 @@ describe('NoticeRepository', () => {
 
     describe('onModuleInit 메서드는', () => {
         it('테이블 초기화를 한다.', async () => {
-            const runSpy = jest.spyOn(repository.db, 'run');
+            const runSpy = (repository.databaseService.run as jest.Mock).mockResolvedValue(undefined);
 
             await repository.onModuleInit();
 
-            expect(repository.db.serialize).toHaveBeenCalled();
             expect(runSpy).toHaveBeenCalledWith(
                 expect.stringContaining('CREATE TABLE IF NOT EXISTS notices'),
-                expect.any(Function)
             );
         });
 
         it('테이블 초기화 중 에러를 발생한다.', async () => {
             const error = new Error('Table Creation Error');
-            jest.spyOn(repository.db, 'run').mockImplementationOnce((sql, callback) => {
-                if (callback) callback(error);
-                return {} as any;
-            });
+            (repository.databaseService.run as jest.Mock).mockRejectedValueOnce(error);
 
             await repository.onModuleInit();
 
-            expect(NoticeRepository['logger'].error).toHaveBeenCalledWith(`Failed to create table: ${error.message}`);
+            expect(NoticeRepository['logger'].error).toHaveBeenCalledWith(
+                `Failed to create table: ${error.message}`
+            );
         });
 
         it('인덱스를 초기화한다.', async () => {
-            const runSpy = jest.spyOn(repository.db, 'run');
+            const runSpy = (repository.databaseService.run as jest.Mock).mockResolvedValue(undefined);
+
             await repository.onModuleInit();
 
             expect(runSpy).toHaveBeenCalledWith(
                 expect.stringContaining('CREATE INDEX IF NOT EXISTS idx_type'),
-                expect.any(Function)
             );
         });
 
         it('인덱스 초기화 중 에러를 발생한다.', async () => {
             const error = new Error('Index Creation Error');
-            jest.spyOn(repository.db, 'run')
-                .mockImplementationOnce((sql, callback) => {
-                    if (callback) callback(null);
-                    return {} as any;
-                })
-                .mockImplementationOnce((sql, callback) => {
-                    if (callback) callback(error);
-                    return {} as any;
-                });
+            (repository.databaseService.run as jest.Mock)
+                .mockResolvedValueOnce(undefined)    // CREATE TABLE 성공
+                .mockRejectedValueOnce(error);       // CREATE INDEX 실패
 
             await repository.onModuleInit();
 
-            expect(NoticeRepository['logger'].error).toHaveBeenCalledWith(`Failed to create index: ${error.message}`);
+            expect(NoticeRepository['logger'].error).toHaveBeenCalledWith(
+                `Failed to create index: ${error.message}`
+            );
         });
     });
 

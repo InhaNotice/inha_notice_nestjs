@@ -1,11 +1,11 @@
 /*
  * This is file of the project INGONG
  * Licensed under the MIT License.
- * Copyright (c) 2025 INGONG
+ * Copyright (c) 2025-2026 INGONG
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2026-01-30
+ * Latest Updated Date: 2026-02-13
  */
 
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
@@ -23,25 +23,29 @@ export class NoticeRepository implements OnModuleInit {
     async onModuleInit(): Promise<void> {
         this.db = this.databaseService.connection;
 
-        this.db.serialize(() => {
-            this.db.run(`
-                CREATE TABLE IF NOT EXISTS notices (
-                    id TEXT,
-                    type TEXT NOT NULL,
-                    title TEXT,
-                    link TEXT,
-                    date TEXT,
-                    PRIMARY KEY (id, type)
-                )
-            `, (err) => {
-                if (err) NoticeRepository.logger.error(`Failed to create table: ${err.message}`);
-            });
+        try {
+            await this.databaseService.run(`
+            CREATE TABLE IF NOT EXISTS notices (
+                id TEXT,
+                type TEXT NOT NULL,
+                title TEXT,
+                link TEXT,
+                date TEXT,
+                PRIMARY KEY (id, type)
+            )
+        `);
+        } catch (error) {
+            NoticeRepository.logger.error(`Failed to create table: ${error.message}`);
+            return;
+        }
 
-            this.db.run(`CREATE INDEX IF NOT EXISTS idx_type ON notices (type)`,
-                (err) => {
-                    if (err) NoticeRepository.logger.error(`Failed to create index: ${err.message}`);
-                });
-        });
+        try {
+            await this.databaseService.run(
+                `CREATE INDEX IF NOT EXISTS idx_type ON notices (type)`
+            );
+        } catch (error) {
+            NoticeRepository.logger.error(`Failed to create index: ${error.message}`);
+        }
     }
 
     async save(type: string, notice: NotificationPayload): Promise<boolean> {
