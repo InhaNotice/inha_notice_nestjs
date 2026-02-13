@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-12-04
+ * Latest Updated Date: 2026-01-30
  */
 
 import { Module } from '@nestjs/common';
@@ -19,8 +19,12 @@ import { InhaDesignStyleScheduler as InhadesignStyleScheduler } from 'src/notice
 import { InhaDesignStyleScraper as InhaDesignStyleScraper } from 'src/notices/scrapers/absolute-style/inha-design-style.scraper';
 import { LibraryStyleScheduler } from 'src/notices/schedulers/relative-style/library-style.scheduler';
 import { LibraryStyleScraper } from 'src/notices/scrapers/relative-style/library-style.scraper';
+import { DatabaseModule } from 'src/database/database.module';
 
 @Module({
+    imports: [
+        DatabaseModule
+    ],
     providers: [
         WholeScraper,
         WholeScheduler,

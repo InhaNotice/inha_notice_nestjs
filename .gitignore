@@ -60,6 +60,7 @@ pids
 report.[0-9]*
 
 # Databases & Docs
-database/
+# db 파일들이 저장된 폴더: (구) database -> (현) data
+data/
 *.db
 docs/
