@@ -16,5 +16,5 @@ This project was developed and tested in the following environment.
 
 - Encoding: UTF-8 (includes some Korean content)
 
-## 📄 Licesne
+## 📄 License
 This project is licensed under the MIT License. For more details, please refer to the [LICENSE](LICENSE.txt) file.
