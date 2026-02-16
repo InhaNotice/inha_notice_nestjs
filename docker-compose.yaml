@@ -4,7 +4,7 @@
 # For full license text, see the LICENSE file in the root directory or at
 # https://opensource.org/license/mit
 # Author: Junho Kim
-# Latest Updated Date: 2026-02-13
+# Latest Updated Date: 2026-02-16
 
 services:
   app-prod:
@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
     ports:
       # Only DSM accessible
-      - "127.0.0.1:37821:3000"
+      - "127.0.0.1:3000:3000"
     env_file:
       - .env
     volumes:
