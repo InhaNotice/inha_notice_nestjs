@@ -1,11 +1,11 @@
 /*
- * This is file of the project INGONG
+ * This is file of the project inha_notice
  * Licensed under the MIT License.
- * Copyright (c) 2025 INGONG
+ * Copyright (c) 2025-2026 INGONG
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-12-22
+ * Latest Updated Date: 2026-02-18
  */
 
 export default () => {
@@ -254,7 +254,10 @@ export default () => {
                 baseUrl: process.env.FINEARTS_URL,
                 queryUrl: process.env.FINEARTS_QUERY_URL,
             },
-            // 디자인융합학과 (마지막 페이지:16)
+            INHADESIGN: {
+                baseUrl: process.env.INHADESIGN_URL,
+                queryUrl: process.env.INHADESIGN_QUERY_URL,
+            },
             SPORT: {
                 baseUrl: process.env.SPORT_URL,
                 queryUrl: process.env.SPORT_QUERY_URL,
@@ -284,6 +287,11 @@ export default () => {
             BIOMEDICAL: {
                 baseUrl: process.env.BIOMEDICAL_URL,
                 queryUrl: process.env.BIOMEDICAL_QUERY_URL,
+            },
+            // 바이오식품공학과 추가 (2026.02.18)
+            FOODSCIENCE: {
+                baseUrl: process.env.FOODSCIENCE_URL,
+                queryUrl: process.env.FOODSCIENCE_QUERY_URL,
             },
 
             // 국제학부
@@ -419,6 +427,11 @@ export default () => {
                 baseUrl: process.env.GENERALEDU_URL,
                 queryUrl: process.env.GENERALEDU_QUERY_URL,
             },
+            // 바이오시스템융합학부 추가 (2026.02.18)
+            BIOSYST: {
+                baseUrl: process.env.BIOSYST_URL,
+                queryUrl: process.env.BIOSYST_QUERY_URL,
+            },
             // 대학원
             GRAD: {
                 baseUrl: process.env.GRAD_URL,
@@ -459,12 +472,6 @@ export default () => {
             IMIS: {
                 baseUrl: process.env.IMIS_URL,
                 queryUrl: process.env.IMIS_QUERY_URL,
-            }
-        },
-        inhaDesignStyles: {
-            INHADESIGN: {
-                baseUrl: process.env.INHADESIGN_URL,
-                queryUrl: process.env.INHADESIGN_QUERY_URL,
             }
         },
         // 연도별 학사일정

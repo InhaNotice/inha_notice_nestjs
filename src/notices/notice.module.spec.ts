@@ -1,7 +1,7 @@
 /*
- * This is file of the project INGONG
+ * This is file of the project inha_notice
  * Licensed under the MIT License.
- * Copyright (c) 2025 INGONG
+ * Copyright (c) 2025-2026 INGONG
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
@@ -20,8 +20,6 @@ import { MajorScraper } from './scrapers/absolute-style/major.scraper';
 import { MajorNoticeScheduler as MajorScheduler } from './schedulers/absolute-style/major.scheduler';
 import { MajorStyleScraper } from './scrapers/absolute-style/major-style.scraper';
 import { MajorStyleScheduler } from './schedulers/absolute-style/major-style.scheduler';
-import { InhaDesignStyleScheduler } from './schedulers/absolute-style/inha-design-style.scheduler';
-import { InhaDesignStyleScraper } from './scrapers/absolute-style/inha-design-style.scraper';
 
 describe('NoticeModule은', () => {
     let module: TestingModule;
@@ -43,8 +41,6 @@ describe('NoticeModule은', () => {
         const majorScheduler = module.get<MajorScheduler>(MajorScheduler);
         const majorStyleScraper = module.get<MajorStyleScraper>(MajorStyleScraper);
         const majorStyleScheduler = module.get<MajorStyleScheduler>(MajorStyleScheduler);
-        const inhadesignStyleScheduler = module.get<InhaDesignStyleScheduler>(InhaDesignStyleScheduler);
-        const inhadesignStyleScraper = module.get<InhaDesignStyleScraper>(InhaDesignStyleScraper);
         const libraryStyleScheduler = module.get<LibraryStyleScheduler>(LibraryStyleScheduler);
         const libraryStyleScraper = module.get<LibraryStyleScraper>(LibraryStyleScraper);
 
@@ -54,8 +50,6 @@ describe('NoticeModule은', () => {
         expect(majorScheduler).toBeDefined();
         expect(majorStyleScraper).toBeDefined();
         expect(majorStyleScheduler).toBeDefined();
-        expect(inhadesignStyleScheduler).toBeDefined();
-        expect(inhadesignStyleScraper).toBeDefined();
         expect(libraryStyleScheduler).toBeDefined();
         expect(libraryStyleScraper).toBeDefined();
     });
