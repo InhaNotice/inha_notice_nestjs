@@ -254,7 +254,10 @@ export default () => {
                 baseUrl: process.env.FINEARTS_URL,
                 queryUrl: process.env.FINEARTS_QUERY_URL,
             },
-            // 디자인융합학과 (마지막 페이지:16)
+            INHADESIGN: {
+                baseUrl: process.env.INHADESIGN_URL,
+                queryUrl: process.env.INHADESIGN_QUERY_URL,
+            },
             SPORT: {
                 baseUrl: process.env.SPORT_URL,
                 queryUrl: process.env.SPORT_QUERY_URL,
@@ -469,12 +472,6 @@ export default () => {
             IMIS: {
                 baseUrl: process.env.IMIS_URL,
                 queryUrl: process.env.IMIS_QUERY_URL,
-            }
-        },
-        inhaDesignStyles: {
-            INHADESIGN: {
-                baseUrl: process.env.INHADESIGN_URL,
-                queryUrl: process.env.INHADESIGN_QUERY_URL,
             }
         },
         // 연도별 학사일정
