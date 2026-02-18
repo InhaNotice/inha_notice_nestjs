@@ -285,6 +285,11 @@ export default () => {
                 baseUrl: process.env.BIOMEDICAL_URL,
                 queryUrl: process.env.BIOMEDICAL_QUERY_URL,
             },
+            // 바이오식품공학과 추가 (2026.02.18)
+            FOODSCIENCE_URL: {
+                baseUrl: process.env.FOODSCIENCE_URL,
+                queryUrl: process.env.FOODSCIENCE_QUERY_URL,
+            },
 
             // 국제학부
             SGCSA: {

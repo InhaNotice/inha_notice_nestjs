@@ -1,11 +1,11 @@
 /*
  * This is file of the project INGONG
  * Licensed under the MIT License.
- * Copyright (c) 2025 INGONG
+ * Copyright (c) 2025-2026 INGONG
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-12-22
+ * Latest Updated Date: 2026-02-18
  */
 
 /**
@@ -81,6 +81,7 @@ export const MAJOR_MAP: Record<string, string> = {
     BIOLOGY: '생명과학과',
     BIOPHARM: '바이오제약공학과',
     BIOMEDICAL: '첨단바이오의약학과',
+    FOODSCIENCE: '바이오식품공학과',
     // 국제학부
     SGCSA: 'IBT학과',
     SGCSB: 'ISE학과',
