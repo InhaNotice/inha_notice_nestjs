@@ -427,7 +427,7 @@ export default () => {
                 baseUrl: process.env.GENERALEDU_URL,
                 queryUrl: process.env.GENERALEDU_QUERY_URL,
             },
-            // 바이오시스융합학부 추가 (2026.02.18)
+            // 바이오시스템융합학부 추가 (2026.02.18)
             BIOSYST: {
                 baseUrl: process.env.BIOSYST_URL,
                 queryUrl: process.env.BIOSYST_QUERY_URL,
