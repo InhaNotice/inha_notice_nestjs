@@ -26,7 +26,7 @@ export const MAJOR_STYLE_MAP: Record<string, string> = {
     ARTSPORTS: '예술체육대학',
     SWCC: '소프트웨어융합대학',
     GENERALEDU: '프런티어창의대학',
-    BIOSYST: '바이오시스융합학부',
+    BIOSYST: '바이오시스템융합학부',
     // 대학원
     GRAD: '일반대학원',
     ENGRAD: '공학대학원',
