@@ -1,11 +1,11 @@
 /*
  * This is file of the project INGONG
  * Licensed under the MIT License.
- * Copyright (c) 2025 INGONG
+ * Copyright (c) 2025-2026 INGONG
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2025-12-22
+ * Latest Updated Date: 2026-02-18
  */
 
 export default () => {
@@ -418,6 +418,11 @@ export default () => {
             GENERALEDU: {
                 baseUrl: process.env.GENERALEDU_URL,
                 queryUrl: process.env.GENERALEDU_QUERY_URL,
+            },
+            // 바이오시스융합학부 추가 (2026.02.18)
+            BIOSYST: {
+                baseUrl: process.env.BIOSYST_URL,
+                queryUrl: process.env.BIOSYST_QUERY_URL,
             },
             // 대학원
             GRAD: {
