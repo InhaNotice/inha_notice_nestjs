@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2026-02-18
+ * Latest Updated Date: 2026-02-26
  */
 
 import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
@@ -17,6 +17,8 @@ import { GlobalDBMonitor } from 'src/common/utils/db-monitor';
 @Injectable()
 export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     private static readonly logger: Logger = new Logger(DatabaseService.name);
+    private readonly localDatabase: string = 'inha_notice_nestjs.db';
+
     db: sqlite3.Database;
 
     get connection(): sqlite3.Database {
@@ -34,7 +36,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
         if (!fs.existsSync(dbRoot)) {
             fs.mkdirSync(dbRoot, { recursive: true });
         }
-        const dbPath: string = path.join(dbRoot, 'notices.db');
+        const dbPath: string = path.join(dbRoot, this.localDatabase);
 
         // 2. DB 연결
         await this.connect(dbPath);
