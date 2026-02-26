@@ -5,20 +5,23 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2026-02-18
+ * Latest Updated Date: 2026-02-26
  */
 
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
 import { NoticeRepository } from 'src/database/notice.repository';
+import { RiskWindowRepository } from 'src/database/risk-window.repository';
 import { BaseScheduler } from 'src/notices/schedulers/base.scheduler';
 import { Test, TestingModule } from '@nestjs/testing';
 
 class TestSchedulerService extends BaseScheduler {
     constructor(
         noticeRepository: NoticeRepository,
+        riskWindowRepository: RiskWindowRepository,
     ) {
         super();
         this['noticeRepository'] = noticeRepository;
+        this['riskWindowRepository'] = riskWindowRepository;
         this.logger = {
             log: jest.fn(),
             error: jest.fn(),
@@ -45,6 +48,10 @@ describe('BaseScheduler', () => {
         deleteNoticesExcludingDate: jest.fn(),
     };
 
+    const mockRiskWindowRepository = {
+        save: jest.fn(),
+    };
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
@@ -52,11 +59,16 @@ describe('BaseScheduler', () => {
                     provide: NoticeRepository,
                     useValue: mockNoticeRepository,
                 },
+                {
+                    provide: RiskWindowRepository,
+                    useValue: mockRiskWindowRepository,
+                },
             ],
         }).compile();
 
         noticeRepository = module.get<NoticeRepository>(NoticeRepository);
-        service = new TestSchedulerService(noticeRepository);
+        const riskWindowRepository = module.get<RiskWindowRepository>(RiskWindowRepository);
+        service = new TestSchedulerService(noticeRepository, riskWindowRepository);
     });
 
     afterEach(() => {
@@ -93,6 +105,13 @@ describe('BaseScheduler', () => {
 
             // Assert
             expect(mockNoticeRepository.save).toHaveBeenCalledWith('TEST', notices[0]);
+            expect(mockRiskWindowRepository.save).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    noticeType: 'TEST',
+                    noticeId: 'KR-1',
+                    riskWindowMs: expect.any(Number),
+                }),
+            );
             expect(sendFirebaseMessagingMock).toHaveBeenCalledWith(notices[0], 'TEST');
         });
 
@@ -150,6 +169,29 @@ describe('BaseScheduler', () => {
 
             // Assert
             expect(service['logger'].error).toHaveBeenCalledWith(expect.stringContaining('Scraping Failed'));
+        });
+
+        it('위험구간 로그 저장에 실패해도 크롤링은 정상 진행된다.', async () => {
+            // Arrange
+            const notices: NotificationPayload[] = [{
+                id: 'KR-1',
+                title: 'New Notice',
+                link: 'http://test.com',
+                date: '2025.01.01',
+            }];
+
+            jest.spyOn(service['scraperService'], 'fetchAllNotices').mockResolvedValue({
+                'TEST': notices,
+            });
+            mockNoticeRepository.save.mockResolvedValue(true);
+            mockRiskWindowRepository.save.mockRejectedValue(new Error('DB Write Failed'));
+
+            // Act
+            await service['executeCrawling']('TEST_PREFIX');
+
+            // Assert
+            expect(sendFirebaseMessagingMock).toHaveBeenCalledWith(notices[0], 'TEST');
+            expect(mockRiskWindowRepository.save).toHaveBeenCalled();
         });
     });
 

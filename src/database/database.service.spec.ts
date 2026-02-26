@@ -85,7 +85,7 @@ describe('DatabaseService', () => {
         it('data 디렉토리가 준비되어 DB를 연결한다.', async () => {
             jest.spyOn(fs, 'existsSync').mockReturnValue(true);
             const connectMock = jest.spyOn<any, any>(service, 'connect').mockResolvedValue(undefined);
-            const expectedPath = path.join(process.cwd(), 'data', 'notices.db');
+            const expectedPath = path.join(process.cwd(), 'data', 'inha_notice_nestjs.db');
 
             await service.onModuleInit();
 

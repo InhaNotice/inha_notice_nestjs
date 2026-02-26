@@ -15,6 +15,7 @@ import { FirebaseNotificationContext } from 'src/firebase/firebase-notification.
 import { FirebaseNotifiable } from 'src/interfaces/firebase-notificable.interface';
 import { BaseScraper } from 'src/notices/scrapers/base.scraper';
 import { NoticeRepository } from 'src/database/notice.repository';
+import { RiskWindowRepository } from 'src/database/risk-window.repository';
 
 /**
  * 공지사항 크롤링 스케줄러를 제공하는 추상클래스이다.
@@ -32,6 +33,9 @@ export abstract class BaseScheduler extends FirebaseNotifiable {
 
     @Inject(NoticeRepository)
     protected noticeRepository: NoticeRepository;
+
+    @Inject(RiskWindowRepository)
+    protected riskWindowRepository: RiskWindowRepository;
 
     protected async executeCrawling(logPrefix: string): Promise<void> {
         this.logger.log(`📌 ${logPrefix} 크롤링 실행 중...`);
@@ -53,12 +57,26 @@ export abstract class BaseScheduler extends FirebaseNotifiable {
                     // 3. Repository를 통해 중복 확인 및 저장
                     // - true: DB에 없어서 저장 성공 (신규)
                     // - false: DB에 이미 있음 (중복)
+
                     const isNew: boolean = await this.noticeRepository.save(noticeType, notice);
 
                     if (isNew) {
-                        // 4. 신규 공지라면 알림 전송
+                        const saveEndedAt: number = Date.now();
                         await this.sendFirebaseMessaging(notice, noticeType);
+                        const fcmEndedAt: number = Date.now();
+                        const riskWindowMs: number = fcmEndedAt - saveEndedAt;
+
+                        this.logger.log(`위험구간: ${riskWindowMs}ms (${noticeType}: ${notice.title})`);
+
+                        await this.riskWindowRepository.save({
+                            noticeType,
+                            noticeId: notice.id,
+                            saveEndedAt: new Date(saveEndedAt).toISOString(),
+                            fcmEndedAt: new Date(fcmEndedAt).toISOString(),
+                            riskWindowMs,
+                        });
                     }
+
                 }
             }
         } catch (error) {
