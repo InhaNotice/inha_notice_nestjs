@@ -4,7 +4,7 @@
 # For full license text, see the LICENSE file in the root directory or at
 # https://opensource.org/license/mit
 # Author: Junho Kim
-# Latest Updated Date: 2026-02-18
+# Latest Updated Date: 2026-02-27
 
 # Metadata & OS
 .DS_Store
@@ -64,3 +64,5 @@ report.[0-9]*
 data/
 *.db
 docs/
+inha_notice_nestjs.db
+notices.db
