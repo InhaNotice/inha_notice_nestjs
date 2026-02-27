@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the root directory or at
  * https://opensource.org/license/mit
  * Author: junho Kim
- * Latest Updated Date: 2026-02-26
+ * Latest Updated Date: 2026-02-27
  */
 
 import { NotificationPayload } from 'src/interfaces/notification-payload.interface';
@@ -109,7 +109,7 @@ describe('BaseScheduler', () => {
                 expect.objectContaining({
                     noticeType: 'TEST',
                     noticeId: 'KR-1',
-                    riskWindowMs: expect.any(Number),
+                    riskWindowUs: expect.any(Number),
                 }),
             );
             expect(sendFirebaseMessagingMock).toHaveBeenCalledWith(notices[0], 'TEST');
