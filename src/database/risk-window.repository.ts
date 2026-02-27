@@ -16,7 +16,7 @@ export interface RiskWindowLog {
     noticeId: string;
     saveEndedAt: string;
     fcmEndedAt: string;
-    riskWindowMs: number;
+    riskWindowUs: number;
 }
 
 @Injectable()
@@ -34,7 +34,7 @@ export class RiskWindowRepository implements OnModuleInit {
                     notice_id TEXT NOT NULL,
                     save_ended_at TEXT NOT NULL,
                     fcm_ended_at TEXT NOT NULL,
-                    risk_window_ms INTEGER NOT NULL,
+                    risk_window_us INTEGER NOT NULL,
                     created_at TEXT NOT NULL DEFAULT (datetime('now'))
                 )
             `);
@@ -46,9 +46,9 @@ export class RiskWindowRepository implements OnModuleInit {
     async save(log: RiskWindowLog): Promise<void> {
         try {
             await this.databaseService.run(
-                `INSERT INTO risk_window_log (notice_type, notice_id, save_ended_at, fcm_ended_at, risk_window_ms)
+                `INSERT INTO risk_window_log (notice_type, notice_id, save_ended_at, fcm_ended_at, risk_window_us)
                  VALUES (?, ?, ?, ?, ?)`,
-                [log.noticeType, log.noticeId, log.saveEndedAt, log.fcmEndedAt, log.riskWindowMs],
+                [log.noticeType, log.noticeId, log.saveEndedAt, log.fcmEndedAt, log.riskWindowUs],
             );
         } catch (error) {
             RiskWindowRepository.logger.error(`Failed to save risk window log: ${error.message}`);

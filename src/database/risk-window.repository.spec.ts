@@ -69,7 +69,7 @@ describe('RiskWindowRepository', () => {
                 noticeId: 'KR-1',
                 saveEndedAt: '2026-02-26T10:00:00.000Z',
                 fcmEndedAt: '2026-02-26T10:00:03.200Z',
-                riskWindowMs: 3200,
+                riskWindowUs: 3200,
             };
             (repository.databaseService.run as jest.Mock).mockResolvedValue({ changes: 1, lastID: 1 });
 
@@ -77,7 +77,7 @@ describe('RiskWindowRepository', () => {
 
             expect(repository.databaseService.run).toHaveBeenCalledWith(
                 expect.stringContaining('INSERT INTO risk_window_log'),
-                [log.noticeType, log.noticeId, log.saveEndedAt, log.fcmEndedAt, log.riskWindowMs],
+                [log.noticeType, log.noticeId, log.saveEndedAt, log.fcmEndedAt, log.riskWindowUs],
             );
         });
 
@@ -87,7 +87,7 @@ describe('RiskWindowRepository', () => {
                 noticeId: 'KR-1',
                 saveEndedAt: '2026-02-26T10:00:00.000Z',
                 fcmEndedAt: '2026-02-26T10:00:03.200Z',
-                riskWindowMs: 3200,
+                riskWindowUs: 3200,
             };
             const error = new Error('Insert Error');
             (repository.databaseService.run as jest.Mock).mockRejectedValue(error);

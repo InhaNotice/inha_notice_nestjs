@@ -61,19 +61,19 @@ export abstract class BaseScheduler extends FirebaseNotifiable {
                     const isNew: boolean = await this.noticeRepository.save(noticeType, notice);
 
                     if (isNew) {
-                        const saveEndedAt: number = Date.now();
+                        const saveEndedAt: bigint = process.hrtime.bigint();
                         await this.sendFirebaseMessaging(notice, noticeType);
-                        const fcmEndedAt: number = Date.now();
-                        const riskWindowMs: number = fcmEndedAt - saveEndedAt;
+                        const fcmEndedAt: bigint = process.hrtime.bigint();
+                        const riskWindowUs: number = Number(fcmEndedAt - saveEndedAt) / 1000;
 
-                        this.logger.log(`위험구간: ${riskWindowMs}ms (${noticeType}: ${notice.title})`);
+                        this.logger.log(`위험구간: ${riskWindowUs.toFixed(1)}μs (${noticeType}: ${notice.title})`);
 
                         await this.riskWindowRepository.save({
                             noticeType,
                             noticeId: notice.id,
-                            saveEndedAt: new Date(saveEndedAt).toISOString(),
-                            fcmEndedAt: new Date(fcmEndedAt).toISOString(),
-                            riskWindowMs,
+                            saveEndedAt: new Date().toISOString(),
+                            fcmEndedAt: new Date().toISOString(),
+                            riskWindowUs: riskWindowUs,
                         });
                     }
 
